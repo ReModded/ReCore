@@ -1,6 +1,7 @@
 package dev.remodded.recore.paper;
 
 import dev.remodded.recore.api.lib.LibraryLoader;
+import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
@@ -16,19 +17,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ReCoreBootstrapper implements PluginBootstrap {
-    private final ArrayList<String> dependencies = new ArrayList<String>(Collections.singletonList(
-            "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
-    ));
     Logger logger = LoggerFactory.getLogger("ReCorePaperBootstrapper");
     private LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader().getParent());
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         logger.info("Loading libraries");
-
-        dependencies.forEach(dependency -> {
-            libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null));
-        });
+        DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
         try {
             libraryLoader.load();

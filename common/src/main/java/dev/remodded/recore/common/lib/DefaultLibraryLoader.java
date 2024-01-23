@@ -89,6 +89,7 @@ public class DefaultLibraryLoader implements LibraryLoader {
             setAccessible(method);
             Arrays.stream(urls).forEach(url -> {
                 try {
+                    System.out.println("Loading dependency: " + url.toString());
                     logger.debug("Loading dependency: " + url.toString());
                     method.invoke(urlClassLoader, url);
                 } catch (IllegalAccessException | InvocationTargetException e) {

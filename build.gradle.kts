@@ -1,8 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
-import dev.remodded.regradle.getPluginProps
-import dev.remodded.regradle.getProjectSuffix
-import dev.remodded.regradle.isBuildTarget
-import dev.remodded.regradle.needsShadow
+import dev.remodded.regradle.*
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import java.util.*
 
@@ -81,8 +78,16 @@ subprojects {
             archiveAppendix.set(project.getProjectSuffix())
             archiveBaseName.set(props["name"])
 
-            relocate("org.apache", "lib")
-            relocate("org.eclipse", "lib")
+            dependencies {
+                include {
+                    return@include includeInJar(it)
+                }
+            }
+
+            relocate("org.apache", "lib.org.apache")
+            relocate("org.eclipse", "lib.org.eclipse")
+            relocate("org.codehaus", "lib.org.codehaus")
+            relocate("org.slf4j", "lib.org.slf4j")
 
             if (isBuildTarget())
                 destinationDirectory.set(rootProject.buildDir.resolve("libs"))

@@ -6,5 +6,3 @@ description: "@description@"
 load: STARTUP
 author: "@author@"
 api-version: "1.20"
-loadbefore: [ ]
-softdepend: [ ]

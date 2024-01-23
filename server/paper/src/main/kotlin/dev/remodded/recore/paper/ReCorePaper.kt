@@ -1,12 +1,15 @@
 package dev.remodded.recore.paper
 
 import dev.remodded.recore.api.ReCorePlugin
+import dev.remodded.recore.api.config.IConfigLoader
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
+import dev.remodded.recore.common.config.ConfigLoader
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.nio.file.Path
 
 class ReCorePaper(
     private val libraryLoader: LibraryLoader
@@ -28,4 +31,9 @@ class ReCorePaper(
         server.version,
         server.minecraftVersion
     )
+
+    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): IConfigLoader<T> {
+        val path = Path.of("./plugins")
+        return ConfigLoader(path, pluginName, configClass)
+    }
 }
