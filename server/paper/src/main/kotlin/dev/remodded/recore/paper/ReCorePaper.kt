@@ -2,14 +2,12 @@ package dev.remodded.recore.paper
 
 import dev.remodded.recore.api.ReCorePlugin
 import dev.remodded.recore.api.config.ConfigManager
-import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
 import dev.remodded.recore.common.Constants
 import dev.remodded.recore.common.config.DefaultConfigManager
 import dev.remodded.recore.common.config.ReCoreConfig
-import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
