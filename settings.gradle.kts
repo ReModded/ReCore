@@ -3,6 +3,7 @@ pluginManagement {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://repo.remodded.dev/repository/maven-snapshots/")
     }
 }
 

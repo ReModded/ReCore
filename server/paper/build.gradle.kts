@@ -21,6 +21,9 @@ dependencies {
 }
 
 tasks {
+    runServer {
+        minecraftVersion("1.20.1")
+    }
     // Configure reobfJar to run when invoking the build task
     assemble {
         dependsOn(reobfJar)

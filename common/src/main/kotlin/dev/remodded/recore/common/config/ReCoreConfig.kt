@@ -8,22 +8,24 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 @ConfigSerializable
 class ReCoreConfig {
 
-    @Comment("""
-        Specify the messaging service used for communication between plugins. Valid options are:
-        
-        CHANNELS - use default minecraft messaging channels (no external services required). It requires at least one
-        player connected to the server for it to work.
-        
-        REDIS - use redis as messaging channel, it is preferred option. When using redis as messaging service you must 
-        provide connection details to redis server.
-        
-        POSTGRES - use postgres as messaging service. When using this option you must provide postgresql connection
-        details to postgresql database.
-    """)
+    @Comment(
+        """
+Specify the messaging service used for communication between plugins. Valid options are:
+
+CHANNELS - use default minecraft messaging channels (no external services required). It requires at least one
+player connected to the server for it to work.
+
+REDIS - use redis as messaging channel, it is preferred option. When using redis as messaging service you must 
+provide connection details to redis server.
+
+POSTGRES - use postgres as messaging service. When using this option you must provide postgresql connection
+details to postgresql database.
+    """
+    )
     val messagingService: MessagingService = MessagingService.CHANNELS
 
     @Comment("Database connection details")
-    val database = DatabaseConnection()
+    val database = DatabaseConnectionConfig()
 
     @Comment("Redis connection details")
     val redis = RedisConnection()
@@ -35,7 +37,7 @@ class RedisConnection {
     val hostname = "localhost"
 
     @Comment("Port on which redis server is running (default: \"6379\")")
-    val port = "6379"
+    val port = 6379
 
     @Comment("Redis username (default: null)")
     val username: String? = null
@@ -45,27 +47,27 @@ class RedisConnection {
 }
 
 @ConfigSerializable
-class DatabaseConnection {
+class DatabaseConnectionConfig {
 
-    @Comment("""
-        Database type
-        
-        POSTGRESQL - preferred option
-        MARIADB
-        MYSQL
-    """)
+    @Comment(
+        "Database type\n\n" +
+
+        "POSTGRESQL - preferred option\n\n" +
+        "MARIADB\n" +
+        "MYSQL\n"
+    )
     val databaseType: DatabaseType = DatabaseType.POSTGRESQL
 
     @Comment("Database instance host or ip address")
     val hostname: String = "localhost"
 
-    @Comment("""
-        Database port
-        
-        POSTGRESQL - 5432
-        MYSQL / MARIADB - 3306
-    """)
-    val port: String? = null
+    @Comment(
+        "Database port\n\n" +
+
+        "POSTGRESQL - 5432\n" +
+        "MYSQL / MARIADB - 3306"
+    )
+    val port: Int = 5432
 
     @Comment("Username")
     val username: String = "Me"
