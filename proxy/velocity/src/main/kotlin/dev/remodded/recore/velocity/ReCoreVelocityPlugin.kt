@@ -3,11 +3,11 @@ package dev.remodded.recore.velocity
 import com.google.inject.Inject
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.remodded.recore.api.ReCorePlugin
-import dev.remodded.recore.api.config.IConfigLoader
+import dev.remodded.recore.api.config.ConfigManager
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
-import dev.remodded.recore.common.config.ConfigLoader
+import dev.remodded.recore.common.config.DefaultConfigManager
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
 
@@ -30,8 +30,8 @@ class ReCoreVelocityPlugin @Inject constructor(
         "proxy"
     )
 
-    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): IConfigLoader<T> {
+    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): ConfigManager<T> {
         val path = Path.of("./plugins")
-        return ConfigLoader(path, pluginName, configClass)
+        return DefaultConfigManager(path, pluginName, configClass)
     }
 }

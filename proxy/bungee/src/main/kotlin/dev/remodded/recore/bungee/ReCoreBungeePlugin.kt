@@ -1,11 +1,11 @@
 package dev.remodded.recore.bungee
 
 import dev.remodded.recore.api.ReCorePlugin
-import dev.remodded.recore.api.config.IConfigLoader
+import dev.remodded.recore.api.config.ConfigManager
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
-import dev.remodded.recore.common.config.ConfigLoader
+import dev.remodded.recore.common.config.DefaultConfigManager
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 import org.slf4j.LoggerFactory
@@ -29,8 +29,8 @@ class ReCoreBungeePlugin(
         "proxy"
     )
 
-    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): IConfigLoader<T> {
+    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): ConfigManager<T> {
         val path = Path.of("./config")
-        return ConfigLoader(path, pluginName, configClass)
+        return DefaultConfigManager(path, pluginName, configClass)
     }
 }

@@ -87,7 +87,6 @@ subprojects {
             relocate("org.apache", "lib.org.apache")
             relocate("org.eclipse", "lib.org.eclipse")
             relocate("org.codehaus", "lib.org.codehaus")
-            relocate("org.slf4j", "lib.org.slf4j")
 
             if (isBuildTarget())
                 destinationDirectory.set(rootProject.buildDir.resolve("libs"))
@@ -143,6 +142,7 @@ tasks {
     shadowJar {
         enabled = false
     }
+
     startShadowScripts {
         enabled = false
     }

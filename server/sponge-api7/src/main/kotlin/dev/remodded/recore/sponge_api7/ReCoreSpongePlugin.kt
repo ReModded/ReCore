@@ -1,11 +1,11 @@
 package dev.remodded.recore.sponge_api7
 
 import dev.remodded.recore.api.ReCorePlugin
-import dev.remodded.recore.api.config.IConfigLoader
+import dev.remodded.recore.api.config.ConfigManager
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
-import dev.remodded.recore.common.config.ConfigLoader
+import dev.remodded.recore.common.config.DefaultConfigManager
 import org.slf4j.LoggerFactory
 import org.spongepowered.api.Sponge
 import java.nio.file.Paths
@@ -32,8 +32,8 @@ class ReCoreSpongePlugin(
         )
     }
 
-    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): IConfigLoader<T> {
+    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>): ConfigManager<T> {
         val path = Paths.get("./config")
-        return ConfigLoader(path, pluginName, configClass)
+        return DefaultConfigManager(path, pluginName, configClass)
     }
 }

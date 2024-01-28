@@ -93,5 +93,5 @@ private val dependencyList = arrayListOf(
     "org.eclipse.sisu:org.eclipse.sisu.inject",
     "org.slf4j:jcl-over-slf4j",
     "org.slf4j:slf4j-api",
-    "org.slf4j:slf4j-api"
+    "org.slf4j.impl",
 )

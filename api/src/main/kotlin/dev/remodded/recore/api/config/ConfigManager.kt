@@ -3,7 +3,7 @@ package dev.remodded.recore.api.config
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.serialize.SerializationException
 
-interface IConfigLoader<T> {
+interface ConfigManager<T> {
     /**
      * Retrieves the configuration of a given `configName`.
      *
@@ -14,4 +14,12 @@ interface IConfigLoader<T> {
      */
     @Throws(SerializationException::class, ConfigurateException::class)
     fun getConfig(configName: String): T?
+
+    /**
+     * Saves the configuration `config` with the given `configName`.
+     *
+     * @param configName The name of the configuration to be saved.
+     * @param config The configuration to be saved.
+     */
+    fun saveConfig(configName: String, config: T)
 }

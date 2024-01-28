@@ -1,6 +1,6 @@
 package dev.remodded.recore.common.config
 
-import dev.remodded.recore.api.config.IConfigLoader
+import dev.remodded.recore.api.config.ConfigManager
 import io.leangen.geantyref.TypeToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,11 +22,11 @@ import java.nio.file.Path
  * The config path is resolved from the default server config location. Inside this location,
  * each plugin has its own directory, named after the plugin itself, which holds its config files.
  */
-class ConfigLoader<T>(
+class DefaultConfigManager<T>(
     private val configDirectory: Path,
     private val pluginName: String,
     configClass: Class<T>
-) : IConfigLoader<T> {
+) : ConfigManager<T> {
 
     private val logger: Logger = LoggerFactory.getLogger("ReCore")
     private val configToken: TypeToken<T> = TypeToken.get(configClass)
@@ -87,5 +87,21 @@ class ConfigLoader<T>(
             configFileName += ".conf"
 
         return configDirectory.resolve(pluginName).resolve(configFileName)
+    }
+
+    /**
+     * Saves the configuration with the given name.
+     *
+     * @param configName The name of the configuration to save.
+     * @param config The configuration object to be saved.
+     */
+    override fun saveConfig(configName: String, config: T) {
+        val configFilePath = getConfigPath(pluginName, configName)
+
+        val loader = HoconConfigurationLoader.builder()
+            .path(configFilePath)
+            .build()
+
+        loader.save(loader.createNode().set(configToken, config))
     }
 }
