@@ -9,16 +9,13 @@ import org.eclipse.aether.graph.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
+@SuppressWarnings("unused")
 public class ReCoreBungee extends Plugin {
 
     private final Logger logger = LoggerFactory.getLogger("ReCoreBungeeBootstrapper");
     private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, this.getClass().getClassLoader());
 
-    private ReCoreBungeePlugin plugin;
+    public static ReCoreBungeePlatform PLATFORM;
 
     @Override
     public void onEnable() {
@@ -32,6 +29,6 @@ public class ReCoreBungee extends Plugin {
             logger.error("Error while loading dependencies", e);
         }
 
-        plugin = new ReCoreBungeePlugin(this, libraryLoader);
+        PLATFORM = new ReCoreBungeePlatform(libraryLoader);
     }
 }

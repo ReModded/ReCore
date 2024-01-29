@@ -13,12 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
+@SuppressWarnings({"unused", "UnstableApiUsage"})
 public class ReCoreBootstrapper implements PluginBootstrap {
-    Logger logger = LoggerFactory.getLogger("ReCorePaperBootstrapper");
-    private LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader().getParent());
+    private final Logger logger = LoggerFactory.getLogger("ReCorePaperBootstrapper");
+    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader().getParent());
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
@@ -35,6 +33,6 @@ public class ReCoreBootstrapper implements PluginBootstrap {
 
     @Override
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
-        return new ReCorePaper(libraryLoader);
+        return new ReCorePaperPlatform(libraryLoader);
     }
 }

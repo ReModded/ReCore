@@ -16,7 +16,6 @@ import java.nio.file.Path
  *
  * @param T The type of the object that will be loaded from the configuration file.
  * @property configDirectory The directory path where the configuration files are located.
- * @property pluginName The name of the plugin whose config we are loading.
  * @param configClass The class of the configuration object that the file content is to be converted to.
  *
  * The config path is resolved from the default server config location. Inside this location,
@@ -24,13 +23,18 @@ import java.nio.file.Path
  */
 class DefaultConfigManager<T>(
     private val configDirectory: Path,
-    private val pluginName: String,
     configClass: Class<T>
 ) : ConfigManager<T> {
+    
+    companion object {
+        inline operator fun <reified T> invoke(configPath: Path): ConfigManager<T> {
+            return DefaultConfigManager(configPath, T::class.java)
+        }
+    }
 
     private val logger: Logger = LoggerFactory.getLogger("ReCore")
     private val configToken: TypeToken<T> = TypeToken.get(configClass)
-    private val configProvider: T = configClass.getDeclaredConstructor().newInstance()
+    private val configProvider: ()->T = { configClass.getDeclaredConstructor().newInstance() }
 
     /**
      * Retrieves the configuration of a given `configName`.
@@ -42,7 +46,7 @@ class DefaultConfigManager<T>(
      */
     @Throws(SerializationException::class, ConfigurateException::class)
     override fun getConfig(configName: String): T? {
-        val configFilePath = getConfigPath(pluginName, configName)
+        val configFilePath = getConfigPath(configName)
 
         val loader = HoconConfigurationLoader.builder()
             .path(configFilePath)
@@ -60,7 +64,7 @@ class DefaultConfigManager<T>(
 
         logger.error("Can not load configuration file: $configFilePath")
 
-        return null;
+        return null
     }
 
     /**
@@ -71,22 +75,21 @@ class DefaultConfigManager<T>(
      */
     @Throws(ConfigurateException::class)
     private fun saveDefaultConfig(loader: HoconConfigurationLoader) {
-        loader.save(loader.createNode().set(configToken, configProvider))
+        loader.save(loader.createNode().set(configToken, configProvider()))
     }
 
     /**
      * Constructs the full path of the configuration file from the plugin name and config name.
      *
-     * @param pluginName Name of the plugin.
      * @param configName Name of the configuration file.
      * @return Full path to the configuration file.
      */
-    private fun getConfigPath(pluginName: String, configName: String): Path {
+    private fun getConfigPath(configName: String): Path {
         var configFileName = configName
         if (!configName.endsWith(".conf"))
             configFileName += ".conf"
 
-        return configDirectory.resolve(pluginName).resolve(configFileName)
+        return configDirectory.resolve(configFileName)
     }
 
     /**
@@ -96,7 +99,7 @@ class DefaultConfigManager<T>(
      * @param config The configuration object to be saved.
      */
     override fun saveConfig(configName: String, config: T) {
-        val configFilePath = getConfigPath(pluginName, configName)
+        val configFilePath = getConfigPath(configName)
 
         val loader = HoconConfigurationLoader.builder()
             .path(configFilePath)

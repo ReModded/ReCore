@@ -1,7 +1,5 @@
 package dev.remodded.recore.sponge_api7;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import dev.remodded.recore.api.lib.LibraryLoader;
 import dev.remodded.recore.common.Constants;
 import dev.remodded.recore.common.lib.DefaultDependencies;
@@ -14,9 +12,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 @Plugin(
         id = Constants.ID,
         name = Constants.NAME,
@@ -26,9 +21,9 @@ import java.util.Collections;
         authors = Constants.AUTHOR
 )
 public class ReCoreSponge {
-    private Logger logger = LoggerFactory.getLogger("ReCoreSpongeBootstrapper");
-    private LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
-    private ReCoreSpongePlugin plugin;
+    private final Logger logger = LoggerFactory.getLogger("ReCoreSpongeBootstrapper");
+    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
+    public static ReCoreSpongePlatform PLATFORM;
 
     @Listener
     public void onServerStart(GameConstructionEvent event) {
@@ -41,6 +36,6 @@ public class ReCoreSponge {
         } catch (Exception e) {
             logger.error("Error while loading dependencies", e);
         }
-        plugin = new ReCoreSpongePlugin(libraryLoader);
+        PLATFORM = new ReCoreSpongePlatform(libraryLoader);
     }
 }

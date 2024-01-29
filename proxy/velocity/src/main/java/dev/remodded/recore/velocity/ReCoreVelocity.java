@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.remodded.recore.api.lib.LibraryLoader;
 import dev.remodded.recore.common.Constants;
@@ -13,6 +14,8 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
 
 @Plugin(
         id = Constants.ID,
@@ -28,7 +31,11 @@ public class ReCoreVelocity {
     @Inject
     private ProxyServer server;
 
-    private ReCoreVelocityPlugin plugin;
+    @Inject
+    @DataDirectory
+    private Path dataFolder;
+
+    public static ReCoreVelocityPlatform PLATFORM;
 
     @Subscribe
     void onProxyInit(ProxyInitializeEvent event) {
@@ -42,7 +49,7 @@ public class ReCoreVelocity {
             logger.error("Error while loading dependencies", e);
         }
 
-        plugin = new ReCoreVelocityPlugin(server, this, libraryLoader);
+        PLATFORM = new ReCoreVelocityPlatform(server, libraryLoader, dataFolder.getParent());
     }
 
 }
