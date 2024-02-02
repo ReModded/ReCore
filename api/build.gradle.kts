@@ -6,7 +6,7 @@ dependencies {
     api("org.apache.maven:maven-resolver-provider:3.8.5")
 
     // Logging library
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.22.1")
+    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.17.1")
 
     // Library used for managing configurations
     api("org.spongepowered:configurate-hocon:4.1.2")
