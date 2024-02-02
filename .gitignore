@@ -41,4 +41,4 @@ bin/
 /.idea/
 
 ### Other ###
-/server/paper/run/
+/server/*/run/
