@@ -5,7 +5,7 @@ import dev.remodded.regradle.markAsNeedShadow
 
 plugins {
     id("io.papermc.paperweight.userdev") version "1.5.11"
-    id("xyz.jpenilla.run-paper") version "2.2.0"
+    id("xyz.jpenilla.run-paper") version "2.2.2"
 }
 
 markAsBuildTarget()

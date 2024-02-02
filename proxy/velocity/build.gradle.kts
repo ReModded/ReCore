@@ -4,6 +4,7 @@ import dev.remodded.regradle.markAsNeedShadow
 
 plugins {
     id("kotlin-kapt")
+    id("xyz.jpenilla.run-velocity") version "2.2.2"
 }
 
 markAsBuildTarget()
@@ -16,7 +17,6 @@ repositories {
 dependencies {
     api(project("::proxy"))
     compileOnly("com.velocitypowered:velocity-api:3.2.0-SNAPSHOT")
-//    kapt("com.velocitypowered:velocity-api:3.2.0-SNAPSHOT")
 }
 
 val props = getPluginProps()
@@ -31,5 +31,9 @@ tasks {
             }
             return@filter replaced
         }
+    }
+
+    runVelocity {
+        velocityVersion("3.2.0-SNAPSHOT")
     }
 }

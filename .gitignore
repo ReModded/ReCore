@@ -42,3 +42,4 @@ bin/
 
 ### Other ###
 /server/*/run/
+/proxy/*/run/

@@ -2,6 +2,10 @@ import dev.remodded.regradle.getPluginProps
 import dev.remodded.regradle.markAsBuildTarget
 import dev.remodded.regradle.markAsNeedShadow
 
+plugins {
+    id("xyz.jpenilla.run-waterfall") version "2.2.2"
+}
+
 markAsBuildTarget()
 markAsNeedShadow()
 
@@ -26,5 +30,9 @@ tasks {
             }
             return@filter replaced
         }
+    }
+
+    runWaterfall {
+        waterfallVersion("1.20")
     }
 }
