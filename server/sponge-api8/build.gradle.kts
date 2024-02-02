@@ -46,8 +46,6 @@ sponge {
     }
 }
 
-println(props)
-
 kotlin {
     jvmToolchain(8)
 }
