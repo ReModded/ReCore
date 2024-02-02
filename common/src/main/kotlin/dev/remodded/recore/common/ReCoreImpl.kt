@@ -16,9 +16,15 @@ class ReCoreImpl (
     private val platform: ReCorePlatform
 ) : ReCore {
 
-    private val config: ReCoreConfig = loadConfig()
-    private val databaseProvider: DatabaseProvider = initDatabase()
+    private val config: ReCoreConfig
+    private val databaseProvider: DatabaseProvider
 
+    init {
+        printPlatformInfo()
+
+        config = loadConfig()
+        databaseProvider = initDatabase()
+    }
 
     override fun getPlatform() = platform
 
@@ -32,11 +38,34 @@ class ReCoreImpl (
         private val logger = LoggerFactory.getLogger("ReCore")
 
         fun init(platform: ReCorePlatform) {
-            logger.info("Initializing")
+            logger.info("ReCore Initializing")
             ReCoreAPI.INSTANCE = ReCoreImpl(platform)
         }
     }
 
+    private fun printPlatformInfo() {
+        val platformInfo = platform.getPlatformInfo()
+
+        val info = listOf(
+            "ReCore (${Constants.VERSION})",
+            "Platform: ${platformInfo.platform}",
+            "Platform Name: ${platformInfo.platformName}",
+            "Platform Version: ${platformInfo.platformVersion}",
+            "Minecraft Version: ${platformInfo.mcVersion}",
+            "Config Directory: '${platformInfo.dataFolder.toAbsolutePath().normalize()}'"
+        )
+        val len = info.maxOf { it.length } + 4
+        val header = "Platform Info"
+
+        logger.info("#".repeat(len + 2))
+        logger.info("#  $header" + " ".repeat(len - header.length - 4) + "  #")
+        logger.info("#".repeat(len + 2))
+        for (line in info)
+            logger.info("#  $line" + " ".repeat(len - line.length - 4) + "  #")
+        logger.info("#".repeat(len + 2))
+    }
+    
+    
     private fun loadConfig(): ReCoreConfig {
         try {
             logger.info("Loading configuration")
