@@ -8,21 +8,20 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.lifecycle.LoadedGameEvent;
+import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
 
 import java.lang.reflect.Field;
-import java.util.Objects;
 
 public class ReCoreSponge {
-
     private final Logger logger = LoggerFactory.getLogger("ReCoreSpongeBootstrapper");
-    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, Objects.requireNonNull(getClassLoader()));
+    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClassLoader());
 
     public static ReCoreSpongePlatform PLATFORM;
 
     @Listener
-    public void onServerStart(LoadedGameEvent event) {
+    public void onServerStart(StartingEngineEvent<Server> event) {
         logger.info("Loading libraries");
         DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
@@ -37,15 +36,15 @@ public class ReCoreSponge {
 
     private ClassLoader getClassLoader() {
         try {
-            TransformingClassLoader classLoader = (TransformingClassLoader) this.getClass().getClassLoader();
+            ClassLoader loader = this.getClass().getClassLoader();
 
-            Class<?> transfromingClassLoaderClass = TransformingClassLoader.class;
-            Field field = transfromingClassLoaderClass.getDeclaredField("delegatedClassLoader");
+            // Sponge uses a delegating classloader, so we need to get the actual URLClassLoader
+            Field field = loader.getClass().getDeclaredField("delegatedClassLoader");
             field.setAccessible(true);
-            Object urlClassLoader = field.get(classLoader);
+            Object urlClassLoader = field.get(loader);
             return (ClassLoader) urlClassLoader;
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Failed to get classloader", e);
         }
     }
 }

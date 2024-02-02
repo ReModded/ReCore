@@ -25,7 +25,7 @@ class ReCoreSpongePlatform(
         return PlatformInfo(
             Platform.SPONGE_API11,
             meta.name().orElse("Sponge-API11 (Unknown)"),
-            meta.version().toString(),
+            meta.javaClass.getMethod("version").invoke(meta).toString(),
             serverPlatform.minecraftVersion().name(),
             Sponge.configManager().sharedConfig(spongeContainer).directory(),
         )

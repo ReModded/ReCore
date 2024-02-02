@@ -17,7 +17,7 @@ val modules = arrayListOf(
     "common",
 
     "server:paper",
-    "server:sponge-api7",
+    "server:sponge-api8",
     "server:sponge-api11",
 
     "proxy:velocity",

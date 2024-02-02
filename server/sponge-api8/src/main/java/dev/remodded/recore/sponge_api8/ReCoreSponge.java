@@ -1,32 +1,26 @@
-package dev.remodded.recore.sponge_api7;
+package dev.remodded.recore.sponge_api8;
 
 import dev.remodded.recore.api.lib.LibraryLoader;
-import dev.remodded.recore.common.Constants;
 import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameConstructionEvent;
-import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
 
-@Plugin(
-        id = Constants.ID,
-        name = Constants.NAME,
-        url = Constants.URL,
-        description = Constants.DESCRIPTION,
-        version = Constants.VERSION,
-        authors = Constants.AUTHOR
-)
+import java.lang.reflect.Field;
+
 public class ReCoreSponge {
     private final Logger logger = LoggerFactory.getLogger("ReCoreSpongeBootstrapper");
-    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
+    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClassLoader());
+
     public static ReCoreSpongePlatform PLATFORM;
 
     @Listener
-    public void onServerStart(GameConstructionEvent event) {
+    public void onServerStart(StartingEngineEvent<Server> event) {
         logger.info("Loading libraries");
         DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
@@ -37,5 +31,19 @@ public class ReCoreSponge {
             logger.error("Error while loading dependencies", e);
         }
         PLATFORM = new ReCoreSpongePlatform(libraryLoader);
+    }
+
+    private ClassLoader getClassLoader() {
+        try {
+            ClassLoader loader = this.getClass().getClassLoader();
+
+            // Sponge uses a delegating classloader, so we need to get the actual URLClassLoader
+            Field field = loader.getClass().getDeclaredField("delegatedClassLoader");
+            field.setAccessible(true);
+            Object urlClassLoader = field.get(loader);
+            return (ClassLoader) urlClassLoader;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get classloader", e);
+        }
     }
 }
