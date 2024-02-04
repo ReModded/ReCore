@@ -96,6 +96,7 @@ subprojects {
 
     repositories {
         maven("https://repo.remodded.dev/repository/maven-central/")
+        maven("https://repo.remodded.dev/repository/mojang/")
     }
 
     dependencies {
