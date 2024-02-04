@@ -8,26 +8,28 @@ import dev.remodded.recore.common.ReCoreImpl
 import org.spongepowered.api.Sponge
 
 class ReCoreSpongePlatform(
-    private val libraryLoader: LibraryLoader,
+    override val libraryLoader: LibraryLoader,
 ) : ReCorePlatform {
+
+    override val platformInfo: PlatformInfo = getPlatformInfo()
 
     init {
         ReCoreImpl.init(this)
     }
 
-    override fun getLibraryLoader() = libraryLoader
-
-    override fun getPlatformInfo(): PlatformInfo {
-        val serverPlatform = Sponge.platform()
-        val spongeContainer = serverPlatform.container(org.spongepowered.api.Platform.Component.IMPLEMENTATION)
-        val meta = spongeContainer.metadata()
-
-        return PlatformInfo(
-            Platform.SPONGE_API8,
-            meta.name().orElse("Sponge-API8 (Unknown)"),
-            meta.javaClass.getMethod("version").invoke(meta).toString(),
-            serverPlatform.minecraftVersion().name(),
-            Sponge.configManager().sharedConfig(spongeContainer).directory(),
-        )
+    companion object {
+        private fun getPlatformInfo(): PlatformInfo {
+            val serverPlatform = Sponge.platform()
+            val spongeContainer = serverPlatform.container(org.spongepowered.api.Platform.Component.IMPLEMENTATION)
+            val meta = spongeContainer.metadata()
+    
+            return PlatformInfo(
+                Platform.SPONGE_API8,
+                meta.name().orElse("Sponge-API8 (Unknown)"),
+                meta.javaClass.getMethod("version").invoke(meta).toString(),
+                serverPlatform.minecraftVersion().name(),
+                Sponge.configManager().sharedConfig(spongeContainer).directory(),
+            )
+        }
     }
 }

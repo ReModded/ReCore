@@ -8,20 +8,18 @@ import dev.remodded.recore.common.ReCoreImpl
 import net.md_5.bungee.api.ProxyServer
 
 class ReCoreBungeePlatform(
-    private val libraryLoader: LibraryLoader
+    override val libraryLoader: LibraryLoader
 ) : ReCorePlatform {
 
-    init {
-        ReCoreImpl.init(this)
-    }
-
-    override fun getLibraryLoader() = libraryLoader
-
-    override fun getPlatformInfo() = PlatformInfo(
+    override val platformInfo = PlatformInfo(
         Platform.BUNGEE,
         ProxyServer.getInstance().name,
         ProxyServer.getInstance().version,
         "proxy",
         ProxyServer.getInstance().pluginsFolder.toPath(),
     )
+
+    init {
+        ReCoreImpl.init(this)
+    }
 }
