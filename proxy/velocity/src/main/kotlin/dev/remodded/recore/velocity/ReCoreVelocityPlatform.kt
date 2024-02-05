@@ -10,21 +10,19 @@ import java.nio.file.Path
 
 class ReCoreVelocityPlatform(
     private val server: ProxyServer,
-    private val libraryLoader: LibraryLoader,
-    private val dataFolder: Path,
+    override val libraryLoader: LibraryLoader,
+    dataFolder: Path,
 ) : ReCorePlatform {
 
-    init {
-        ReCoreImpl.init(this)
-    }
-
-    override fun getLibraryLoader() = libraryLoader
-
-    override fun getPlatformInfo() = PlatformInfo(
+    override val platformInfo = PlatformInfo(
         Platform.VELOCITY,
         server.version.name,
         server.version.version,
         "proxy",
         dataFolder,
     )
+
+    init {
+        ReCoreImpl.init(this)
+    }
 }

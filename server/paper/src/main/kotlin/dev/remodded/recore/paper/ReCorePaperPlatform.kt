@@ -9,20 +9,18 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class ReCorePaperPlatform(
-    private val libraryLoader: LibraryLoader
+    override val libraryLoader: LibraryLoader
 ) : JavaPlugin(), ReCorePlatform {
 
-    override fun onEnable() {
-        ReCoreImpl.init(this)
-    }
-
-    override fun getLibraryLoader() = libraryLoader
-
-    override fun getPlatformInfo() = PlatformInfo(
+    override val platformInfo = PlatformInfo(
         Platform.PAPER,
         server.name,
         server.version,
         server.minecraftVersion,
         Bukkit.getPluginsFolder().toPath(),
     )
+
+    override fun onEnable() {
+        ReCoreImpl.init(this)
+    }
 }

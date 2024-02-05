@@ -4,9 +4,9 @@ import dev.remodded.recore.api.config.ConfigManager
 import dev.remodded.recore.api.database.DatabaseProvider
 
 interface ReCore {
-    fun getPlatform(): ReCorePlatform
+    val platform: ReCorePlatform
 
-    fun getDatabaseProvider(): DatabaseProvider
+    val databaseProvider: DatabaseProvider
 
-    fun <T>getConfigLoader(pluginName: String, configClass: Class<T>): ConfigManager<T>
+    fun <T>createConfigLoader(pluginName: String, configClass: Class<T>): ConfigManager<T>
 }

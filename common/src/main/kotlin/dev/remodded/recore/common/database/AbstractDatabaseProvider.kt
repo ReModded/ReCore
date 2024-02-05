@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
  *
  * @property databaseConnectionConfig The configuration for the database connection.
  * @property databaseType The type of the database being used.
- * @property dataSourceClassName The fully qualified name of the JDBC data source class.
+ * @param dataSourceClassName The fully qualified name of the JDBC data source class.
  */
 abstract class AbstractDatabaseProvider(
     private val databaseConnectionConfig: DatabaseConnectionConfig,
@@ -33,8 +33,9 @@ abstract class AbstractDatabaseProvider(
 
         val config = HikariConfig().apply {
             this.dataSourceClassName = dataSourceClassName
-            addDataSourceProperty("user", databaseConnectionConfig.username)
-            addDataSourceProperty("password", databaseConnectionConfig.password)
+            username = databaseConnectionConfig.username
+            password = databaseConnectionConfig.password
+
             addDataSourceProperty("serverName", databaseConnectionConfig.hostname)
             addDataSourceProperty("portNumber", databaseConnectionConfig.port)
             addDataSourceProperty("databaseName", databaseConnectionConfig.database)

@@ -13,12 +13,12 @@ import dev.remodded.recore.common.database.PostgreSQLProvider
 import org.slf4j.LoggerFactory
 
 class ReCoreImpl (
-    private val platform: ReCorePlatform
+    override val platform: ReCorePlatform
 ) : ReCore {
 
     private val config: ReCoreConfig
-    private val databaseProvider: DatabaseProvider
-
+    override val databaseProvider: DatabaseProvider
+    
     init {
         printPlatformInfo()
 
@@ -26,12 +26,8 @@ class ReCoreImpl (
         databaseProvider = initDatabase()
     }
 
-    override fun getPlatform() = platform
-
-    override fun getDatabaseProvider() = databaseProvider
-
-    override fun <T> getConfigLoader(pluginName: String, configClass: Class<T>) = 
-        DefaultConfigManager(platform.getPlatformInfo().dataFolder.resolve(pluginName), configClass)
+    override fun <T> createConfigLoader(pluginName: String, configClass: Class<T>) = 
+        DefaultConfigManager(platform.platformInfo.dataFolder.resolve(pluginName), configClass)
 
 
     companion object {
@@ -44,7 +40,7 @@ class ReCoreImpl (
     }
 
     private fun printPlatformInfo() {
-        val platformInfo = platform.getPlatformInfo()
+        val platformInfo = platform.platformInfo
 
         val info = listOf(
             "ReCore (${Constants.VERSION})",
@@ -69,7 +65,7 @@ class ReCoreImpl (
     private fun loadConfig(): ReCoreConfig {
         try {
             logger.info("Loading configuration")
-            val cfg = getConfigLoader(Constants.NAME, ReCoreConfig::class.java).getConfig("ReCore.conf")!!
+            val cfg = createConfigLoader(Constants.NAME, ReCoreConfig::class.java).getConfig("ReCore.conf")!!
             logger.info("Config ReCore.conf loaded successfully")
             return cfg
         } catch (e: Exception) {
