@@ -1,8 +1,19 @@
 pluginManagement {
     repositories {
+        maven("https://repo.remodded.dev/repository/fabric/") {
+            name = "Remodded Fabric proxy"
+        }
+        maven("https://repo.remodded.dev/repository/sponge/") {
+            name = "Remodded Sponge proxy"
+        }
+        maven("https://repo.remodded.dev/repository/maven-snapshots/") {
+            name = "Remodded Snapshots"
+        }
         mavenCentral()
         gradlePluginPortal()
-        maven("https://repo.remodded.dev/repository/maven-snapshots/")
+        maven("https://repo.spongepowered.org/repository/maven-public/") {
+            name = "sponge Official"
+        }
     }
 }
 
