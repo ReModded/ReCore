@@ -8,7 +8,7 @@ plugins {
     application
     `maven-publish`
     id("org.jetbrains.dokka") version "1.9.0"
-    id("com.github.johnrengelman.shadow") version ("8.1.+")
+    id("io.github.goooler.shadow") version "8.1.7"
     id("dev.remodded.regradle") version "1.0.0-SNAPSHOT"
 }
 

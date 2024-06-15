@@ -21,7 +21,6 @@ val modules = arrayListOf(
     "server:sponge-api11",
 
     "proxy:velocity",
-    "proxy:bungee",
 )
 
 modules.forEach { module ->

@@ -4,7 +4,7 @@ import dev.remodded.regradle.markAsNeedShadow
 
 plugins {
     id("kotlin-kapt")
-    id("xyz.jpenilla.run-velocity") version "2.2.2"
+    id("xyz.jpenilla.run-velocity") version "2.3.0"
 }
 
 markAsBuildTarget()
