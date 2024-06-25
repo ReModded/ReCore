@@ -5,12 +5,14 @@ import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
 import dev.remodded.recore.common.ReCoreImpl
+import dev.remodded.recore.sponge_api12.command.ReCoreSpongeCommandManager
 import org.spongepowered.api.Sponge
 
 class ReCoreSpongePlatform(
     override val libraryLoader: LibraryLoader
 ) : ReCorePlatform {
 
+    override val commandManager = ReCoreSpongeCommandManager()
     override val platformInfo: PlatformInfo = getPlatformInfo()
 
     init {

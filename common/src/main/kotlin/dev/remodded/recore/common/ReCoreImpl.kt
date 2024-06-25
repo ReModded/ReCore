@@ -3,13 +3,11 @@ package dev.remodded.recore.common
 import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.ReCoreAPI
 import dev.remodded.recore.api.ReCorePlatform
-import dev.remodded.recore.api.config.DatabaseType
+import dev.remodded.recore.api.command.CommandManager
 import dev.remodded.recore.api.database.DatabaseProvider
+import dev.remodded.recore.common.command.ReCoreCommand
 import dev.remodded.recore.common.config.DefaultConfigManager
 import dev.remodded.recore.common.config.ReCoreConfig
-import dev.remodded.recore.common.database.MariaDBProvider
-import dev.remodded.recore.common.database.MySQLProvider
-import dev.remodded.recore.common.database.PostgreSQLProvider
 import org.slf4j.LoggerFactory
 
 class ReCoreImpl (
@@ -17,8 +15,12 @@ class ReCoreImpl (
 ) : ReCore {
 
     private val config: ReCoreConfig
-    override val databaseProvider: DatabaseProvider
-    
+    override val databaseProvider: DatabaseProvider?
+
+
+    override val commandManager: CommandManager get() = platform.commandManager
+
+
     init {
         printPlatformInfo()
 
@@ -26,7 +28,11 @@ class ReCoreImpl (
         databaseProvider = initDatabase()
     }
 
-    override fun <T> createConfigLoader(pluginName: String, configClass: Class<T>) = 
+    fun init() {
+        registerCommands()
+    }
+
+    override fun <T> createConfigLoader(pluginName: String, configClass: Class<T>) =
         DefaultConfigManager(platform.platformInfo.dataFolder.resolve(pluginName), configClass)
 
 
@@ -35,7 +41,9 @@ class ReCoreImpl (
 
         fun init(platform: ReCorePlatform) {
             logger.info("ReCore Initializing")
-            ReCoreAPI.INSTANCE = ReCoreImpl(platform)
+            val instance = ReCoreImpl(platform)
+            ReCoreAPI.INSTANCE = instance
+            instance.init()
         }
     }
 
@@ -60,8 +68,8 @@ class ReCoreImpl (
             logger.info("#  $line" + " ".repeat(len - line.length - 4) + "  #")
         logger.info("#".repeat(len + 2))
     }
-    
-    
+
+
     private fun loadConfig(): ReCoreConfig {
         try {
             logger.info("Loading configuration")
@@ -76,12 +84,17 @@ class ReCoreImpl (
         }
     }
 
-    private fun initDatabase(): DatabaseProvider {
+    private fun initDatabase(): DatabaseProvider? {
         val dbConfig = config.database
-        return when(dbConfig.databaseType) {
-            DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
-            DatabaseType.MYSQL -> MySQLProvider(dbConfig)
-            DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
-        }
+//        return when(dbConfig.databaseType) {
+//            DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
+//            DatabaseType.MYSQL -> MySQLProvider(dbConfig)
+//            DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
+//        }
+        return null
+    }
+
+    private fun registerCommands() {
+        ReCoreCommand.register()
     }
 }

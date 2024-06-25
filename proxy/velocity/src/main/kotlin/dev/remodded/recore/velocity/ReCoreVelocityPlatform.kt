@@ -6,14 +6,16 @@ import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
 import dev.remodded.recore.common.ReCoreImpl
+import dev.remodded.recore.velocity.command.VelocityCommandManager
 import java.nio.file.Path
 
 class ReCoreVelocityPlatform(
-    private val server: ProxyServer,
+    server: ProxyServer,
     override val libraryLoader: LibraryLoader,
     dataFolder: Path,
 ) : ReCorePlatform {
 
+    override val commandManager = VelocityCommandManager(server)
     override val platformInfo = PlatformInfo(
         Platform.VELOCITY,
         server.version.name,

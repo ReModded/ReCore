@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.remodded.recore.sponge_api12.mixin",
+  "mixins": [
+    "command.CommandSourceMixin",
+    "command.CommandSourceStackMixin",
+    "entity.EntityMixin",
+    "entity.PlayerMixin",
+    "world.WorldMixin"
+  ]
+}
