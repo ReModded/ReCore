@@ -1,19 +1,16 @@
 pluginManagement {
     repositories {
+        mavenLocal() // For ReGradle development
         maven("https://repo.remodded.dev/repository/fabric/") {
             name = "Remodded Fabric proxy"
         }
         maven("https://repo.remodded.dev/repository/sponge/") {
             name = "Remodded Sponge proxy"
         }
-        maven("https://repo.remodded.dev/repository/maven-snapshots/") {
-            name = "Remodded Snapshots"
+        maven("https://repo.remodded.dev/repository/maven-public/") {
+            name = "Remodded Maven"
         }
-        mavenCentral()
         gradlePluginPortal()
-        maven("https://repo.spongepowered.org/repository/maven-public/") {
-            name = "sponge Official"
-        }
     }
 }
 
@@ -28,8 +25,7 @@ val modules = arrayListOf(
     "common",
 
     "server:paper",
-    "server:sponge-api8",
-    "server:sponge-api11",
+    "server:sponge-api12",
 
     "proxy:velocity",
 )

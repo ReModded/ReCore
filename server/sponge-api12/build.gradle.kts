@@ -6,7 +6,7 @@ import org.spongepowered.gradle.vanilla.repository.MinecraftPlatform
 import org.spongepowered.plugin.metadata.model.PluginDependency
 
 plugins {
-    id("org.spongepowered.gradle.plugin") version "2.1.1"
+    id("org.spongepowered.gradle.plugin") version "2.2.0"
     id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
 }
 
@@ -19,19 +19,20 @@ repositories {
 
 dependencies {
     api(project("::server"))
-    compileOnly("cpw.mods:modlauncher:8.1.3")
-    implementation("org.spongepowered:sponge:1.20.1-11.0.0-SNAPSHOT:dev")
+    implementation("org.spongepowered:sponge:1.21-12.0.0-SNAPSHOT")
+
+    compileOnly("org.spongepowered:mixin:0.8.7-SNAPSHOT")
 }
 
 val props = getPluginProps()
 
 minecraft {
-    version("1.20.1")
+    version("1.21")
     platform(MinecraftPlatform.SERVER)
 }
 
 sponge {
-    apiVersion("11.0.0-SNAPSHOT")
+    apiVersion("12.0.0-SNAPSHOT")
     license("MIT")
     loader {
         name(PluginLoaders.JAVA_PLAIN)
@@ -54,11 +55,12 @@ sponge {
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
-kotlin {
-    jvmToolchain(21)
+tasks {
+    jar {
+        manifest {
+            attributes(
+                "MixinConfigs" to "mixins.recore.json"
+            )
+        }
+    }
 }

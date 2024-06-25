@@ -1,4 +1,4 @@
-package dev.remodded.recore.sponge_api8;
+package dev.remodded.recore.sponge_api12;
 
 import dev.remodded.recore.api.lib.LibraryLoader;
 import dev.remodded.recore.common.lib.DefaultDependencies;

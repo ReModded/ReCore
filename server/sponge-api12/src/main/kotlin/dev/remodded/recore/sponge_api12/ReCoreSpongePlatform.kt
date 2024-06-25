@@ -1,4 +1,4 @@
-package dev.remodded.recore.sponge_api11
+package dev.remodded.recore.sponge_api12
 
 import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.lib.LibraryLoader
@@ -22,7 +22,7 @@ class ReCoreSpongePlatform(
             val serverPlatform = Sponge.platform()
             val spongeContainer = serverPlatform.container(org.spongepowered.api.Platform.Component.IMPLEMENTATION)
             val meta = spongeContainer.metadata()
-    
+
             return PlatformInfo(
                 Platform.SPONGE_API11,
                 meta.name().orElse("Sponge-API11 (Unknown)"),

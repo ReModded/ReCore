@@ -4,12 +4,12 @@ import org.jetbrains.dokka.gradle.DokkaPlugin
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "2.0.0"
     application
     `maven-publish`
-    id("org.jetbrains.dokka") version "1.9.0"
+    id("org.jetbrains.dokka") version "1.9.20"
     id("io.github.goooler.shadow") version "8.1.7"
-    id("dev.remodded.regradle") version "1.0.0-SNAPSHOT"
+    id("dev.remodded.regradle") version "1.0.0-SNAPSHOT" apply false
 }
 
 repositories {
@@ -34,8 +34,9 @@ subprojects {
 
     group = props["group"]!!
     version = props["version"]!!
+    description = props["description"]!!
 
-    val dokkaOutputDir = "${project.buildDir}/dokka"
+    val dokkaOutputDir = "${project.layout.buildDirectory}/dokka"
 
     val javadocJar by tasks.registering(Jar::class) {
         dependsOn(tasks.dokkaHtml)
@@ -58,7 +59,12 @@ subprojects {
         }
 
         kotlin {
-            jvmToolchain(17)
+            jvmToolchain(21)
+        }
+
+        java {
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
 
         assemble {
@@ -90,7 +96,7 @@ subprojects {
             relocate("org.codehaus", "lib.org.codehaus")
 
             if (isBuildTarget())
-                destinationDirectory.set(rootProject.buildDir.resolve("libs"))
+                destinationDirectory.set(rootProject.layout.buildDirectory.get().dir("libs"))
         }
     }
 

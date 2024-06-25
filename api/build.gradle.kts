@@ -16,11 +16,7 @@ dependencies {
     api("com.zaxxer:HikariCP:5.1.0")
     api("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
     api("org.mariadb.jdbc:mariadb-java-client:2.1.2")
-    
+
     // Brigadier library
     api("com.mojang:brigadier:1.2.9")
-}
-
-kotlin {
-    jvmToolchain(8)
 }
