@@ -19,8 +19,7 @@ public class ReCoreSponge {
 
     public static ReCoreSpongePlatform PLATFORM;
 
-    @Listener
-    public void onServerStart(StartingEngineEvent<Server> event) {
+    public ReCoreSponge() {
         logger.info("Loading libraries");
         DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
@@ -30,6 +29,10 @@ public class ReCoreSponge {
         } catch (Exception e) {
             logger.error("Error while loading dependencies", e);
         }
+    }
+
+    @Listener
+    public void onServerStart(StartingEngineEvent<Server> event) {
         PLATFORM = new ReCoreSpongePlatform(libraryLoader);
     }
 
