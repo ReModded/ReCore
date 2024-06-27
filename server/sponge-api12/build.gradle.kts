@@ -6,7 +6,7 @@ import org.spongepowered.gradle.vanilla.repository.MinecraftPlatform
 import org.spongepowered.plugin.metadata.model.PluginDependency
 
 plugins {
-    id("org.spongepowered.gradle.plugin") version "2.2.0"
+    id("org.spongepowered.gradle.plugin") version "2.2.1-SNAPSHOT"
     id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
 }
 
