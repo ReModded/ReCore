@@ -87,13 +87,13 @@ subprojects {
 
             dependencies {
                 include {
-                    return@include includeInJar(it)
+                    includeInJar(it)
                 }
             }
 
-            relocate("org.apache", "lib.org.apache")
-            relocate("org.eclipse", "lib.org.eclipse")
-            relocate("org.codehaus", "lib.org.codehaus")
+//            relocate("org.apache", "lib.org.apache")
+//            relocate("org.eclipse", "lib.org.eclipse")
+//            relocate("org.codehaus", "lib.org.codehaus")
 
             if (isBuildTarget())
                 destinationDirectory.set(rootProject.layout.buildDirectory.get().dir("libs"))
