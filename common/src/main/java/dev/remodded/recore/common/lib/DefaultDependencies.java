@@ -9,6 +9,7 @@ public class DefaultDependencies {
             "org.jetbrains.kotlin:kotlin-stdlib:2.0.0",
             "org.spongepowered:configurate-hocon:4.1.2",
             "org.spongepowered:configurate-extra-kotlin:4.1.2",
+            "com.google.code.gson:gson:2.11.0",
             "com.zaxxer:HikariCP:5.1.0",
             "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9"
     ));

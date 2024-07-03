@@ -17,6 +17,9 @@ dependencies {
     api("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
     api("org.mariadb.jdbc:mariadb-java-client:2.1.2")
 
+    // Gson library
+    api("com.google.code.gson:gson:2.11.0")
+
     // Brigadier library
     api("com.mojang:brigadier:1.2.9")
 }
