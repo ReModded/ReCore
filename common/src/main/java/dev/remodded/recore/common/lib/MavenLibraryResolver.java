@@ -6,6 +6,7 @@ import dev.remodded.recore.api.lib.LibraryStore;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
@@ -118,7 +119,16 @@ public class MavenLibraryResolver implements ClassPathLibrary {
 
         DependencyResult result;
         try {
-            result = this.repository.resolveDependencies(this.session, new DependencyRequest(new CollectRequest((Dependency) null, this.dependencies, repos), null));
+            result = this.repository.resolveDependencies(this.session, new DependencyRequest(new CollectRequest((Dependency) null, this.dependencies, repos), (node, parents) -> {
+                Artifact artifact = node.getArtifact();
+                boolean accept = artifact == null || !artifact.getGroupId().contains("io.netty") || artifact.getArtifactId().contains("kqueue") ;
+
+                if (!accept) {
+                    logger.debug("Ignoring {} as it is incompatible", node.getArtifact());
+                }
+
+                return accept;
+            }));
         } catch (DependencyResolutionException ex) {
             throw new LibraryLoadingException("Error resolving libraries", ex);
         }
