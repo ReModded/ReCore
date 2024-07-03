@@ -1,6 +1,6 @@
 package dev.remodded.recore.api.messaging
 
-enum class MessagingService {
+enum class MessagingChannelType {
     CHANNELS,
     REDIS,
     POSTGRES,

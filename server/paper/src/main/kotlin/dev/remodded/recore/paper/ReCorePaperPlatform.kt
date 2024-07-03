@@ -8,6 +8,7 @@ import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.common.Constants
 import dev.remodded.recore.common.ReCoreImpl
 import dev.remodded.recore.paper.command.PaperCommandManager
+import dev.remodded.recore.paper.messaging.channel.PaperChannelMessagingManager
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -24,6 +25,9 @@ class ReCorePaperPlatform(
     }
 
     override val commandManager = PaperCommandManager()
+
+    override fun createChannelMessagingManager() = PaperChannelMessagingManager()
+
     override val platformInfo = PlatformInfo(
         Platform.PAPER,
         server.name,

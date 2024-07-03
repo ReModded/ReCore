@@ -6,6 +6,8 @@ import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.command.CommandManager
 import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
+import dev.remodded.recore.api.messaging.MessagingChannelType
+import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.common.command.ReCoreCommand
@@ -14,6 +16,7 @@ import dev.remodded.recore.common.config.ReCoreConfig
 import dev.remodded.recore.common.database.MariaDBProvider
 import dev.remodded.recore.common.database.MySQLProvider
 import dev.remodded.recore.common.database.PostgreSQLProvider
+import dev.remodded.recore.common.messaging.redis.RedisMessagingManager
 import dev.remodded.recore.common.plugins.CommonPluginsManager
 import org.slf4j.LoggerFactory
 
@@ -27,6 +30,7 @@ class ReCoreImpl (
     override val commandManager: CommandManager get() = platform.commandManager
 
     override val pluginsManager: PluginsManager
+    override val messagingManager: MessagingManager
 
 
     init {
@@ -36,6 +40,7 @@ class ReCoreImpl (
         databaseProvider = initDatabase()
 
         pluginsManager = CommonPluginsManager()
+        messagingManager = initMessagingManager()
     }
 
     fun init() {
@@ -101,6 +106,15 @@ class ReCoreImpl (
             DatabaseType.MYSQL -> MySQLProvider(dbConfig)
             DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
         }
+    }
+
+    private fun initMessagingManager(): MessagingManager{
+        val messagingService = config.messagingService
+       return when (messagingService) {
+            MessagingChannelType.CHANNELS -> platform.createChannelMessagingManager()
+            MessagingChannelType.REDIS -> RedisMessagingManager(config.redis)
+            MessagingChannelType.POSTGRES -> TODO()
+       }
     }
 
     private fun registerCommands() {
