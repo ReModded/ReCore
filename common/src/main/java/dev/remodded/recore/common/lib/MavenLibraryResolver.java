@@ -20,7 +20,6 @@ import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transfer.AbstractTransferListener;
-import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +65,6 @@ public class MavenLibraryResolver implements ClassPathLibrary {
      * It is hence crucial that plugins which aim to use this api register all required repositories before
      */
     public MavenLibraryResolver() {
-        // Test
         DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
         locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
@@ -78,7 +76,7 @@ public class MavenLibraryResolver implements ClassPathLibrary {
         this.session.setLocalRepositoryManager(this.repository.newLocalRepositoryManager(this.session, new LocalRepository("libraries")));
         this.session.setTransferListener(new AbstractTransferListener() {
             @Override
-            public void transferInitiated(@NotNull TransferEvent event) throws TransferCancelledException {
+            public void transferInitiated(@NotNull TransferEvent event) {
                 logger.info("Downloading {}", event.getResource().getRepositoryUrl() + event.getResource().getResourceName());
             }
         });

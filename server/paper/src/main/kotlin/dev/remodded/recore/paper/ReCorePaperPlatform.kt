@@ -4,7 +4,8 @@ import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
-import dev.remodded.recore.common.PluginInfo
+import dev.remodded.recore.api.plugins.PluginInfo
+import dev.remodded.recore.common.Constants
 import dev.remodded.recore.common.ReCoreImpl
 import dev.remodded.recore.paper.command.PaperCommandManager
 import org.bukkit.Bukkit
@@ -13,6 +14,14 @@ import org.bukkit.plugin.java.JavaPlugin
 class ReCorePaperPlatform(
     override val libraryLoader: LibraryLoader
 ) : JavaPlugin(), ReCorePlatform {
+
+    companion object {
+        lateinit var INSTANCE: ReCorePaperPlatform
+    }
+
+    init {
+        INSTANCE = this
+    }
 
     override val commandManager = PaperCommandManager()
     override val platformInfo = PlatformInfo(
@@ -24,7 +33,15 @@ class ReCorePaperPlatform(
     )
 
     override fun onEnable() {
-        PluginInfo.mainInstance = this
         ReCoreImpl.init(this)
+    }
+
+    override fun getPluginInfo(): PluginInfo {
+        return PluginInfo(
+            Constants.ID,
+            Constants.NAME,
+            Constants.VERSION,
+            this,
+        )
     }
 }

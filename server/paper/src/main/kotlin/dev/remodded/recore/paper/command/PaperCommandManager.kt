@@ -9,10 +9,12 @@ import com.mojang.brigadier.context.ParsedArgument
 import com.mojang.brigadier.tree.ArgumentCommandNode
 import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
-import dev.remodded.recore.api.PluginInfo
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
+import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.common.command.CommonCommandManager
+import dev.remodded.recore.api.utils.getFieldAccess
+import dev.remodded.recore.paper.ReCorePaperPlatform
 import dev.remodded.recore.paper.command.source.PaperCommandSender
 import dev.remodded.recore.paper.command.source.PaperCommandSourceStack
 import dev.remodded.recore.paper.entity.PaperEntity
@@ -20,16 +22,16 @@ import dev.remodded.recore.paper.world.PaperLocation
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 
 
+@Suppress("UnstableApiUsage")
 class PaperCommandManager : CommonCommandManager() {
 
     override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
         val originalCmd = command.build()
         val cmd = wrapCommand(originalCmd) as LiteralCommandNode<CommandSourceStack>
         PaperCommands.INSTANCE.setValid()
-        PaperCommands.INSTANCE.setCurrentContext(pluginInfo.mainInstance as JavaPlugin)
+        PaperCommands.INSTANCE.setCurrentContext(pluginInfo.mainInstance as ReCorePaperPlatform)
         PaperCommands.INSTANCE.register(cmd, aliases.toList())
     }
 
@@ -85,7 +87,7 @@ class PaperCommandManager : CommonCommandManager() {
         private fun mapCommandCtx(native: CommandContext<CommandSourceStack>): CommandContext<CommandSrcStack> {
             val source = mapCommandSourceStack(native.source)
             @Suppress("UNCHECKED_CAST")
-            val arguments = CommandContext::class.java.getDeclaredField("arguments").apply { isAccessible = true }.get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
+            val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
             @Suppress("UNCHECKED_CAST")
             return CommandContextBuilder(null, source, native.rootNode as CommandNode<CommandSrcStack>, native.range.start)
                 .apply {

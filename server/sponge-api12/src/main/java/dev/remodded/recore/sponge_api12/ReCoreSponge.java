@@ -1,25 +1,37 @@
 package dev.remodded.recore.sponge_api12;
 
+import com.google.inject.Inject;
 import dev.remodded.recore.api.lib.LibraryLoader;
+import dev.remodded.recore.api.plugins.PluginInfo;
+import dev.remodded.recore.api.plugins.ReCorePlugin;
+import dev.remodded.recore.common.Constants;
 import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
+import org.spongepowered.plugin.PluginContainer;
 
 import java.lang.reflect.Field;
 
-public class ReCoreSponge {
+public class ReCoreSponge implements ReCorePlugin {
     private final Logger logger = LoggerFactory.getLogger("ReCoreSpongeBootstrapper");
     private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClassLoader());
 
     public static ReCoreSpongePlatform PLATFORM;
+    public static ReCoreSponge INSTANCE;
+
+    @Inject
+    public PluginContainer plugin;
 
     public ReCoreSponge() {
+        INSTANCE = this;
+
         logger.info("Loading libraries");
         DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
@@ -48,5 +60,16 @@ public class ReCoreSponge {
         } catch (Exception e) {
             throw new RuntimeException("Failed to get classloader", e);
         }
+    }
+
+    @NotNull
+    @Override
+    public PluginInfo getPluginInfo() {
+        return new  PluginInfo(
+            Constants.ID,
+            Constants.NAME,
+            Constants.VERSION,
+            this
+        );
     }
 }

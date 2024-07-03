@@ -1,6 +1,6 @@
 package dev.remodded.recore.common.command
 
-import dev.remodded.recore.api.PluginInfo
+import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.command.CommandManager
 
 abstract class CommonCommandManager : CommandManager {

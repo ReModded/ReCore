@@ -1,7 +1,7 @@
 package dev.remodded.recore.sponge_api12.command
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import dev.remodded.recore.api.PluginInfo
+import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.common.command.CommonCommandManager
@@ -22,7 +22,7 @@ class ReCoreSpongeCommandManager : CommonCommandManager() {
         it.get() as BrigadierCommandRegistrar
     }
 
-    override fun registerCommand(plugin: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
+    override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
         @Suppress("UNCHECKED_CAST")
         registrar.register(null, command as LiteralArgumentBuilder<CommandSourceStack>, *aliases)
     }

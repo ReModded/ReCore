@@ -7,13 +7,12 @@ import dev.remodded.recore.api.command.CommandUtils.literal
 import dev.remodded.recore.api.command.arguments.EnumArgumentType
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.common.Constants
-import dev.remodded.recore.common.PluginInfo
 
 object ReCoreCommand {
     fun register() {
         val manager = ReCoreAPI.INSTANCE.commandManager
 
-        manager.registerCommand(PluginInfo, command(), "rc")
+        manager.registerCommand(ReCoreAPI.INSTANCE.platform.getPluginInfo(), command(), "rc")
     }
 
     private fun command() =

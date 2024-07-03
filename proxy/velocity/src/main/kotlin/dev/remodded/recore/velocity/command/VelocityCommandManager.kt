@@ -12,14 +12,15 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.velocitypowered.api.command.BrigadierCommand
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.ProxyServer
-import dev.remodded.recore.api.PluginInfo
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
+import dev.remodded.recore.api.plugins.PluginInfo
+import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
 
 class VelocityCommandManager(private val server: ProxyServer) : CommonCommandManager() {
 
-    override fun registerCommand(plugin: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
+    override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
         val cmd = BrigadierCommand(wrapCommand(command.build()) as LiteralCommandNode<CommandSource>)
         server.commandManager.register(command.literal, cmd, *aliases)
     }
@@ -72,7 +73,7 @@ class VelocityCommandManager(private val server: ProxyServer) : CommonCommandMan
         private fun mapCommandCtx(native: CommandContext<CommandSource>): CommandContext<CommandSrcStack> {
             val source = mapCommandSourceStack(native.source)
             @Suppress("UNCHECKED_CAST")
-            val arguments = CommandContext::class.java.getDeclaredField("arguments").apply { isAccessible = true }.get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
+            val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
             @Suppress("UNCHECKED_CAST")
             return CommandContextBuilder(null, source, native.rootNode as CommandNode<CommandSrcStack>, native.range.start)
                 .apply {

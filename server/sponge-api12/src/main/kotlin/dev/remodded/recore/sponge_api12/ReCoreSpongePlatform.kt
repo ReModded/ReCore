@@ -19,6 +19,8 @@ class ReCoreSpongePlatform(
         ReCoreImpl.init(this)
     }
 
+    override fun getPluginInfo() = ReCoreSponge.INSTANCE.getPluginInfo()
+
     companion object {
         private fun getPlatformInfo(): PlatformInfo {
             val serverPlatform = Sponge.platform()

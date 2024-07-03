@@ -7,11 +7,14 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.remodded.recore.api.lib.LibraryLoader;
+import dev.remodded.recore.api.plugins.PluginInfo;
+import dev.remodded.recore.api.plugins.ReCorePlugin;
 import dev.remodded.recore.common.Constants;
 import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,20 +28,23 @@ import java.nio.file.Path;
         description = Constants.DESCRIPTION,
         authors = {Constants.AUTHOR}
 )
-public class ReCoreVelocity {
-    Logger logger = LoggerFactory.getLogger("ReCoreVelocityBootstrapper");
-    LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
+public class ReCoreVelocity implements ReCorePlugin {
+    private final Logger logger = LoggerFactory.getLogger("ReCoreVelocityBootstrapper");
+    private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
+
     @Inject
-    private ProxyServer server;
+    private ProxyServer proxy;
 
     @Inject
     @DataDirectory
     private Path dataFolder;
 
+    public static ReCoreVelocity INSTANCE;
     public static ReCoreVelocityPlatform PLATFORM;
 
     @Subscribe
     void onProxyInit(ProxyInitializeEvent event) {
+        INSTANCE = this;
         logger.info("Loading libraries");
         DefaultDependencies.getDependencies().forEach(dependency -> libraryLoader.addLibrary(new Dependency(new DefaultArtifact(dependency), null)));
 
@@ -49,7 +55,21 @@ public class ReCoreVelocity {
             logger.error("Error while loading dependencies", e);
         }
 
-        PLATFORM = new ReCoreVelocityPlatform(server, libraryLoader, dataFolder.getParent());
+        PLATFORM = new ReCoreVelocityPlatform(proxy, libraryLoader, dataFolder.getParent());
     }
 
+    public ProxyServer getProxy() {
+        return proxy;
+    }
+
+    @NotNull
+    @Override
+    public PluginInfo getPluginInfo() {
+        return new PluginInfo(
+            Constants.ID,
+            Constants.NAME,
+            Constants.VERSION,
+            this
+        );
+    }
 }

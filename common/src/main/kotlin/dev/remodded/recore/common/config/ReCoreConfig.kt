@@ -1,7 +1,7 @@
 package dev.remodded.recore.common.config
 
 import dev.remodded.recore.api.config.DatabaseType
-import dev.remodded.recore.api.messaging.MessagingService
+import dev.remodded.recore.api.messaging.MessagingChannelType
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 
@@ -22,7 +22,7 @@ POSTGRES - use postgres as messaging service. When using this option you must pr
 details to postgresql database.
     """
     )
-    val messagingService: MessagingService = MessagingService.CHANNELS
+    val messagingService: MessagingChannelType = MessagingChannelType.CHANNELS
 
     @Comment("Database connection details")
     val database = DatabaseConnectionConfig()
@@ -44,6 +44,13 @@ class RedisConnection {
 
     @Comment("Redis password")
     val password: String? = null
+
+    @Comment("Redis messages codec (default: BINARY, valid options: \"JSON\", \"BINARY\")")
+    val codec: Codec = Codec.BINARY
+
+    enum class Codec {
+        JSON, BINARY
+    }
 }
 
 @ConfigSerializable
