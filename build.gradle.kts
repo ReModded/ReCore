@@ -36,7 +36,7 @@ subprojects {
     version = props["version"]!!
     description = props["description"]!!
 
-    val dokkaOutputDir = "${project.layout.buildDirectory}/dokka"
+    val dokkaOutputDir = project.layout.buildDirectory.get().dir("dokka")
 
     val javadocJar by tasks.registering(Jar::class) {
         dependsOn(tasks.dokkaHtml)
