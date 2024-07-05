@@ -117,6 +117,7 @@ subprojects {
 
                 afterEvaluate {
                     from(components["java"])
+                    groupId = props["group"] + "." + props["name"]
                     artifactId = props["name"] + "-" + project.getProjectSuffix()
                     artifact(javadocJar.get())
                     artifact(sourceJar.get())
