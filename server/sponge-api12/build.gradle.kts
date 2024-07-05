@@ -38,16 +38,16 @@ sponge {
         name(PluginLoaders.JAVA_PLAIN)
         version("1.0")
     }
-    plugin(props["id"]) {
-        displayName(props["name"])
-        entrypoint(props["entry_point"])
-        description(props["description"])
+    plugin(props.id) {
+        displayName(props.name)
+        entrypoint(props.entryPoint)
+        description(props.description)
         links {
-            homepage(props["url"])
-            source(props["src_url"])
-            issues(props["issues_url"])
+            homepage(props.url)
+            source(props.urlSrc)
+            issues(props.urlIssues)
         }
-        contributor(props["author"]) {}
+        contributor(props.author) {}
         dependency("spongeapi") {
             loadOrder(PluginDependency.LoadOrder.AFTER)
             optional(false)

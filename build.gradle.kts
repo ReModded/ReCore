@@ -32,9 +32,9 @@ subprojects {
 
     val props = getPluginProps()
 
-    group = props["group"]!!
-    version = props["version"]!!
-    description = props["description"]!!
+    group = props.group
+    version = props.version
+    description = props.description
 
     val dokkaOutputDir = project.layout.buildDirectory.get().dir("dokka")
 
@@ -42,14 +42,14 @@ subprojects {
         dependsOn(tasks.dokkaHtml)
         archiveClassifier.set("javadoc")
         archiveAppendix.set(project.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
-        archiveBaseName.set(props["name"])
+        archiveBaseName.set(props.name)
         from(dokkaOutputDir)
     }
 
     val sourceJar by tasks.registering(Jar::class) {
         archiveClassifier.set("sources")
         archiveAppendix.set(project.getProjectSuffix())
-        archiveBaseName.set(props["name"])
+        archiveBaseName.set(props.name)
         from(sourceSets.main.get().allSource)
     }
 
@@ -62,6 +62,7 @@ subprojects {
             jvmToolchain(21)
         }
 
+        @Suppress("UnstableApiUsage")
         java {
             sourceCompatibility = JavaVersion.VERSION_21
             targetCompatibility = JavaVersion.VERSION_21
@@ -83,7 +84,7 @@ subprojects {
             }
             archiveClassifier.set("")
             archiveAppendix.set(project.getProjectSuffix())
-            archiveBaseName.set(props["name"])
+            archiveBaseName.set(props.name)
 
             dependencies {
                 include {
@@ -117,8 +118,8 @@ subprojects {
 
                 afterEvaluate {
                     from(components["java"])
-                    groupId = props["group"] + "." + props["name"]
-                    artifactId = props["name"] + "-" + project.getProjectSuffix()
+                    groupId = props.group + "." + props.name
+                    artifactId = props.name + "-" + project.getProjectSuffix()
                     artifact(javadocJar.get())
                     artifact(sourceJar.get())
                 }
