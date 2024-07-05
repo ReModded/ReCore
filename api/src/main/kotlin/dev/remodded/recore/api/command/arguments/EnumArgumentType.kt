@@ -10,15 +10,14 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import java.util.concurrent.CompletableFuture
-import java.util.function.Supplier
 
 class EnumArgumentType<T: Enum<T>>(
-    private val supplier: Supplier<Array<T>>
+    private val enumValues: Iterable<T>
 ) : SuggestionProvider<CommandSrcStack> {
 
     override fun getSuggestions(context: CommandContext<CommandSrcStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         val buildFuture = builder.apply {
-            for (value in supplier.get())
+            for (value in enumValues)
                 if (value.name.startsWith(builder.remaining, ignoreCase = true))
                     suggest(value.name)
         }.buildFuture()
@@ -36,7 +35,15 @@ class EnumArgumentType<T: Enum<T>>(
 
         @JvmStatic
         inline fun <reified T: Enum<T>> enum(): EnumArgumentType<T> {
-            return EnumArgumentType { enumValues<T>() }
+            return EnumArgumentType(enumValues<T>().asIterable())
+        }
+
+        fun <T: Enum<T>> enum(values: Iterable<T>): EnumArgumentType<T> {
+            return EnumArgumentType(values)
+        }
+
+        fun <T: Enum<T>> enum(vararg values: T): EnumArgumentType<T> {
+            return EnumArgumentType(values.asIterable())
         }
 
         @JvmStatic
