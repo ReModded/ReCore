@@ -144,6 +144,12 @@ tasks {
         }
     }
 
+    clean {
+        subprojects.forEach { p ->
+            dependsOn(p.tasks.clean)
+        }
+    }
+
     test {
         useJUnitPlatform()
     }
