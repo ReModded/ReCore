@@ -18,7 +18,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
-rootProject.name = "ReCore"
+rootProject.name = settings.ext["\$name"] as String
 
 val modules = arrayListOf(
     "api",
