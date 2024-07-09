@@ -7,6 +7,7 @@ import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 plugins {
     id("io.papermc.paperweight.userdev") version "1.7.1"
     id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "1.1.1"
 }
 
 markAsBuildTarget()
@@ -27,26 +28,17 @@ tasks {
     runServer {
         minecraftVersion("1.21")
     }
-
-    // Configure reobfJar to run when invoking the build task
-    processResources {
-        val props = getPluginProps()
-        filteringCharset = Charsets.UTF_8.name()
-        filter {
-            var replaced = it
-            props.forEach { (key, value) ->
-                replaced = replaced.replace("@$key@", value)
-            }
-            return@filter replaced
-        }
-    }
 }
 
-//paperPluginYaml {
-//    val props = getPluginProps()
-//
-//    main.set(props["entry_point"] + "Platform")
-//    bootstrapper = props["root_package"] + ".ReCoreBootstrapper"
-//    authors.add(props["author"] ?: "ReModded Team")
-//    apiVersion.set("1.20.6")
-//}
+paperPluginYaml {
+    val props = getPluginProps()
+
+    name.set(props.name)
+    version.set(props.version)
+    description.set(props.description)
+    authors.add(props.author)
+
+    apiVersion.set("1.21")
+    main.set("${props.entryPoint}Platform")
+    bootstrapper = "${props.entryPoint}Bootstrapper"
+}

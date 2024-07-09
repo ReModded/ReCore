@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"unused", "UnstableApiUsage"})
-public class ReCoreBootstrapper implements PluginBootstrap {
+public class ReCorePaperBootstrapper implements PluginBootstrap {
     private final Logger logger = LoggerFactory.getLogger("ReCorePaperBootstrapper");
     private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader().getParent());
 

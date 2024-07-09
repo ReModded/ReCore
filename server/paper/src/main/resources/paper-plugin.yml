@@ -1,9 +1,0 @@
-#file: noinspection YAMLSchemaValidation
-name: "@name@"
-version: "@version@"
-main: "@entry_point@Platform"
-bootstrapper: "dev.remodded.recore.paper.ReCoreBootstrapper"
-description: "@description@"
-load: STARTUP
-author: "@author@"
-api-version: "1.20"
