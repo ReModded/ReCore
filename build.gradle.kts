@@ -1,3 +1,4 @@
+
 import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import dev.remodded.regradle.*
 import org.jetbrains.dokka.gradle.DokkaPlugin
@@ -9,7 +10,7 @@ plugins {
     `maven-publish`
     id("org.jetbrains.dokka") version "1.9.20"
     id("io.github.goooler.shadow") version "8.1.7"
-    id("dev.remodded.regradle") version "1.0.0-SNAPSHOT" apply false
+    id("dev.remodded.regradle") version "1.0.0-SNAPSHOT"
 }
 
 repositories {
@@ -18,10 +19,6 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-}
-
-tasks.withType<Jar> {
-    enabled = false
 }
 
 subprojects {
@@ -87,14 +84,8 @@ subprojects {
             archiveBaseName.set(props.name)
 
             dependencies {
-                include {
-                    includeInJar(it)
-                }
+                include(project::includeInJar)
             }
-
-//            relocate("org.apache", "lib.org.apache")
-//            relocate("org.eclipse", "lib.org.eclipse")
-//            relocate("org.codehaus", "lib.org.codehaus")
 
             if (isBuildTarget())
                 destinationDirectory.set(rootProject.layout.buildDirectory.get().dir("libs"))
@@ -138,28 +129,13 @@ subprojects {
     }
 }
 
+afterEvaluate {
+    tasks.build.get().setDependsOn(subprojects.map { it.tasks.build })
+    tasks.clean.get().setDependsOn(subprojects.map { it.tasks.clean })
+}
+
 tasks {
-    build {
-        subprojects.forEach { p ->
-            dependsOn(p.tasks.build)
-        }
-    }
-
-    clean {
-        subprojects.forEach { p ->
-            dependsOn(p.tasks.clean)
-        }
-    }
-
     test {
         useJUnitPlatform()
-    }
-
-    shadowJar {
-        enabled = false
-    }
-
-    startShadowScripts {
-        enabled = false
     }
 }

@@ -1,7 +1,3 @@
-import dev.remodded.regradle.ReGradlePlugin
-
-apply<ReGradlePlugin>()
-
 repositories {}
 
 dependencies {
