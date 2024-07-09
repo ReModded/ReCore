@@ -12,9 +12,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.plugins.PluginInfo
-import dev.remodded.recore.common.command.CommonCommandManager
 import dev.remodded.recore.api.utils.getFieldAccess
-import dev.remodded.recore.paper.ReCorePaperPlatform
+import dev.remodded.recore.common.command.CommonCommandManager
 import dev.remodded.recore.paper.command.source.PaperCommandSender
 import dev.remodded.recore.paper.command.source.PaperCommandSourceStack
 import dev.remodded.recore.paper.entity.PaperEntity
@@ -22,6 +21,7 @@ import dev.remodded.recore.paper.world.PaperLocation
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 
 
 @Suppress("UnstableApiUsage")
@@ -31,7 +31,7 @@ class PaperCommandManager : CommonCommandManager() {
         val originalCmd = command.build()
         val cmd = wrapCommand(originalCmd) as LiteralCommandNode<CommandSourceStack>
         PaperCommands.INSTANCE.setValid()
-        PaperCommands.INSTANCE.setCurrentContext(pluginInfo.mainInstance as ReCorePaperPlatform)
+        PaperCommands.INSTANCE.setCurrentContext(pluginInfo.mainInstance as Plugin)
         PaperCommands.INSTANCE.register(cmd, aliases.toList())
     }
 
