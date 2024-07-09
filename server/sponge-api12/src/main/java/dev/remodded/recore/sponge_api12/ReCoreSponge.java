@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
 import org.spongepowered.plugin.PluginContainer;
 
@@ -43,7 +44,7 @@ public class ReCoreSponge implements ReCorePlugin {
         }
     }
 
-    @Listener
+    @Listener(order = Order.PRE)
     public void onServerStart(StartingEngineEvent<Server> event) {
         PLATFORM = new ReCoreSpongePlatform(libraryLoader);
     }
