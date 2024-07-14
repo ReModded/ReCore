@@ -1,6 +1,7 @@
 package dev.remodded.recore.common.config
 
 import dev.remodded.recore.api.config.ConfigManager
+import dev.remodded.recore.common.Constants
 import io.leangen.geantyref.TypeToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,14 +26,14 @@ class DefaultConfigManager<T>(
     private val configDirectory: Path,
     configClass: Class<T>
 ) : ConfigManager<T> {
-    
+
     companion object {
         inline operator fun <reified T> invoke(configPath: Path): ConfigManager<T> {
             return DefaultConfigManager(configPath, T::class.java)
         }
     }
 
-    private val logger: Logger = LoggerFactory.getLogger("ReCore")
+    private val logger: Logger = LoggerFactory.getLogger(Constants.NAME)
     private val configToken: TypeToken<T> = TypeToken.get(configClass)
     private val configProvider: ()->T = { configClass.getDeclaredConstructor().newInstance() }
 

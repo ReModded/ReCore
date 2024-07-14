@@ -51,7 +51,7 @@ import java.util.List;
  */
 public class MavenLibraryResolver implements ClassPathLibrary {
 
-    private static final Logger logger = LoggerFactory.getLogger("MavenLibraryResolver");
+    private static final Logger logger = LoggerFactory.getLogger(MavenLibraryResolver.class);
 
     private final RepositorySystem repository;
     private final DefaultRepositorySystemSession session;

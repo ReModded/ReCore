@@ -52,7 +52,7 @@ class ReCoreImpl (
 
 
     companion object {
-        private val logger = LoggerFactory.getLogger("ReCore")
+        private val logger = LoggerFactory.getLogger(Constants.NAME)
 
         fun init(platform: ReCorePlatform) {
             logger.info("ReCore Initializing")

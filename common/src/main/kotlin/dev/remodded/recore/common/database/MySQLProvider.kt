@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
+import dev.remodded.recore.common.Constants
 import dev.remodded.recore.common.config.DatabaseConnectionConfig
 import org.slf4j.LoggerFactory
 
@@ -18,7 +19,7 @@ class MySQLProvider(
     private val databaseConnectionConfig: DatabaseConnectionConfig
 ) : DatabaseProvider {
 
-    private val logger = LoggerFactory.getLogger("ReCore")
+    private val logger = LoggerFactory.getLogger(Constants.NAME)
     private val dataSource: HikariDataSource
 
     init {
