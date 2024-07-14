@@ -24,7 +24,7 @@ class ReCoreImpl (
     override val platform: ReCorePlatform,
 ) : ReCore {
 
-    private val config: ReCoreConfig
+    val config: ReCoreConfig
     override val databaseProvider: DatabaseProvider
 
     override val commandManager: CommandManager get() = platform.commandManager
@@ -52,6 +52,9 @@ class ReCoreImpl (
 
 
     companion object {
+        @JvmStatic
+        lateinit var INSTANCE: ReCoreImpl
+
         private val logger = LoggerFactory.getLogger(Constants.NAME)
 
         fun init(platform: ReCorePlatform) {
@@ -112,7 +115,7 @@ class ReCoreImpl (
         val messagingService = config.messagingService
        return when (messagingService) {
             MessagingChannelType.CHANNELS -> platform.createChannelMessagingManager()
-            MessagingChannelType.REDIS -> RedisMessagingManager(config.redis)
+            MessagingChannelType.REDIS -> RedisMessagingManager()
             MessagingChannelType.POSTGRES -> TODO()
        }
     }
