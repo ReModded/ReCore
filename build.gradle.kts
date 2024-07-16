@@ -108,9 +108,10 @@ subprojects {
                 val password: String? by project
 
                 afterEvaluate {
-                    from(components["java"])
                     groupId = props.group + "." + props.id
                     artifactId = props.name + "-" + project.getProjectSuffix()
+
+                    from(components["java"])
                     artifact(javadocJar.get())
                     artifact(sourceJar.get())
                 }
