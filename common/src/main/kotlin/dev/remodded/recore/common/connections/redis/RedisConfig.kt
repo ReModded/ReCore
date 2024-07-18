@@ -5,6 +5,9 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
 class RedisConfig {
+    @Comment("Enable Redis connection")
+    val enabled = false
+
     @Comment("Redis instance host or ip address")
     val hostname = "localhost"
 

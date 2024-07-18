@@ -8,8 +8,22 @@ import org.redisson.codec.Kryo5Codec
 import org.redisson.config.Config
 
 object Redis {
-    val client: RedissonClient by lazy {
+    val client: RedissonClient get() {
+        if (!::_client.isInitialized)
+            throw IllegalStateException("Redis has not been initialized yet")
+        return _client
+    }
+
+    private lateinit var _client: RedissonClient
+
+    internal fun init() {
+        if (::_client.isInitialized)
+            return
+
         val cfg = ReCoreImpl.INSTANCE.config.redis
+
+        if (!cfg.enabled)
+            throw RuntimeException("Redis cannot be initialized due to not being enabled.")
 
         val config = Config()
         config.codec = when (cfg.codec) {
@@ -23,6 +37,6 @@ object Redis {
         if (cfg.password != null)
             serverConfig.password = cfg.password
 
-        Redisson.create(config)
+        _client = Redisson.create(config)
     }
 }

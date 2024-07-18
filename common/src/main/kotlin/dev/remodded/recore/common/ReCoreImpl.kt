@@ -60,7 +60,10 @@ class ReCoreImpl (
         fun init(platform: ReCorePlatform) {
             logger.info("ReCore Initializing")
             val instance = ReCoreImpl(platform)
+
+            INSTANCE = instance
             ReCoreAPI.INSTANCE = instance
+
             instance.init()
         }
     }

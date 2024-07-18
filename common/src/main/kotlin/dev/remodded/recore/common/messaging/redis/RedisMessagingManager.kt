@@ -6,6 +6,10 @@ import dev.remodded.recore.common.connections.redis.Redis
 import dev.remodded.recore.common.messaging.CommonMessagingManager
 
 class RedisMessagingManager : CommonMessagingManager() {
+    init {
+        Redis.init()
+    }
+
     override val type = MessagingChannelType.REDIS
 
     override fun <T> createChannel(channel: String, clazz: Class<T>): MessageChannel<T> {
