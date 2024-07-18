@@ -3,6 +3,8 @@ package dev.remodded.recore.common
 import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.ReCoreAPI
 import dev.remodded.recore.api.ReCorePlatform
+import dev.remodded.recore.api.cache.CacheProvider
+import dev.remodded.recore.api.cache.CacheType
 import dev.remodded.recore.api.command.CommandManager
 import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
@@ -10,6 +12,8 @@ import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
+import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
+import dev.remodded.recore.common.cache.redis.RedisCacheProvider
 import dev.remodded.recore.common.command.ReCoreCommand
 import dev.remodded.recore.common.config.DefaultConfigManager
 import dev.remodded.recore.common.config.ReCoreConfig
@@ -25,6 +29,8 @@ class ReCoreImpl (
 ) : ReCore {
 
     val config: ReCoreConfig
+
+    override val cacheProvider: CacheProvider
     override val databaseProvider: DatabaseProvider
 
     override val commandManager: CommandManager get() = platform.commandManager
@@ -37,7 +43,9 @@ class ReCoreImpl (
         printPlatformInfo()
 
         config = loadConfig()
+
         databaseProvider = initDatabase()
+        cacheProvider = initCache()
 
         pluginsManager = CommonPluginsManager()
         messagingManager = initMessagingManager()
@@ -111,6 +119,14 @@ class ReCoreImpl (
             DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
             DatabaseType.MYSQL -> MySQLProvider(dbConfig)
             DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
+        }
+    }
+
+    private fun initCache(): CacheProvider {
+        val cache = config.cache
+        return when(cache.type) {
+            CacheType.REDIS -> RedisCacheProvider()
+            CacheType.DATABASE -> DatabaseCacheProvider()
         }
     }
 

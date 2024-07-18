@@ -1,5 +1,6 @@
 package dev.remodded.recore.api
 
+import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.command.CommandManager
 import dev.remodded.recore.api.config.ConfigManager
 import dev.remodded.recore.api.database.DatabaseProvider
@@ -18,8 +19,8 @@ interface ReCore {
     val pluginsManager: PluginsManager
 
 
+    val cacheProvider: CacheProvider
     val databaseProvider: DatabaseProvider
-
 
     fun <T>createConfigLoader(pluginInfo: PluginInfo, configClass: Class<T>): ConfigManager<T>
 }

@@ -2,6 +2,7 @@ package dev.remodded.recore.common.config
 
 import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.messaging.MessagingChannelType
+import dev.remodded.recore.common.cache.CacheConfig
 import dev.remodded.recore.common.connections.redis.RedisConfig
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
@@ -30,6 +31,9 @@ details to postgresql database.
 
     @Comment("Redis connection details")
     val redis = RedisConfig()
+
+    @Comment("Cache configuration")
+    val cache = CacheConfig()
 }
 
 @ConfigSerializable
