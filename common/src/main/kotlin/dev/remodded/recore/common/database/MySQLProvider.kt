@@ -33,6 +33,8 @@ class MySQLProvider(
             username = databaseConnectionConfig.username
             password = databaseConnectionConfig.password
             poolName = "ReCore"
+
+            maximumPoolSize = databaseConnectionConfig.maxConnectionPoolSize
         }
 
         dataSource = HikariDataSource(config)

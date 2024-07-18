@@ -41,6 +41,8 @@ abstract class AbstractDatabaseProvider(
             addDataSourceProperty("portNumber", databaseConnectionConfig.port)
             addDataSourceProperty("databaseName", databaseConnectionConfig.database)
             poolName = "ReCore"
+
+            maximumPoolSize = databaseConnectionConfig.maxConnectionPoolSize
         }
 
         dataSource = HikariDataSource(config)
