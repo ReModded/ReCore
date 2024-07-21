@@ -5,5 +5,5 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @ConfigSerializable
 class CacheConfig {
-    val type: CacheType = CacheType.REDIS
+    val type: CacheType = CacheType.DATABASE
 }
