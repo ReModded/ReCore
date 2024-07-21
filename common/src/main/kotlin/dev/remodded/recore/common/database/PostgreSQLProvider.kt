@@ -1,7 +1,6 @@
 package dev.remodded.recore.common.database
 
 import dev.remodded.recore.api.config.DatabaseType
-import dev.remodded.recore.common.config.DatabaseConnectionConfig
 
 /**
  * This class serves as the PostgreSQL database provider for the application.

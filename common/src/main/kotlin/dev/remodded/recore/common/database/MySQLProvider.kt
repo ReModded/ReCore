@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource
 import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.common.Constants
-import dev.remodded.recore.common.config.DatabaseConnectionConfig
 import org.slf4j.LoggerFactory
 
 /**
