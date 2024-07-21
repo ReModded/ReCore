@@ -21,17 +21,23 @@ class SpongeChannelMessageChannel<T>(private val manager: SpongeChannelMessaging
         val msg = JsonUtils.toJson(message)
         val connection = manager.proxyConnection
         if (connection != null) {
-            manager.channel.sendTo(manager.proxyConnection, SpongeChannelMessagePacket(channel, msg))
-                .thenAccept {
-//                    println("Message send successfully")
-                }
-                .exceptionally {
-                    println("Error sending message")
-                    it.printStackTrace()
-                    return@exceptionally null
-                }
+            try {
+                manager.channel.sendTo(manager.proxyConnection, SpongeChannelMessagePacket(channel, msg))
+                    .thenAccept {
+    //                    println("Message send successfully")
+                    }
+                    .exceptionally {
+                        println("Error sending message")
+                        it.printStackTrace()
+                        return@exceptionally null
+                    }
 
-            return true
+                return true
+            } catch (e: Exception) {
+                manager.proxyConnection = null
+                println("Error sending message")
+                e.printStackTrace()
+            }
         }
         return false
     }
