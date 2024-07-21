@@ -1,5 +1,6 @@
 package dev.remodded.recore.velocity.messaging.channel
 
+import com.velocitypowered.api.network.ProtocolVersion
 import com.velocitypowered.api.proxy.ServerConnection
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import com.velocitypowered.api.proxy.server.PingOptions
@@ -104,7 +105,7 @@ class VelocityChannelMessagingManager : CommonChannelMessagingManager() {
                 val connection = DummyVelocityServerConnection(
                     server,
                     ReCoreVelocity.INSTANCE.proxy as VelocityServer,
-                    ping.version.protocol
+                    ProtocolVersion.getProtocolVersion(ping.version.protocol),
                 )
                 serversConnections[server] = connection
                 connection.connect().thenAccept { _ ->

@@ -9,15 +9,17 @@ import com.velocitypowered.proxy.connection.backend.VelocityServerConnection
 import com.velocitypowered.proxy.connection.util.ConnectionRequestResults
 import com.velocitypowered.proxy.protocol.StateRegistry
 import com.velocitypowered.proxy.protocol.packet.*
+import com.velocitypowered.proxy.protocol.packet.config.FinishedUpdatePacket
 import com.velocitypowered.proxy.util.except.QuietRuntimeException
 import dev.remodded.recore.velocity.ReCoreVelocity
+import dev.remodded.recore.velocity.messaging.channel.VelocityChannelMessagingManager
 import io.netty.buffer.Unpooled
 import net.kyori.adventure.text.Component
 import java.util.concurrent.CompletableFuture
 
-class DummyLoginSessionHandler(
-    private var serverConn: VelocityServerConnection,
-    private var resultFuture: CompletableFuture<ConnectionRequestResults.Impl>
+class DummyConnectionHandler(
+    private val serverConn: VelocityServerConnection,
+    private val resultFuture: CompletableFuture<ConnectionRequestResults.Impl>
 ) : MinecraftSessionHandler {
 
     companion object {
@@ -27,8 +29,23 @@ class DummyLoginSessionHandler(
     private val server: VelocityServer = ReCoreVelocity.INSTANCE.proxy as VelocityServer
     private var informationForwarded = false
 
-    override fun handle(packet: EncryptionRequestPacket?): Boolean {
-        throw IllegalStateException("Backend server is online-mode!")
+    override fun handle(packet: KeepAlivePacket): Boolean {
+        serverConn.ensureConnected().write(packet)
+        return true
+    }
+
+    override fun handle(packet: PluginMessagePacket): Boolean {
+        VelocityChannelMessagingManager.INSTANCE.handleMessage(packet)
+        return true
+    }
+
+    override fun beforeHandle(): Boolean {
+        if (!serverConn.isActive) {
+            // Obsolete connection
+            serverConn.disconnect()
+            return true
+        }
+        return false
     }
 
     override fun handle(packet: LoginPluginMessagePacket): Boolean {
@@ -47,13 +64,10 @@ class DummyLoginSessionHandler(
                 player.protocolVersion,
                 player.gameProfile,
                 player.identifiedKey,
-                requestedForwardingVersion
+                requestedForwardingVersion,
             )
 
-            val response = LoginPluginResponsePacket(
-                packet.id, true, forwardingData
-            )
-            mc.write(response)
+            mc.write(LoginPluginResponsePacket(packet.id, true, forwardingData))
             informationForwarded = true
         } else {
             mc.write(LoginPluginResponsePacket(packet.id, false, Unpooled.EMPTY_BUFFER))
@@ -61,7 +75,7 @@ class DummyLoginSessionHandler(
         return true
     }
 
-    override fun handle(packet: DisconnectPacket?): Boolean {
+    override fun handle(packet: DisconnectPacket): Boolean {
         resultFuture.complete(ConnectionRequestResults.forDisconnect(packet, serverConn.server))
         serverConn.disconnect()
         return true
@@ -73,9 +87,7 @@ class DummyLoginSessionHandler(
     }
 
     override fun handle(packet: ServerLoginSuccessPacket): Boolean {
-        if (server.configuration.playerInfoForwardingMode == PlayerInfoForwarding.MODERN
-            && !informationForwarded
-        ) {
+        if (server.configuration.playerInfoForwardingMode == PlayerInfoForwarding.MODERN && !informationForwarded) {
             resultFuture.complete(
                 ConnectionRequestResults.forDisconnect(
                     MODERN_IP_FORWARDING_FAILURE,
@@ -89,27 +101,36 @@ class DummyLoginSessionHandler(
         // The player has been logged on to the backend server, but we're not done yet. There could be
         // other problems that could arise before we get a JoinGame packet from the server.
 
-        // Move into the PLAY phase.
+        // Move into the CONFIG phase.
         val smc = serverConn.ensureConnected()
-        if (smc.protocolVersion.lessThan(ProtocolVersion.MINECRAFT_1_20_2)) {
+        if (smc.protocolVersion.lessThan(ProtocolVersion.MINECRAFT_1_21)) {
             throw RuntimeException("ReCore doesn't supports versions < 1.21")
-        } else {
-            smc.write(LoginAcknowledgedPacket())
-            smc.setActiveSessionHandler(
-                StateRegistry.CONFIG,
-                DummyConfigSessionHandler(serverConn, resultFuture)
-            )
         }
+
+        smc.write(LoginAcknowledgedPacket())
+        smc.setActiveSessionHandler(StateRegistry.CONFIG)
+//            smc.setActiveSessionHandler(
+//                StateRegistry.CONFIG,
+//                DummyConfigSessionHandler(serverConn, resultFuture)
+//            )
 
         return true
     }
 
-    override fun handle(packet: ClientboundStoreCookiePacket?): Boolean {
+    override fun exception(throwable: Throwable?) {
+        resultFuture.completeExceptionally(throwable)
+    }
+
+    override fun handle(packet: ClientboundStoreCookiePacket): Boolean {
         throw IllegalStateException("Can only store cookie in CONFIGURATION or PLAY protocol")
     }
 
-    override fun exception(throwable: Throwable?) {
-        resultFuture.completeExceptionally(throwable)
+    override fun handle(packet: EncryptionRequestPacket): Boolean {
+        throw IllegalStateException("Backend server is online-mode!")
+    }
+
+    override fun handle(packet: FinishedUpdatePacket): Boolean {
+        throw IllegalStateException("Unexpected FinishedUpdatePacket in configuration state")
     }
 
     override fun disconnected() {

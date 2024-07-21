@@ -14,8 +14,9 @@ import com.velocitypowered.proxy.protocol.StateRegistry
 import com.velocitypowered.proxy.protocol.packet.HandshakePacket
 import com.velocitypowered.proxy.protocol.packet.ServerLoginPacket
 import com.velocitypowered.proxy.server.VelocityRegisteredServer
-import dev.remodded.recore.common.messaging.channel.CommonChannelMessagingManager
+import com.velocitypowered.proxy.util.except.QuietRuntimeException
 import dev.remodded.recore.api.utils.getFieldAccess
+import dev.remodded.recore.common.messaging.channel.CommonChannelMessagingManager
 import dev.remodded.recore.velocity.ReCoreVelocity
 import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelFutureListener
@@ -25,8 +26,8 @@ import java.util.concurrent.CompletableFuture
 class DummyVelocityServerConnection(
     registeredServer: VelocityRegisteredServer,
     server: VelocityServer,
-    private val protocolVersion: Int,
-) : VelocityServerConnection(registeredServer, null, createDummyPlayer(ProtocolVersion.getProtocolVersion(protocolVersion)), server) {
+    private val protocolVersion: ProtocolVersion,
+) : VelocityServerConnection(registeredServer, null, createDummyPlayer(protocolVersion), server) {
     override fun connect(): CompletableFuture<ConnectionRequestResults.Impl> {
         val result = CompletableFuture<ConnectionRequestResults.Impl>()
         val proxy = ReCoreVelocity.INSTANCE.proxy as VelocityServer
@@ -42,17 +43,18 @@ class DummyVelocityServerConnection(
             .connect(server.serverInfo.address) // Connect to the server
             .addListener(ChannelFutureListener { future: ChannelFuture ->
                 if (future.isSuccess) {
-                    val connection = DummyMinecraftConnection(future.channel())
+                    val connection = MinecraftConnection(future.channel(), proxy)
                     connectionField.set(this, connection)
-                    connection.setAssociation(this)
                     future.channel().pipeline().addLast(Connections.HANDLER, connection)
 
                     // Kick off the connection process
                     if (!connection.setActiveSessionHandler(StateRegistry.HANDSHAKE)) {
-                        val handler = DummyLoginSessionHandler(this, result)
+                        val handler = DummyConnectionHandler(this, result)
                         connection.setActiveSessionHandler(StateRegistry.HANDSHAKE, handler)
                         connection.addSessionHandler(StateRegistry.LOGIN, handler)
-                    }
+                        connection.addSessionHandler(StateRegistry.CONFIG, handler)
+                    } else
+                        throw QuietRuntimeException("Connection already has a session handler")
 
                     // Set the connection phase, which may, for future forge (or whatever), be
                     // determined
@@ -72,7 +74,6 @@ class DummyVelocityServerConnection(
         val mc = ensureConnected()
 
         // Initiate the handshake.
-        val protocolVersion = ProtocolVersion.getProtocolVersion(protocolVersion)
         val playerVhost = server.serverInfo.address.hostString
 
         val handshake = HandshakePacket()
