@@ -31,7 +31,7 @@ class ReCoreSpongePlatform(
             val meta = spongeContainer.metadata()
 
             return PlatformInfo(
-                Platform.SPONGE_API11,
+                Platform.SPONGE_API12,
                 meta.name().orElse("Sponge-API11 (Unknown)"),
                 meta.javaClass.getMethod("version").invoke(meta).toString(),
                 serverPlatform.minecraftVersion().name(),
