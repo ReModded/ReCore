@@ -1,5 +1,6 @@
 package dev.remodded.recore.velocity
 
+import com.velocitypowered.api.network.ProtocolVersion
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.lib.LibraryLoader
@@ -22,7 +23,7 @@ class ReCoreVelocityPlatform(
         Platform.VELOCITY,
         server.version.name,
         server.version.version,
-        "proxy",
+        "[${ProtocolVersion.MINIMUM_VERSION} - ${ProtocolVersion.MAXIMUM_VERSION}]",
         dataFolder,
     )
 
