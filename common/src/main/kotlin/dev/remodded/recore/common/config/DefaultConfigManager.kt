@@ -49,9 +49,7 @@ class DefaultConfigManager<T>(
     override fun getConfig(configName: String): T? {
         val configFilePath = getConfigPath(configName)
 
-        val loader = HoconConfigurationLoader.builder()
-            .path(configFilePath)
-            .build()
+        val loader = createConfigLoader(configFilePath)
 
         if (!Files.exists(configFilePath)) {
             logger.info("Config $configName doesn't exist - creating new one")
@@ -102,10 +100,20 @@ class DefaultConfigManager<T>(
     override fun saveConfig(configName: String, config: T) {
         val configFilePath = getConfigPath(configName)
 
-        val loader = HoconConfigurationLoader.builder()
-            .path(configFilePath)
-            .build()
+        val loader = createConfigLoader(configFilePath)
 
         loader.save(loader.createNode().set(configToken, config))
+    }
+
+    /**
+     * Creates a configuration loader for the given configuration file.
+     *
+     * @param configFilePath The path to the configuration file.
+     * @return The configuration loader.
+     */
+    private fun createConfigLoader(configFilePath: Path): HoconConfigurationLoader {
+        return HoconConfigurationLoader.builder()
+            .path(configFilePath)
+            .build()
     }
 }

@@ -100,14 +100,20 @@ class ReCoreImpl (
 
 
     private fun loadConfig(): ReCoreConfig {
+        val configFile = "ReCore.conf"
         try {
             logger.info("Loading configuration")
-            val cfg = createConfigLoader(platform.getPluginInfo(), ReCoreConfig::class.java).getConfig("ReCore.conf")!!
-            logger.info("Config ReCore.conf loaded successfully")
+            val loader = createConfigLoader(platform.getPluginInfo(), ReCoreConfig::class.java)
+            val cfg = loader.getConfig(configFile)!!
+            logger.info("Config $configFile loaded successfully")
+
+            try {
+                loader.saveConfig(configFile, cfg)
+            } catch (_: Exception) {}
+
             return cfg
         } catch (e: Exception) {
-            logger.error("Error while loading ReCore.conf", e)
-            logger.info("Disabling plugin")
+            logger.error("Error while loading $configFile", e)
 
             return ReCoreConfig()
         }
