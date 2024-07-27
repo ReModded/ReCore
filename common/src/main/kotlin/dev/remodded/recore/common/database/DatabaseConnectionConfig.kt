@@ -8,11 +8,10 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 class DatabaseConnectionConfig {
 
     @Comment(
-        "Database type\n\n" +
-
-                "POSTGRESQL - preferred option\n\n" +
-                "MARIADB\n" +
-                "MYSQL\n"
+        "Database type:\n" +
+        "    POSTGRESQL (preferred option)\n" +
+        "    MARIADB\n" +
+        "    MYSQL"
     )
     val databaseType: DatabaseType = DatabaseType.POSTGRESQL
 
@@ -20,10 +19,9 @@ class DatabaseConnectionConfig {
     val hostname: String = "localhost"
 
     @Comment(
-        "Database port\n\n" +
-
-                "POSTGRESQL - 5432\n" +
-                "MYSQL / MARIADB - 3306"
+        "Database port:\n" +
+        "    POSTGRESQL - 5432\n" +
+        "    MYSQL / MARIADB - 3306"
     )
     val port: Int = 5432
 
