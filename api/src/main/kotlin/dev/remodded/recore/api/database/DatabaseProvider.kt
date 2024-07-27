@@ -1,8 +1,6 @@
 package dev.remodded.recore.api.database
 
 import com.zaxxer.hikari.HikariDataSource
-import dev.remodded.recore.api.config.DatabaseType
-import kotlin.jvm.Throws
 
 /**
  * Interface representing a database provider.

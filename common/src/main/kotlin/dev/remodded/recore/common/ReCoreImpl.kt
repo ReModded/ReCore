@@ -6,8 +6,8 @@ import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.cache.CacheType
 import dev.remodded.recore.api.command.CommandManager
-import dev.remodded.recore.api.config.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
+import dev.remodded.recore.api.database.DatabaseType
 import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo

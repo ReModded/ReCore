@@ -1,7 +1,5 @@
 package dev.remodded.recore.api.database
 
-import dev.remodded.recore.api.config.DatabaseType
-
 /**
  * Exception thrown when the data source for a specific database type is not initialized.
  *

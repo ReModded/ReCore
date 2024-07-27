@@ -1,6 +1,6 @@
 package dev.remodded.recore.common.database
 
-import dev.remodded.recore.api.config.DatabaseType
+import dev.remodded.recore.api.database.DatabaseType
 
 class MariaDBProvider(
     databaseConnection: DatabaseConnectionConfig

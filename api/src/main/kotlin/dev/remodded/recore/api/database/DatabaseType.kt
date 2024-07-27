@@ -1,4 +1,4 @@
-package dev.remodded.recore.api.config
+package dev.remodded.recore.api.database
 
 enum class DatabaseType {
     POSTGRESQL,
