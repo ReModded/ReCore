@@ -22,6 +22,7 @@ import dev.remodded.recore.common.database.MySQLProvider
 import dev.remodded.recore.common.database.PostgreSQLProvider
 import dev.remodded.recore.common.messaging.redis.RedisMessagingManager
 import dev.remodded.recore.common.plugins.CommonPluginsManager
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class ReCoreImpl (
@@ -66,7 +67,7 @@ class ReCoreImpl (
         @JvmStatic
         lateinit var INSTANCE: ReCoreImpl
 
-        private val logger = LoggerFactory.getLogger(Constants.NAME)
+        val logger: Logger = LoggerFactory.getLogger(Constants.NAME)
 
         fun init(platform: ReCorePlatform) {
             logger.info("ReCore Initializing")
