@@ -1,3 +1,5 @@
+@file:JvmName("ReflectionExtensions")
+
 package dev.remodded.recore.api.utils
 
 import java.lang.reflect.Constructor
