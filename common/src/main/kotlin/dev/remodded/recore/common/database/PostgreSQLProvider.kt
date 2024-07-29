@@ -7,11 +7,10 @@ import dev.remodded.recore.api.database.DatabaseType
  * It utilizes HikariCP as the high-performance JDBC connection pool to manage database connections.
  * The database configuration details are provided via an instance of DatabaseConnection during initialization
  *
- * @property databaseConnection Instance of database connection configuration details
  * @constructor creates an instance of dev.remodded.recore.common.database.PostgreSQLProvider and initializes a Hikari connection pool.
  */
 class PostgreSQLProvider(
-    private val databaseConnection: DatabaseConnectionConfig
+    databaseConnection: DatabaseConnectionConfig
 ) : AbstractDatabaseProvider(
     databaseConnection,
     DatabaseType.POSTGRESQL,

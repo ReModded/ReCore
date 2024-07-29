@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory
 /**
  * Abstract class representing a database provider.
  *
- * @property databaseConnectionConfig The configuration for the database connection.
+ * @param databaseConnectionConfig The configuration for the database connection.
  * @property databaseType The type of the database being used.
  * @param dataSourceClassName The fully qualified name of the JDBC data source class.
  */
 abstract class AbstractDatabaseProvider(
-    private val databaseConnectionConfig: DatabaseConnectionConfig,
+    databaseConnectionConfig: DatabaseConnectionConfig,
     private val databaseType: DatabaseType,
     dataSourceClassName: String
 ) : DatabaseProvider {

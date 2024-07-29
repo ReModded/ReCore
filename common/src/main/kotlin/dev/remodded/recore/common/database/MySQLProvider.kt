@@ -2,8 +2,8 @@ package dev.remodded.recore.common.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import dev.remodded.recore.api.database.DatabaseType
 import dev.remodded.recore.api.database.DatabaseProvider
+import dev.remodded.recore.api.database.DatabaseType
 import dev.remodded.recore.common.Constants
 import org.slf4j.LoggerFactory
 
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
  * So we are forced to use jdbcUrl configuration instead also that means we can not use AbstractDatabaseProvider
  */
 class MySQLProvider(
-    private val databaseConnectionConfig: DatabaseConnectionConfig
+    databaseConnectionConfig: DatabaseConnectionConfig
 ) : DatabaseProvider {
 
     private val logger = LoggerFactory.getLogger(Constants.NAME)

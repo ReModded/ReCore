@@ -2,15 +2,14 @@ package dev.remodded.recore.common.cache.database
 
 import dev.remodded.recore.api.ReCoreAPI
 import dev.remodded.recore.api.cache.Cache
+import dev.remodded.recore.api.database.use
 import dev.remodded.recore.api.utils.JsonUtils
 
 class DatabaseCache<T>(override val name: String, override val entryType: Class<T>) : Cache<T> {
 
     init {
-        datasource.connection.use { con ->
-            con.createStatement().use {
-                it.execute(createQuery(name))
-            }
+        datasource.connection.use {
+            prepareStatement(createQuery(name)).execute()
         }
     }
 
@@ -28,24 +27,22 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
     }
 
     override val size: Int
-        get() = datasource.connection.use { conn -> conn.createStatement().use { it.executeQuery(getEntryCountQuery(name)).getInt(1) } }
+        get() = datasource.connection.use { prepareStatement(getEntryCountQuery(name)).executeQuery().getInt(1) }
 
     override fun isEmpty() = size == 0
 
 
     override fun containsKey(key: String): Boolean {
-        datasource.connection.use { conn ->
-            conn.createStatement().executeQuery(getEntryQuery(name, key)).use {
-                return it.next()
-            }
+        return datasource.connection.use {
+            prepareStatement(getEntryQuery(name, key)).executeQuery().next()
         }
     }
 
     override fun get(key: String): T? {
-        datasource.connection.use { conn ->
-            conn.createStatement().executeQuery(getEntryQuery(name, key)).use {
-                return if (it.next()) {
-                    JsonUtils.fromJson(it.getString("value"), entryType)
+        return datasource.connection.use {
+            prepareStatement(getEntryQuery(name, key)).executeQuery().use {
+                if (next()) {
+                    JsonUtils.fromJson(getString("value"), entryType)
                 } else {
                     null
                 }
@@ -54,16 +51,11 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
     }
 
     override fun remove(key: String): T? {
-        datasource.connection.use { conn ->
-            conn.createStatement().executeQuery(getEntryQuery(name, key)).use {
-                return if (it.next()) {
-                    val value = JsonUtils.fromJson(it.getString("value"), entryType)
-                    conn.createStatement().executeUpdate(removeEntryQuery(name, key))
-                    value
-                } else {
-                    null
-                }
-            }
+        return datasource.connection.use {
+            val value = get(key)
+            if (value != null)
+                prepareStatement(removeEntryQuery(name, key)).execute()
+            value
         }
     }
 
@@ -73,8 +65,8 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
 
     override fun put(key: String, value: T): T? {
         val oldValue = get(key)
-        datasource.connection.use { conn ->
-            conn.createStatement().executeUpdate(setEntryQuery(name, key, JsonUtils.toJson(value)))
+        datasource.connection.use {
+            prepareStatement(setEntryQuery(name, key, JsonUtils.toJson(value))).execute()
         }
         return oldValue
     }
