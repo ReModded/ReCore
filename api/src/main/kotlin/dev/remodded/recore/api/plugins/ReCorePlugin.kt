@@ -8,4 +8,7 @@ interface ReCorePlugin {
 
     fun getPluginInfo(): PluginInfo
 
+    fun hasMigrationSupport(): Boolean {
+        return false
+    }
 }

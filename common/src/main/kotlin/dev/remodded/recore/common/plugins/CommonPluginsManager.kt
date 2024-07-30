@@ -4,6 +4,8 @@ import dev.remodded.recore.api.plugins.PluginCommon
 import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.getCtorAccess
+import dev.remodded.recore.common.ReCoreImpl
+import dev.remodded.recore.common.database.migrations.DatabaseMigrator
 import java.lang.reflect.Constructor
 
 class CommonPluginsManager : PluginsManager {
@@ -11,24 +13,31 @@ class CommonPluginsManager : PluginsManager {
     private val plugins = mutableMapOf<String, PluginContainer>()
 
     override fun <T : PluginCommon> registerPlugin(plugin: ReCorePlugin, commonClass: Class<T>) {
-        try {
-            var platformedCtor: Constructor<T>? = null
-
+        val platformedCtor = try {
+            var resultCtor: Constructor<T>? = null
             for (ctor in commonClass.constructors) {
                 if (ctor.parameterCount == 1 && ctor.parameterTypes[0].isAssignableFrom(plugin.javaClass)) {
                     @Suppress("UNCHECKED_CAST")
-                    platformedCtor = ctor as Constructor<T>
-                    break
+                    resultCtor = ctor as Constructor<T>
                 }
             }
 
-            if (platformedCtor == null)
-                platformedCtor = commonClass.getCtorAccess()
-
-            val instance = platformedCtor.newInstance(plugin)
-            plugins[plugin.getPluginInfo().id] = PluginContainer(plugin, instance)
+            resultCtor ?: commonClass.getCtorAccess()
         } catch (e: NoSuchMethodException) {
-            throw RuntimeException("Common class ${commonClass.name} for plugin ${plugin.getPluginInfo().name} is not valid.\nCommon class is required to have ctor that accepts ${plugin.javaClass} or default ctor.", e)
+            throw RuntimeException(
+                """Common class ${commonClass.name} for plugin ${plugin.getPluginInfo().name} is not valid.
+                |Common class is required to have ctor that accepts ${plugin.javaClass} or default ctor.""".trimMargin(),
+                e
+            )
+        }
+
+        val instance = platformedCtor.newInstance(plugin)
+        plugins[plugin.getPluginInfo().id] = PluginContainer(plugin, instance)
+
+        if (plugin.hasMigrationSupport()) {
+            val migrator = DatabaseMigrator(plugin, ReCoreImpl.INSTANCE.databaseProvider)
+
+            migrator.migrate()
         }
     }
 
@@ -43,6 +52,6 @@ class CommonPluginsManager : PluginsManager {
 
     private data class PluginContainer(
         val plugin: ReCorePlugin,
-        val common: PluginCommon
+        val common: PluginCommon,
     )
 }
