@@ -20,7 +20,7 @@ class DatabaseMigrator(
         private const val DEFAULT_MIGRATION_FOLDER = "db/migrations"
         private const val LOG_PREFIX = "[DatabaseMigrator]"
 
-        private val TIMESTAMP_PATTERN = Regex("""--(?![ \t])*(\d)+""")
+        private val TIMESTAMP_PATTERN = Regex("""--[ \t]*(\d)+""")
 
         private var isSetup = false
         fun setup(database: DatabaseProvider) {
@@ -61,6 +61,8 @@ class DatabaseMigrator(
 
         logger.info("$LOG_PREFIX Applying ${requiredMigrations.size} migrations")
 
+        var newLastMigration: Long? = null
+
         database.getDataSource().connection.use {
             createStatement().use {
                 requiredMigrations.forEach { migration ->
@@ -70,20 +72,26 @@ class DatabaseMigrator(
                             logger.info("$LOG_PREFIX Applying migration ${migration.filename}")
                             execute(inputStream.reader().readText())
                         }
+                        newLastMigration = migration.timestamp
                     } catch (e: SQLException) {
+                        if (newLastMigration != null)
+                            setLastMigration(newLastMigration!!)
+
                         throw DatabaseMigrationException("Failed to apply migration ${migration.filename}", e)
                     }
-                    executeUpdate("INSERT INTO migrations (plugin, lastMigrationTimestamp) VALUES ('${plugin.getPluginInfo().id}', '${lastMigration}') ON CONFLICT (plugin) DO UPDATE SET lastMigrationTimestamp='${lastMigration}'")
                 }
             }
         }
 
-        val delta = Duration.between(Instant.now(), startTime).toMillis() / 1000.0f
+        if (newLastMigration != null)
+            setLastMigration(newLastMigration!!)
+
+        val delta = Duration.between(startTime, Instant.now()).toMillis() / 1000.0f
         logger.info("$LOG_PREFIX Applying migrations took $delta seconds")
     }
 
     fun loadMigrations(folder: String) {
-        val files: MutableList<String> = ArrayList()
+        val files = arrayListOf<String>()
         val startTime = Instant.now()
 
         val mainClass = plugin.javaClass
@@ -119,8 +127,8 @@ class DatabaseMigrator(
             }
         }
 
-        val delta = Duration.between(Instant.now(), startTime).toMillis()
-        logger.info("$LOG_PREFIX Locating the migrations took ${delta / 1000.0f} seconds")
+        val delta = Duration.between(startTime, Instant.now()).toMillis()
+        logger.debug("$LOG_PREFIX Locating the migrations took ${delta / 1000.0f} seconds")
     }
 
     fun addMigration(filename: String, inputStreamProvider: Supplier<InputStream>) {
@@ -148,13 +156,25 @@ class DatabaseMigrator(
         migrations.add(DatabaseMigration(filename, timestamp, inputStreamProvider))
     }
 
+    private fun setLastMigration(timestamp: Long) {
+        database.getDataSource().connection.use {
+            prepareStatement("INSERT INTO migrations (plugin, lastMigrationTimestamp) VALUES (?, ?) ON CONFLICT (plugin) DO UPDATE SET lastMigrationTimestamp=?").use {
+                setString(1, plugin.getPluginInfo().id)
+                setLong(2, timestamp)
+                setLong(3, timestamp)
+                execute()
+            }
+        }
+    }
+
     private fun getLastMigration(): Long? {
         // Get the last migration from the database
         return database.getDataSource().connection.use {
-            createStatement().use {
-                executeQuery("SELECT timestamp FROM migrations WHERE plugin='${plugin.getPluginInfo().id}'").use {
+            prepareStatement("SELECT lastMigrationTimestamp FROM migrations WHERE plugin=?").use {
+                setString(1, plugin.getPluginInfo().id)
+                executeQuery().use {
                     if (next()) {
-                        getLong("timestamp")
+                        getLong(1)
                     } else {
                         null
                     }
