@@ -1,10 +1,10 @@
 pluginManagement {
     repositories {
         mavenLocal() // For ReGradle development
-        maven("https://repo.remodded.dev/repository/fabric/") {
+        maven("https://repo.remodded.dev/repository/Fabric/") {
             name = "Remodded Fabric proxy"
         }
-        maven("https://repo.remodded.dev/repository/sponge/") {
+        maven("https://repo.remodded.dev/repository/Sponge/") {
             name = "Remodded Sponge proxy"
         }
         maven("https://repo.remodded.dev/repository/maven-public/") {

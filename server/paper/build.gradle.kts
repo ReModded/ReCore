@@ -14,7 +14,7 @@ markAsBuildTarget()
 markAsNeedShadow()
 
 repositories {
-    maven("https://repo.remodded.dev/repository/paper/")
+    maven("https://repo.remodded.dev/repository/PaperMC/")
 }
 
 dependencies {
@@ -22,7 +22,10 @@ dependencies {
     api(project("::server"))
 }
 
-paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.MOJANG_PRODUCTION
+paperweight.apply {
+    injectPaperRepository = false
+    reobfArtifactConfiguration = ReobfArtifactConfiguration.MOJANG_PRODUCTION
+}
 
 tasks {
     runServer {

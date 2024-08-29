@@ -14,7 +14,7 @@ markAsBuildTarget()
 markAsNeedShadow()
 
 repositories {
-    maven("https://repo.remodded.dev/repository/sponge/")
+    maven("https://repo.remodded.dev/repository/Sponge/")
 }
 
 dependencies {

@@ -11,7 +11,7 @@ markAsBuildTarget()
 markAsNeedShadow()
 
 repositories {
-    maven("https://repo.remodded.dev/repository/paper/")
+    maven("https://repo.remodded.dev/repository/PaperMC/")
     maven("https://repo.remodded.dev/repository/maven-public/")
 }
 

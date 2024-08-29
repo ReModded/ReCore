@@ -59,7 +59,6 @@ subprojects {
             jvmToolchain(21)
         }
 
-        @Suppress("UnstableApiUsage")
         java {
             sourceCompatibility = JavaVersion.VERSION_21
             targetCompatibility = JavaVersion.VERSION_21
@@ -94,7 +93,7 @@ subprojects {
 
     repositories {
         maven("https://repo.remodded.dev/repository/maven-central/")
-        maven("https://repo.remodded.dev/repository/mojang/")
+        maven("https://repo.remodded.dev/repository/Mojang/")
     }
 
     dependencies {
