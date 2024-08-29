@@ -21,14 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-@Plugin(
-        id = Constants.ID,
-        name = Constants.NAME,
-        version = Constants.VERSION,
-        url = Constants.URL,
-        description = Constants.DESCRIPTION,
-        authors = {Constants.AUTHOR}
-)
+@Plugin(id = Constants.ID)
 public class ReCoreVelocity implements ReCorePlugin {
     private final Logger logger = LoggerFactory.getLogger("ReCoreVelocityBootstrapper");
     private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
