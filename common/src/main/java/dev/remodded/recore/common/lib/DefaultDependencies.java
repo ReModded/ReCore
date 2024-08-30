@@ -15,7 +15,8 @@ public class DefaultDependencies {
             "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9",
 
             "org.objenesis:objenesis:3.4", // Required for Redis on Paper
-            "io.netty:netty-codec-dns:4.1.112.Final" // Required for Redis on Paper
+            "io.netty:netty-codec-dns:4.1.112.Final", // Required for Redis on Paper
+            "com.esotericsoftware:minlog:1.3.1" // Required for Redis on Paper
     ));
 
     public static ArrayList<String> getDependencies() {
