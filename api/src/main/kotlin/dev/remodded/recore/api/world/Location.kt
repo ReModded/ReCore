@@ -1,9 +1,9 @@
 package dev.remodded.recore.api.world
 
+import dev.remodded.recore.api.utils.Position
+
 interface Location {
-    val x: Double
-    val y: Double
-    val z: Double
+    val position: Position
     val pitch: Double
     val yaw: Double
     val world: World
