@@ -12,7 +12,10 @@ public class DefaultDependencies {
             "com.google.code.gson:gson:2.11.0",
             "org.redisson:redisson:3.32.0",
             "com.zaxxer:HikariCP:5.1.0",
-            "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9"
+            "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9",
+
+            "org.objenesis:objenesis:3.4", // Required for Redis on Paper
+            "io.netty:netty-codec-dns:4.1.112.Final" // Required for Redis on Paper
     ));
 
     public static ArrayList<String> getDependencies() {
