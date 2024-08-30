@@ -83,6 +83,6 @@ public class ReCoreSponge implements ReCorePlugin {
 
     @Override
     public boolean hasMigrationSupport() {
-        return ReCorePlugin.super.hasMigrationSupport();
+        return false;
     }
 }
