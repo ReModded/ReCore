@@ -3,10 +3,7 @@
   "minVersion": "0.8",
   "package": "dev.remodded.recore.sponge_api12.mixin",
   "mixins": [
-    "command.CommandSourceMixin",
-    "command.CommandSourceStackMixin",
-    "entity.EntityMixin",
-    "entity.ServerPlayerMixin",
-    "world.WorldMixin"
+    "DedicatedServerMixin", "command.CommandBlockSourceMixin", "command.CommandSourceStackMixin", "entity.EntityMixin",
+    "entity.ServerPlayerMixin", "world.WorldMixin"
   ]
 }

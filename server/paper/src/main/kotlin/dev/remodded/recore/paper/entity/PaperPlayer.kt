@@ -2,6 +2,7 @@ package dev.remodded.recore.paper.entity
 
 import dev.remodded.recore.api.entity.GameMode
 import dev.remodded.recore.api.entity.Player
+import net.kyori.adventure.text.Component
 
 class PaperPlayer(
     override val native: org.bukkit.entity.Player
@@ -15,7 +16,7 @@ class PaperPlayer(
             org.bukkit.GameMode.SPECTATOR -> GameMode.SPECTATOR
         }
 
-    override fun sendMessage(message: String) {
+    override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }
 }

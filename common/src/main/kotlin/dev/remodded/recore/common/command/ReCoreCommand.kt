@@ -7,6 +7,8 @@ import dev.remodded.recore.api.command.CommandUtils.literal
 import dev.remodded.recore.api.command.arguments.EnumArgumentType
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.messaging.MessagingManager.Companion.getChannel
+import dev.remodded.recore.api.utils.plus
+import dev.remodded.recore.api.utils.text
 import dev.remodded.recore.common.Constants
 
 object ReCoreCommand {
@@ -46,19 +48,19 @@ object ReCoreCommand {
     private fun test(ctx: CommandContext<CommandSrcStack>): Int {
         val ch = ReCoreAPI.INSTANCE.messagingManager.getChannel<String>(TEST_CHANNEL)
         if (ch.sendMessage("Hello World"))
-            ctx.source.sender.sendMessage("Message sent")
+            ctx.source.sender.sendMessage("Message sent".text())
         else
-            ctx.source.sender.sendMessage("Message not sent")
+            ctx.source.sender.sendMessage("Message not sent".text())
         return 1
     }
 
     private fun reload(ctx: CommandContext<CommandSrcStack>, type: ReloadType): Int {
-        ctx.source.sender.sendMessage("Test reload $type")
+        ctx.source.sender.sendMessage("Test reload $type".text())
         return 1
     }
 
     private fun version(ctx: CommandContext<CommandSrcStack>): Int {
-        ctx.source.sender.sendMessage("ReCore version: " + Constants.VERSION)
+        ctx.source.sender.sendMessage("ReCore version: ".text() + Constants.VERSION)
         return 1
     }
 

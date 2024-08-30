@@ -7,8 +7,8 @@ import net.kyori.adventure.text.Component
 class VelocityCommandSender(
     val native: com.velocitypowered.api.command.CommandSource
 ) : CommandSender {
-    override fun sendMessage(message: String) {
-        native.sendMessage(Component.text(message))
+    override fun sendMessage(message: Component) {
+        native.sendMessage(message)
     }
 }
 
