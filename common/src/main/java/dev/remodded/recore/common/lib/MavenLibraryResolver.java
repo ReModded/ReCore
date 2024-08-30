@@ -1,8 +1,10 @@
 package dev.remodded.recore.common.lib;
 
+import dev.remodded.recore.api.ReCoreAPI;
 import dev.remodded.recore.api.lib.ClassPathLibrary;
 import dev.remodded.recore.api.lib.LibraryLoadingException;
 import dev.remodded.recore.api.lib.LibraryStore;
+import dev.remodded.recore.api.platform.Platform;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -117,15 +119,25 @@ public class MavenLibraryResolver implements ClassPathLibrary {
     public void register(@NotNull LibraryStore store) throws LibraryLoadingException {
         List<RemoteRepository> repos = this.repository.newResolutionRepositories(this.session, this.repositories);
 
+        // Sponge API detection
+        boolean isSponge = false;
+        try {
+            isSponge = Class.forName("dev.remodded.recore.sponge_api12.ReCoreSponge").getField("INSTANCE").get(null) != null;
+        } catch (Exception ignored) {}
+
         DependencyResult result;
         try {
+            boolean _isSponge = isSponge;
             result = this.repository.resolveDependencies(this.session, new DependencyRequest(new CollectRequest((Dependency) null, this.dependencies, repos), (node, parents) -> {
                 Artifact artifact = node.getArtifact();
-                boolean accept = artifact == null || !artifact.getGroupId().contains("io.netty") || artifact.getArtifactId().contains("kqueue") ;
+                boolean accept = true; // By default, accept the artifact
 
-                if (!accept) {
+                // Ignore netty-buffer and netty-common on Sponge API 12 as they are already provided by the platform and are incompatible
+                if (_isSponge)
+                    accept = artifact == null || !(artifact.getArtifactId().equals("netty-buffer") || artifact.getArtifactId().equals("netty-common"));
+
+                if (!accept)
                     logger.debug("Ignoring {} as it is incompatible", node.getArtifact());
-                }
 
                 return accept;
             }));
