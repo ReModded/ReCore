@@ -41,6 +41,4 @@ velocityPluginJson {
     description.set(props.description)
 
     main.set(props.entryPoint)
-
-    dependency("recore", false)
 }
