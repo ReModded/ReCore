@@ -40,12 +40,12 @@ class VelocityCommandManager(private val server: ProxyServer) : CommonCommandMan
                 is ArgumentCommandNode<*, *> -> {
                     @Suppress("UNCHECKED_CAST")
                     val arg = cmd as ArgumentCommandNode<CommandSrcStack, Any>
-                    val n = RequiredArgumentBuilder.argument<CommandSource, Any>(arg.name, arg.type as ArgumentType<Any>)
+                    val node = RequiredArgumentBuilder.argument<CommandSource, Any>(arg.name, arg.type as ArgumentType<Any>)
 
                     if (arg.customSuggestions != null)
-                        n.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
+                        node.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
 
-                    n
+                    node
                 }
                 else -> throw IllegalArgumentException("Unsupported command node type: ${cmd::class.java}")
             }
@@ -67,7 +67,7 @@ class VelocityCommandManager(private val server: ProxyServer) : CommonCommandMan
         }
 
         private fun mapCommandSourceStack(native: CommandSource): CommandSrcStack {
-            return VelocityCommandSourceStack(VelocityCommandSender(native))
+            return VelocityCommandSourceStack(native)
         }
 
         private fun mapCommandCtx(native: CommandContext<CommandSource>): CommandContext<CommandSrcStack> {

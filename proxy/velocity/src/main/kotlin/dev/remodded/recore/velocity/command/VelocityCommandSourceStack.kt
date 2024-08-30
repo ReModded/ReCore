@@ -1,12 +1,17 @@
 package dev.remodded.recore.velocity.command
 
+import com.velocitypowered.api.command.CommandSource
+import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.entity.Entity
 import dev.remodded.recore.api.world.Location
 
 class VelocityCommandSourceStack(
-    override val sender: VelocityCommandSender,
+    val native: CommandSource,
 ) : CommandSrcStack {
+    override val sender: CommandSender get() = native.wrap()
     override val entity: Entity? = null
     override val location: Location? = null
 }
+
+fun CommandSrcStack.native() = (this as VelocityCommandSourceStack).native

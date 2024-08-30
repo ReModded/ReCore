@@ -5,8 +5,8 @@ import dev.remodded.recore.api.world.Location
 import dev.remodded.recore.paper.world.PaperLocation
 import java.util.*
 
-class PaperEntity(
-    val native: org.bukkit.entity.Entity
+open class PaperEntity(
+    open val native: org.bukkit.entity.Entity
 ) : Entity {
     override val id: UUID get() = native.uniqueId
     override val name: String get() = native.name

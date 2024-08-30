@@ -14,17 +14,13 @@ import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
-import dev.remodded.recore.paper.command.source.PaperCommandSender
-import dev.remodded.recore.paper.command.source.PaperCommandSourceStack
-import dev.remodded.recore.paper.entity.PaperEntity
-import dev.remodded.recore.paper.world.PaperLocation
+import dev.remodded.recore.paper.command.source.utils.wrap
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
 
-@Suppress("UnstableApiUsage")
 class PaperCommandManager : CommonCommandManager() {
 
     override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
@@ -50,18 +46,18 @@ class PaperCommandManager : CommonCommandManager() {
                 is ArgumentCommandNode<*, *> -> {
                     @Suppress("UNCHECKED_CAST")
                     val arg = cmd as ArgumentCommandNode<CommandSrcStack, Any>
-                    val n = RequiredArgumentBuilder.argument<CommandSourceStack, Any>(arg.name, arg.type as ArgumentType<Any>)
+                    val node = RequiredArgumentBuilder.argument<CommandSourceStack, Any>(arg.name, arg.type as ArgumentType<Any>)
 
                     if (arg.customSuggestions != null)
-                        n.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
+                        node.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
 
-                    n
+                    node
                 }
                 else -> throw IllegalArgumentException("Unsupported command node type: ${cmd::class.java}")
             }
 
             if (cmd.requirement != null)
-                node.requires { src -> cmd.requirement.test(mapCommandSourceStack(src)) }
+                node.requires { src -> cmd.requirement.test(src.wrap()) }
 
             if (cmd.command != null)
                 node.executes { ctx -> cmd.command.run(mapCommandCtx(ctx)) }
@@ -76,16 +72,8 @@ class PaperCommandManager : CommonCommandManager() {
             return node.build()
         }
 
-        private fun mapCommandSourceStack(native: CommandSourceStack): CommandSrcStack {
-            return PaperCommandSourceStack(
-                PaperCommandSender(native.sender),
-                native.executor?.let { PaperEntity(it) },
-                try { PaperLocation(native.location) } catch (e: Exception) { null },
-            )
-        }
-
         private fun mapCommandCtx(native: CommandContext<CommandSourceStack>): CommandContext<CommandSrcStack> {
-            val source = mapCommandSourceStack(native.source)
+            val source = native.source.wrap()
             @Suppress("UNCHECKED_CAST")
             val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
             @Suppress("UNCHECKED_CAST")

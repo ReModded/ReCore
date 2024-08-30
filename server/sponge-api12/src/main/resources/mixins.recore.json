@@ -6,7 +6,7 @@
     "command.CommandSourceMixin",
     "command.CommandSourceStackMixin",
     "entity.EntityMixin",
-    "entity.PlayerMixin",
+    "entity.ServerPlayerMixin",
     "world.WorldMixin"
   ]
 }
