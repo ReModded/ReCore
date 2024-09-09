@@ -11,6 +11,9 @@ import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
+import dev.remodded.recore.api.service.ServiceProvider
+import dev.remodded.recore.api.service.getService
+import dev.remodded.recore.api.service.registerService
 import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
 import dev.remodded.recore.common.cache.redis.RedisCacheProvider
 import dev.remodded.recore.common.command.ReCoreCommand
@@ -21,6 +24,7 @@ import dev.remodded.recore.common.database.MySQLProvider
 import dev.remodded.recore.common.database.PostgreSQLProvider
 import dev.remodded.recore.common.messaging.redis.RedisMessagingManager
 import dev.remodded.recore.common.plugins.CommonPluginsManager
+import dev.remodded.recore.common.service.CommonServiceProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -29,6 +33,8 @@ class ReCoreImpl (
 ) : ReCore {
 
     val config: ReCoreConfig
+
+    override val serviceProvider: ServiceProvider = CommonServiceProvider()
 
     override val cacheProvider: CacheProvider
     override val databaseProvider: DatabaseProvider
@@ -40,18 +46,22 @@ class ReCoreImpl (
 
 
     init {
-        ReCore.INSTANCE = INSTANCE
         INSTANCE = this
-
-        printPlatformInfo()
+        ReCore.INSTANCE = INSTANCE
 
         config = loadConfig()
 
-        databaseProvider = initDatabase()
-        cacheProvider = initCache()
-
+        printPlatformInfo()
         pluginsManager = CommonPluginsManager()
-        messagingManager = initMessagingManager()
+
+        registerDatabaseProvider()
+        registerCacheProvider()
+        registerMessagingManager()
+
+        databaseProvider = serviceProvider.getService()
+        cacheProvider = serviceProvider.getService()
+
+        messagingManager = serviceProvider.getService()
     }
 
     fun init() {
@@ -119,30 +129,36 @@ class ReCoreImpl (
         }
     }
 
-    private fun initDatabase(): DatabaseProvider {
-        val dbConfig = config.database
-        return when(dbConfig.databaseType) {
-            DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
-            DatabaseType.MYSQL -> MySQLProvider(dbConfig)
-            DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
+    private fun registerDatabaseProvider() {
+        serviceProvider.registerService<DatabaseProvider> {
+            val dbConfig = config.database
+            when(dbConfig.databaseType) {
+                DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
+                DatabaseType.MYSQL -> MySQLProvider(dbConfig)
+                DatabaseType.MARIADB -> MariaDBProvider(dbConfig)
+            }
         }
     }
 
-    private fun initCache(): CacheProvider {
-        val cache = config.cache
-        return when(cache.type) {
-            CacheType.REDIS -> RedisCacheProvider()
-            CacheType.DATABASE -> DatabaseCacheProvider()
+    private fun registerCacheProvider() {
+        serviceProvider.registerService<CacheProvider> {
+            val cache = config.cache
+            when(cache.type) {
+                CacheType.REDIS -> RedisCacheProvider()
+                CacheType.DATABASE -> DatabaseCacheProvider()
+            }
         }
     }
 
-    private fun initMessagingManager(): MessagingManager{
-        val messagingService = config.messagingService
-       return when (messagingService) {
-            MessagingChannelType.CHANNELS -> platform.createChannelMessagingManager()
-            MessagingChannelType.REDIS -> RedisMessagingManager()
-            MessagingChannelType.POSTGRES -> TODO()
-       }
+    private fun registerMessagingManager() {
+        serviceProvider.registerService<MessagingManager> {
+            val messagingService = config.messagingService
+            when (messagingService) {
+                MessagingChannelType.CHANNELS -> platform.createChannelMessagingManager()
+                MessagingChannelType.REDIS -> RedisMessagingManager()
+                MessagingChannelType.POSTGRES -> TODO()
+            }
+        }
     }
 
     private fun registerCommands() {
