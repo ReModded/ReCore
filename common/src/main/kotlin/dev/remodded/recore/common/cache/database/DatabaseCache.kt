@@ -1,6 +1,6 @@
 package dev.remodded.recore.common.cache.database
 
-import dev.remodded.recore.api.ReCoreAPI
+import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.cache.Cache
 import dev.remodded.recore.api.database.use
 import dev.remodded.recore.api.utils.JsonUtils
@@ -14,7 +14,7 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
     }
 
     companion object {
-        private val datasource = ReCoreAPI.INSTANCE.databaseProvider.getDataSource()
+        private val datasource = ReCore.INSTANCE.databaseProvider.getDataSource()
 
         private fun createQuery(name: String) = "CREATE TABLE IF NOT EXISTS ${getCacheName(name)} (key TEXT PRIMARY KEY, value TEXT)"
 

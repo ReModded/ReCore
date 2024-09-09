@@ -1,7 +1,7 @@
 package dev.remodded.recore.common.command
 
 import com.mojang.brigadier.context.CommandContext
-import dev.remodded.recore.api.ReCoreAPI
+import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.command.CommandUtils.argument
 import dev.remodded.recore.api.command.CommandUtils.literal
 import dev.remodded.recore.api.command.arguments.EnumArgumentType
@@ -16,16 +16,16 @@ object ReCoreCommand {
     private const val TEST_CHANNEL = "TEST_CHANNEL"
 
     fun register() {
-        val manager = ReCoreAPI.INSTANCE.commandManager
+        val manager = ReCore.INSTANCE.commandManager
 
 
-        val ch = ReCoreAPI.INSTANCE.messagingManager.getChannel<String?>(TEST_CHANNEL)
+        val ch = ReCore.INSTANCE.messagingManager.getChannel<String?>(TEST_CHANNEL)
 
         ch.registerListener { msg ->
             println("Received: $msg")
         }
 
-        manager.registerCommand(ReCoreAPI.INSTANCE.platform.getPluginInfo(), command(), "rc")
+        manager.registerCommand(ReCore.INSTANCE.platform.getPluginInfo(), command(), "rc")
     }
 
     private fun command() =
@@ -46,7 +46,7 @@ object ReCoreCommand {
             .executes(::version)
 
     private fun test(ctx: CommandContext<CommandSrcStack>): Int {
-        val ch = ReCoreAPI.INSTANCE.messagingManager.getChannel<String>(TEST_CHANNEL)
+        val ch = ReCore.INSTANCE.messagingManager.getChannel<String>(TEST_CHANNEL)
         if (ch.sendMessage("Hello World"))
             ctx.source.sender.sendMessage("Message sent".text())
         else
