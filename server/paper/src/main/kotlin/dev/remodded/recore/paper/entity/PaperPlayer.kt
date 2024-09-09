@@ -3,9 +3,10 @@ package dev.remodded.recore.paper.entity
 import dev.remodded.recore.api.entity.GameMode
 import dev.remodded.recore.api.entity.Player
 import net.kyori.adventure.text.Component
+import org.bukkit.craftbukkit.entity.CraftPlayer
 
 class PaperPlayer(
-    override val native: org.bukkit.entity.Player
+    override val native: CraftPlayer
 ) : PaperEntity(native), Player {
 
     override val gamemode: GameMode
