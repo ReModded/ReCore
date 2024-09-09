@@ -50,18 +50,18 @@ subprojects {
         from(sourceSets.main.get().allSource)
     }
 
+    kotlin {
+        jvmToolchain(21)
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
     tasks {
         dokkaHtml {
             outputDirectory.set(file(dokkaOutputDir))
-        }
-
-        kotlin {
-            jvmToolchain(21)
-        }
-
-        java {
-            sourceCompatibility = JavaVersion.VERSION_21
-            targetCompatibility = JavaVersion.VERSION_21
         }
 
         assemble {
