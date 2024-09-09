@@ -80,9 +80,4 @@ public class ReCoreSponge implements ReCorePlugin {
     public Logger getLogger() {
         return PLATFORM.getLogger();
     }
-
-    @Override
-    public boolean hasMigrationSupport() {
-        return false;
-    }
 }

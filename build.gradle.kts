@@ -52,6 +52,9 @@ subprojects {
 
     kotlin {
         jvmToolchain(21)
+        compilerOptions {
+            freeCompilerArgs = listOf("-Xjvm-default=all")
+        }
     }
 
     java {
