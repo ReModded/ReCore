@@ -1,7 +1,6 @@
 package dev.remodded.recore.common
 
 import dev.remodded.recore.api.ReCore
-import dev.remodded.recore.api.ReCoreAPI
 import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.cache.CacheType
@@ -41,8 +40,8 @@ class ReCoreImpl (
 
 
     init {
+        ReCore.INSTANCE = INSTANCE
         INSTANCE = this
-        ReCoreAPI.INSTANCE = INSTANCE
 
         printPlatformInfo()
 

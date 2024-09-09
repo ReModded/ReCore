@@ -9,6 +9,12 @@ import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
 
 interface ReCore {
+
+    companion object {
+        @JvmStatic
+        lateinit var INSTANCE: ReCore
+    }
+
     val platform: ReCorePlatform
 
 
