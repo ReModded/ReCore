@@ -12,7 +12,7 @@ import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.api.service.ServiceProvider
-import dev.remodded.recore.api.service.getService
+import dev.remodded.recore.api.service.getLazyService
 import dev.remodded.recore.api.service.registerService
 import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
 import dev.remodded.recore.common.cache.redis.RedisCacheProvider
@@ -34,16 +34,14 @@ class ReCoreImpl (
 
     val config: ReCoreConfig
 
+    override val pluginsManager: PluginsManager = CommonPluginsManager()
     override val serviceProvider: ServiceProvider = CommonServiceProvider()
 
-    override val cacheProvider: CacheProvider
-    override val databaseProvider: DatabaseProvider
+    override val cacheProvider: CacheProvider by serviceProvider.getLazyService()
+    override val databaseProvider: DatabaseProvider by serviceProvider.getLazyService()
+    override val messagingManager: MessagingManager by serviceProvider.getLazyService()
 
     override val commandManager: CommandManager get() = platform.commandManager
-
-    override val pluginsManager: PluginsManager
-    override val messagingManager: MessagingManager
-
 
     init {
         INSTANCE = this
@@ -52,16 +50,10 @@ class ReCoreImpl (
         config = loadConfig()
 
         printPlatformInfo()
-        pluginsManager = CommonPluginsManager()
 
         registerDatabaseProvider()
         registerCacheProvider()
         registerMessagingManager()
-
-        databaseProvider = serviceProvider.getService()
-        cacheProvider = serviceProvider.getService()
-
-        messagingManager = serviceProvider.getService()
     }
 
     fun init() {
