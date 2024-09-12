@@ -4,7 +4,7 @@ import org.slf4j.Logger
 
 interface ReCorePlugin {
 
-    val logger: Logger?
+    val logger: Logger
 
     fun getPluginInfo(): PluginInfo
 

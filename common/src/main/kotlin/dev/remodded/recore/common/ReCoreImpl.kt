@@ -11,6 +11,7 @@ import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
 import dev.remodded.recore.api.service.getLazyService
 import dev.remodded.recore.api.service.registerService
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory
 
 class ReCoreImpl (
     override val platform: ReCorePlatform,
-) : ReCore {
+) : ReCore, ReCorePlugin by platform {
 
     val config: ReCoreConfig
 
