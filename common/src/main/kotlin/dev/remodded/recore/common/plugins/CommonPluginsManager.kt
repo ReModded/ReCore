@@ -26,7 +26,7 @@ class CommonPluginsManager : PluginsManager {
         } catch (e: NoSuchMethodException) {
             throw RuntimeException(
                 """Common class ${commonClass.name} for plugin ${plugin.getPluginInfo().name} is not valid.
-                |Common class is required to have ctor that accepts ${plugin.javaClass} or default ctor.""".trimMargin(),
+                  |Common class is required to have ctor that accepts ${plugin.javaClass} or default ctor.""".trimMargin(),
                 e
             )
         }
