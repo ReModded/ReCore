@@ -5,6 +5,7 @@ import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.cache.CacheType
 import dev.remodded.recore.api.command.CommandManager
+import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.database.DatabaseType
 import dev.remodded.recore.api.messaging.MessagingChannelType
@@ -20,6 +21,7 @@ import dev.remodded.recore.common.cache.redis.RedisCacheProvider
 import dev.remodded.recore.common.command.ReCoreCommand
 import dev.remodded.recore.common.config.DefaultConfigManager
 import dev.remodded.recore.common.config.ReCoreConfig
+import dev.remodded.recore.common.data.tag.CommonDataTagProvider
 import dev.remodded.recore.common.database.MariaDBProvider
 import dev.remodded.recore.common.database.MySQLProvider
 import dev.remodded.recore.common.database.PostgreSQLProvider
@@ -51,6 +53,8 @@ class ReCoreImpl (
         config = loadConfig()
 
         printPlatformInfo()
+
+        serviceProvider.registerService(DataTagProvider::class.java) { CommonDataTagProvider }
 
         registerDatabaseProvider()
         registerCacheProvider()
