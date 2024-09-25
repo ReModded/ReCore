@@ -14,7 +14,7 @@ import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
-import dev.remodded.recore.paper.command.source.utils.wrap
+import dev.remodded.recore.paper.command.source.wrap
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
 import org.bukkit.Bukkit

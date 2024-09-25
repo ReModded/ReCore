@@ -13,3 +13,9 @@ open class PaperEntity(
     override val name: Component get() = native.name()
     override val location: Location get() = PaperLocation(native.location)
 }
+
+fun Entity.native() = (this as PaperEntity).native
+fun org.bukkit.entity.Entity.wrap() = when(this) {
+    is org.bukkit.entity.Player -> this.wrap()
+    else -> PaperEntity(this)
+}

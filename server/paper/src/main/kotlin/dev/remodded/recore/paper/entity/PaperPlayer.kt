@@ -21,3 +21,6 @@ class PaperPlayer(
         native.sendMessage(message)
     }
 }
+
+fun Player.native() = (this as PaperPlayer).native
+fun org.bukkit.entity.Player.wrap() = PaperPlayer(this as CraftPlayer)
