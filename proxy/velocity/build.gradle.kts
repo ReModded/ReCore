@@ -3,8 +3,8 @@ import dev.remodded.regradle.markAsBuildTarget
 import dev.remodded.regradle.markAsNeedShadow
 
 plugins {
-    id("xyz.jpenilla.run-velocity") version "2.3.0"
-    id("xyz.jpenilla.resource-factory-velocity-convention") version "1.1.2-SNAPSHOT"
+    id("xyz.jpenilla.run-velocity") version "2.3.1"
+    id("xyz.jpenilla.resource-factory-velocity-convention") version "1.2.0"
 }
 
 markAsBuildTarget()

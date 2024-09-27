@@ -6,8 +6,8 @@ import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 
 plugins {
     id("io.papermc.paperweight.userdev") version "1.7.1"
-    id("xyz.jpenilla.run-paper") version "2.3.0"
-    id("xyz.jpenilla.resource-factory-paper-convention") version "1.1.1"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "1.2.0"
 }
 
 markAsBuildTarget()
