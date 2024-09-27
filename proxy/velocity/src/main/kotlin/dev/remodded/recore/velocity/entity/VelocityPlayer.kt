@@ -2,6 +2,7 @@ package dev.remodded.recore.velocity.entity
 
 import dev.remodded.recore.api.entity.GameMode
 import dev.remodded.recore.api.entity.Player
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.text
 import dev.remodded.recore.api.world.Location
 import net.kyori.adventure.text.Component
@@ -19,6 +20,12 @@ class VelocityPlayer(
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }
+
+    // Additional Data Holder delegation
+    override fun getAllAdditionalData() = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
+    override fun getAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
+    override fun removeAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
+    override fun clearAdditionalData() = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
 }
 
 fun Player.native(): com.velocitypowered.api.proxy.Player = (this as VelocityPlayer).native
