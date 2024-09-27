@@ -1,6 +1,7 @@
 package dev.remodded.recore.paper.data.additional
 
 import dev.remodded.recore.api.ReCore
+import dev.remodded.recore.api.data.additional.AdditionalData
 import dev.remodded.recore.api.data.additional.AdditionalDataHolder
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.common.data.additional.CommonAdditionalData
@@ -14,22 +15,30 @@ import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 
 class PaperAdditionalDataManager : CommonAdditionalDataManager() {
 
-    override fun create(holder: AdditionalDataHolder, plugin: ReCorePlugin) =
-        CommonAdditionalData(plugin, holder)
-
-    override fun load(holder: AdditionalDataHolder) {
+    override fun getAdditionalDataPlugins(holder: AdditionalDataHolder): Collection<ReCorePlugin> {
         val container = getAdditionalDataContainer(holder)
-        holder.clearAdditionalData()
-        for (key in container.allKeys) {
-            val plugin = ReCore.INSTANCE.pluginsManager.getPlugin(key) ?: continue
-            holder.getAdditionalData(plugin).putAll(container.getCompound(key).toDataTag())
-        }
+        return container.allKeys.mapNotNull { ReCore.INSTANCE.pluginsManager.getPlugin(it) }
     }
 
-    override fun save(holder: AdditionalDataHolder, plugin: ReCorePlugin) {
+    override fun load(holder: AdditionalDataHolder, plugin: ReCorePlugin): AdditionalData {
         val container = getAdditionalDataContainer(holder)
-        val data = holder.getAdditionalData(plugin) as CommonAdditionalData
-        container.merge(data.toTag())
+        val data = CommonAdditionalData(plugin, holder)
+
+        data.putAll(container.getCompound(plugin.getPluginInfo().id).toDataTag())
+
+        return data
+    }
+
+    override fun save(data: AdditionalData) {
+        val data = data as CommonAdditionalData
+        val container = getAdditionalDataContainer(data.dataHolder)
+        val pluginTag = data.plugin.getPluginInfo().id
+
+        if (container.contains(pluginTag))
+            container.getCompound(pluginTag).merge(data.toTag())
+        else
+            container.put(pluginTag, data.toTag())
+
         data.isDirty = false
     }
 
@@ -43,11 +52,7 @@ class PaperAdditionalDataManager : CommonAdditionalDataManager() {
                 else -> throw IllegalArgumentException("Unsupported AdditionalDataHolder type: ${holder::class.simpleName}")
             }
 
-            val tag = container.getTag(ADDITIONAL_DATA_KEY)
-            return if (tag == null)
-                CompoundTag().also { container.put(ADDITIONAL_DATA_KEY, it) }
-            else
-                tag as CompoundTag
+            return container.getTag(ADDITIONAL_DATA_KEY) as CompoundTag? ?: CompoundTag().also { container.put(ADDITIONAL_DATA_KEY, it) }
         }
 
     }

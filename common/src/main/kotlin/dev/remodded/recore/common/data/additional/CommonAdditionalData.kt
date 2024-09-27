@@ -16,7 +16,7 @@ class CommonAdditionalData(
     }
 
     override fun save() {
-        CommonAdditionalDataManager.INSTANCE.save(dataHolder, plugin)
+        CommonAdditionalDataManager.INSTANCE.save(this)
         isDirty = false
     }
 }

@@ -7,17 +7,13 @@ import dev.remodded.recore.api.plugins.ReCorePlugin
 class CommonAdditionalDataHolder(val delegator: AdditionalDataHolder) : AdditionalDataHolder {
     val additionalData: MutableMap<String, AdditionalData> = mutableMapOf()
 
-    init {
-        CommonAdditionalDataManager.INSTANCE.load(delegator)
-    }
-
     override fun getAllAdditionalData(): Collection<AdditionalData> {
         return additionalData.values
     }
 
     override fun getAdditionalData(plugin: ReCorePlugin): AdditionalData {
         return additionalData.getOrPut(plugin.getPluginInfo().id) {
-            CommonAdditionalDataManager.INSTANCE.create(delegator, plugin)
+            CommonAdditionalDataManager.INSTANCE.load(delegator, plugin)
         }
     }
 
