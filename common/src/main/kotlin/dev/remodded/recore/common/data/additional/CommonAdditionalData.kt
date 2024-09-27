@@ -10,12 +10,13 @@ class CommonAdditionalData(
     val dataHolder: AdditionalDataHolder,
 ) : AdditionalData, dev.remodded.recore.api.data.tag.ObjectDataTag by ObjectDataTag() {
 
-    override var isDirty: Boolean = false
+    override var isDirty: Boolean = true
     override fun markDirty() {
         isDirty = true
     }
 
     override fun save() {
+        if (!isDirty) return
         CommonAdditionalDataManager.INSTANCE.save(this)
         isDirty = false
     }

@@ -30,6 +30,8 @@ class PaperAdditionalDataManager : CommonAdditionalDataManager() {
     }
 
     override fun save(data: AdditionalData) {
+        if (!data.isDirty) return
+
         val data = data as CommonAdditionalData
         val container = getAdditionalDataContainer(data.dataHolder)
         val pluginTag = data.plugin.getPluginInfo().id
