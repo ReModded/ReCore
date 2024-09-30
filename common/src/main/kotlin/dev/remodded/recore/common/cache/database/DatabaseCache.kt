@@ -2,8 +2,9 @@ package dev.remodded.recore.common.cache.database
 
 import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.cache.Cache
-import dev.remodded.recore.api.database.use
 import dev.remodded.recore.api.utils.JsonUtils
+import dev.remodded.recore.api.utils.getOne
+import dev.remodded.recore.api.utils.use
 
 class DatabaseCache<T>(override val name: String, override val entryType: Class<T>) : Cache<T> {
 
@@ -27,7 +28,7 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
     }
 
     override val size: Int
-        get() = datasource.connection.use { prepareStatement(getEntryCountQuery(name)).executeQuery().getInt(1) }
+        get() = datasource.connection.use { prepareStatement(getEntryCountQuery(name)).getOne { getInt(1) } ?: 0 }
 
     override fun isEmpty() = size == 0
 
@@ -40,12 +41,8 @@ class DatabaseCache<T>(override val name: String, override val entryType: Class<
 
     override fun get(key: String): T? {
         return datasource.connection.use {
-            prepareStatement(getEntryQuery(name, key)).executeQuery().use {
-                if (next()) {
-                    JsonUtils.fromJson(getString("value"), entryType)
-                } else {
-                    null
-                }
+            prepareStatement(getEntryQuery(name, key)).getOne {
+                JsonUtils.fromJson(getString("value"), entryType)
             }
         }
     }

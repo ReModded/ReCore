@@ -1,9 +1,9 @@
 package dev.remodded.recore.common.database.migrations
 
 import dev.remodded.recore.api.database.DatabaseProvider
-import dev.remodded.recore.api.database.use
+import dev.remodded.recore.api.utils.use
 import dev.remodded.recore.api.plugins.ReCorePlugin
-import org.slf4j.LoggerFactory
+import dev.remodded.recore.api.utils.getOne
 import java.io.IOException
 import java.io.InputStream
 import java.sql.SQLException
@@ -38,7 +38,7 @@ class DatabaseMigrator(
         }
     }
 
-    private val logger = plugin.logger ?: LoggerFactory.getLogger(plugin.getPluginInfo().name + " Tmp")
+    private val logger = plugin.logger
     private val migrations = mutableListOf<DatabaseMigration>()
 
     init {
@@ -75,7 +75,7 @@ class DatabaseMigrator(
                         newLastMigration = migration.timestamp
                     } catch (e: SQLException) {
                         if (newLastMigration != null)
-                            setLastMigration(newLastMigration!!)
+                            setLastMigration(newLastMigration)
 
                         throw DatabaseMigrationException("Failed to apply migration ${migration.filename}", e)
                     }
@@ -84,7 +84,7 @@ class DatabaseMigrator(
         }
 
         if (newLastMigration != null)
-            setLastMigration(newLastMigration!!)
+            setLastMigration(newLastMigration)
 
         val delta = Duration.between(startTime, Instant.now()).toMillis() / 1000.0f
         logger.info("$LOG_PREFIX Applying migrations took $delta seconds")
@@ -172,12 +172,8 @@ class DatabaseMigrator(
         return database.getDataSource().connection.use {
             prepareStatement("SELECT lastMigrationTimestamp FROM migrations WHERE plugin=?").use {
                 setString(1, plugin.getPluginInfo().id)
-                executeQuery().use {
-                    if (next()) {
-                        getLong(1)
-                    } else {
-                        null
-                    }
+                getOne {
+                    getLong(1)
                 }
             }
         }
