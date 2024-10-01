@@ -51,9 +51,9 @@ object CommonDataTagProvider : DataTagProvider {
         else -> null
     } ?: throw IllegalArgumentException("Unsupported value type: ${value::class.java}")
 
-    override fun from(value: JsonObject) = ObjectDataTag(value.asMap().map { (key, value) -> key!! to from(value!!) })
+    override fun from(value: JsonObject) = ObjectDataTag(value.asMap().map { (key, value) -> key to from(value) })
 
-    override fun from(value: JsonArray) = ListDataTag(value.map { from(it) })
+    override fun from(value: JsonArray) = ListDataTag.from(value, this)
 
     fun <T> from(value: T): DataTag = when (value!!) {
         is String -> from(value)
