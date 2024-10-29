@@ -10,7 +10,6 @@ import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Server;
@@ -75,7 +74,7 @@ public class ReCoreSponge implements ReCorePlugin {
         );
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Logger getLogger() {
         return PLATFORM.getLogger();

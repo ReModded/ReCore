@@ -7,9 +7,10 @@ import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
 
-interface ReCore {
+interface ReCore : ReCorePlugin {
 
     companion object {
         @JvmStatic
