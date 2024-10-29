@@ -8,12 +8,6 @@ interface DataTagProvider {
     fun from(value: String): StringDataTag
 
     fun from(value: Boolean): NumericDataTag
-    fun from(value: Byte): NumericDataTag
-    fun from(value: Short): NumericDataTag
-    fun from(value: Int): NumericDataTag
-    fun from(value: Long): NumericDataTag
-    fun from(value: Float): NumericDataTag
-    fun from(value: Double): NumericDataTag
     fun from(value: Number): NumericDataTag
 
     fun <T: DataTag> from(value: Map<String, T>): ObjectDataTag
@@ -22,9 +16,18 @@ interface DataTagProvider {
 
     fun objectTag(): ObjectDataTag
     fun <T: DataTag> listTag(size: Int = 0): ListDataTag<T>
-    fun <T> listTag(value: List<T>): ListDataTag<DataTag>
+    fun <T: Any> listTag(value: List<T>): ListDataTag<DataTag>
 
     fun from(value: JsonElement): DataTag
     fun from(value: JsonObject): ObjectDataTag
     fun from(value: JsonArray): ListDataTag<DataTag>
+
+    // Converters
+    fun <T: Any> registerConverter(type: Class<T>, converter: DataTagConverter<in T>)
+
+    fun <T: Any> from(value: T): DataTag
+    fun <T: Any> value(tag: DataTag, type: Class<T>): T?
 }
+
+inline fun <reified T: Any> DataTagProvider.registerConverter(converter: DataTagConverter<in T>) =
+    registerConverter(T::class.java, converter)

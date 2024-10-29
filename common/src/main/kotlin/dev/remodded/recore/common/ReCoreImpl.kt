@@ -54,7 +54,7 @@ class ReCoreImpl (
 
         printPlatformInfo()
 
-        serviceProvider.registerService(DataTagProvider::class.java) { CommonDataTagProvider }
+        serviceProvider.registerService<DataTagProvider, CommonDataTagProvider>()
 
         registerDatabaseProvider()
         registerCacheProvider()

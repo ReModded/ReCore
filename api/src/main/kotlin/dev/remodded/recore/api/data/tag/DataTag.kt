@@ -22,12 +22,6 @@ interface DataTag {
         @JvmStatic override fun from(value: String) = tagProvider.from(value)
 
         @JvmStatic override fun from(value: Boolean) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Byte) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Short) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Int) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Long) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Float) = tagProvider.from(value)
-        @JvmStatic override fun from(value: Double) = tagProvider.from(value)
         @JvmStatic override fun from(value: Number) = tagProvider.from(value)
 
         @JvmStatic override fun <T : DataTag> from(value: Map<String, T>) = tagProvider.from<T>(value)
@@ -37,14 +31,18 @@ interface DataTag {
         @JvmStatic override fun objectTag() = tagProvider.objectTag()
 
         @JvmStatic override fun <T: DataTag> listTag(size: Int) = tagProvider.listTag<T>(size)
-        @JvmStatic override fun <T> listTag(value: List<T>) = tagProvider.listTag(value)
+        @JvmStatic override fun <T: Any> listTag(value: List<T>) = tagProvider.listTag(value)
 
         @JvmStatic override fun from(value: JsonElement) = tagProvider.from(value)
         @JvmStatic override fun from(value: JsonObject) = tagProvider.from(value)
         @JvmStatic override fun from(value: JsonArray) = tagProvider.from(value)
+
+        @JvmStatic override fun <T : Any> registerConverter(type: Class<T>, converter: DataTagConverter<in T>) = tagProvider.registerConverter(type, converter)
+
+        @JvmStatic override fun <T: Any> from(value: T) = tagProvider.from(value)
+        @JvmStatic override fun <T: Any> value(tag: DataTag, type: Class<T>) = tagProvider.value(tag, type)
     }
 }
 
 inline fun <reified T: DataTag> DataTag.cast() = cast(T::class.java)
 inline fun <reified T: DataTag> DataTag.tryCast() = tryCast(T::class.java)
-
