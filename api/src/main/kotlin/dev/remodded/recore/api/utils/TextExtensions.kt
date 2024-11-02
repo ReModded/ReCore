@@ -6,17 +6,41 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.util.HSVLike
-
 
 fun String.text() = Component.text(this)
 fun String.translatable() = Component.translatable(this)
+fun String.legacyText(legacyCharacter: Char = '&') = LegacyComponentSerializer.legacy(legacyCharacter).deserialize(this)
 
 operator fun Component.plus(other: Component) = this.append(other)
 operator fun Component.plus(other: String) = this + other.text()
 
+operator fun String.plus(other: Component) = this.text() + other
+
+
+operator fun Component.plusAssign(other: Component) {
+    if (this == Component.empty())
+        throw UnsupportedOperationException("can't appended to Empty component.")
+
+    if (other == Component.empty()) // nothing to append
+        return
+
+    val children = this.children()
+    if (children is MutableList<*>)
+        if (children.isEmpty())
+            this.javaClass.superclass.getFieldAccess("children").set(this, arrayListOf(other))
+        else
+            children.add(other)
+    else
+        this.javaClass.superclass.getFieldAccess("children").set(this, children.toMutableList() + other)
+}
+operator fun Component.plusAssign(other: String) { this += other.text() }
+operator fun String.plusAssign(other: Component) { this.text() += other }
+
 
 fun Component.rgb(r: Int, g: Int, b: Int) = this.color(TextColor.color(r, g, b))
+fun Component.rgb(r: Float, g: Float, b: Float) = this.color(TextColor.color(r, g, b))
 fun Component.hex(hex: String) = this.color(TextColor.fromHexString(hex))
 fun Component.hex(hex: Int) = this.color(TextColor.color(hex))
 fun Component.hsv(h: Float, s: Float, v: Float) = this.color(TextColor.color(HSVLike.hsvLike(h, s, v)))
@@ -52,6 +76,7 @@ fun Component.hover(action: String) = this.hoverEvent(action.text())
 
 
 fun String.rgb(r: Int, g: Int, b: Int) = this.text().rgb(r, g, b)
+fun String.rgb(r: Float, g: Float, b: Float) = this.text().rgb(r, g, b)
 fun String.hex(hex: String) = this.text().hex(hex)
 fun String.hex(hex: Int) = this.text().hex(hex)
 fun String.hsv(h: Float, s: Float, v: Float) = this.text().hsv(h, s, v)
