@@ -1,38 +1,34 @@
+
+import dev.remodded.regradle.MCVersion
+import dev.remodded.regradle.regradle
+import dev.remodded.regradle.utils.Version
+
 pluginManagement {
     repositories {
         mavenLocal() // For ReGradle development
-        maven("https://repo.remodded.dev/repository/Fabric/") {
-            name = "Remodded Fabric proxy"
-        }
-        maven("https://repo.remodded.dev/repository/Sponge/") {
-            name = "Remodded Sponge proxy"
-        }
-        maven("https://repo.remodded.dev/repository/maven-public/") {
+        maven("https://repo.remodded.dev/repository/ReGradle/") {
             name = "Remodded Maven"
         }
-        gradlePluginPortal()
     }
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+    id("dev.remodded.regradle") version "1.0.0-SNAPSHOT"
 }
 
-rootProject.name = settings.ext["\$name"] as String
+regradle {
+    mcVersion(MCVersion.V1_21_3)
 
-val modules = arrayListOf(
-    "api",
-    "common",
+    root("")
 
-    "server:paper",
-    "server:sponge-api12",
+    api("api")
+    common("common")
+    server("server")
+    proxy("proxy")
 
-    "proxy:velocity",
-)
+    paper("server:paper")
 
-modules.forEach { module ->
-    include(":$module")
-    val project = project(":$module")
-    project.name = module.substring(module.lastIndexOf(':') + 1)
-    project.projectDir = file(module.replace(":", "/"))
+    sponge("server:sponge-api12", MCVersion.V1_21_1)
+
+    velocity("proxy:velocity", Version(3, 3, 0, "SNAPSHOT"))
 }
