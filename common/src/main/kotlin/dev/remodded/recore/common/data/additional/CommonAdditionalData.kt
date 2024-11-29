@@ -7,7 +7,7 @@ import dev.remodded.recore.common.data.tag.ObjectDataTag
 
 class CommonAdditionalData(
     override val plugin: ReCorePlugin,
-    val dataHolder: AdditionalDataHolder,
+    override val dataHolder: AdditionalDataHolder,
 ) : AdditionalData, dev.remodded.recore.api.data.tag.ObjectDataTag by ObjectDataTag() {
 
     override var isDirty: Boolean = true

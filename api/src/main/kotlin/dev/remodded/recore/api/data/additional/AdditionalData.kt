@@ -5,6 +5,7 @@ import dev.remodded.recore.api.plugins.ReCorePlugin
 
 interface AdditionalData : ObjectDataTag {
     val plugin: ReCorePlugin
+    val dataHolder: AdditionalDataHolder
 
     val isDirty: Boolean
     fun markDirty()
