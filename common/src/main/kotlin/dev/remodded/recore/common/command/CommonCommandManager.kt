@@ -6,7 +6,7 @@ import dev.remodded.recore.api.plugins.PluginInfo
 abstract class CommonCommandManager : CommandManager {
 
     override fun getPermission(plugin: PluginInfo, command: String): String {
-        return "${plugin.id}.$command"
+        return "${plugin.id}.command.$command"
     }
 
 }
