@@ -10,4 +10,6 @@ interface Server {
     val libraryLoader: LibraryLoader
 
     val commandManager: CommandManager
+
+    val playerManager: PlayerManager
 }

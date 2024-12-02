@@ -1,5 +1,6 @@
 package dev.remodded.recore.sponge_api12
 
+import dev.remodded.recore.api.PlayerManager
 import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
@@ -13,6 +14,8 @@ class SpongeServer(
     override val platformInfo: PlatformInfo = getPlatformInfo()
 
     override val commandManager = ReCoreSpongeCommandManager()
+
+    override val playerManager: PlayerManager = SpongePlayerManager()
 
     companion object {
         private fun getPlatformInfo(): PlatformInfo {

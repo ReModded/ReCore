@@ -12,6 +12,8 @@ class PaperServer(
 ) : Server {
 
     override val commandManager = PaperCommandManager()
+    override val playerManager = PaperPlayerManager()
+
     override val platformInfo = Bukkit.getServer().let { server ->
         PlatformInfo(
             Platform.PAPER,
