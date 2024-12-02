@@ -15,6 +15,7 @@ import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
 import dev.remodded.recore.api.service.getLazyService
 import dev.remodded.recore.api.service.registerService
+import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
 import dev.remodded.recore.common.cache.redis.RedisCacheProvider
 import dev.remodded.recore.common.command.ReCoreCommand
@@ -48,7 +49,7 @@ class ReCoreImpl (
 
     init {
         INSTANCE = this
-        ReCore.INSTANCE = INSTANCE
+        ReCore.Companion::class.java.getFieldAccess("_instance").set(null, this)
 
         config = loadConfig()
 

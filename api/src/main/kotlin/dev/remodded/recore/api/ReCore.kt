@@ -13,7 +13,9 @@ interface ReCore : ReCorePlugin {
 
     companion object {
         @JvmStatic
-        lateinit var INSTANCE: ReCore
+        val INSTANCE: ReCore get() = _instance
+
+        private lateinit var _instance: ReCore
     }
 
     val serviceProvider: ServiceProvider
