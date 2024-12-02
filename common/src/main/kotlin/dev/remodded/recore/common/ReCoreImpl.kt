@@ -65,8 +65,8 @@ class ReCoreImpl (
         registerCommands()
     }
 
-    override fun <T> createConfigLoader(pluginInfo: PluginInfo, configClass: Class<T>) =
-        DefaultConfigManager(platform.platformInfo.dataFolder.resolve(pluginInfo.id), configClass)
+    override fun <T> createConfigLoader(plugin: ReCorePlugin, configClass: Class<T>) =
+        DefaultConfigLoader(server.platformInfo.dataFolder.resolve(plugin.getPluginInfo().id), configClass)
 
 
     companion object {
@@ -110,7 +110,7 @@ class ReCoreImpl (
         val configFile = "ReCore.conf"
         try {
             logger.info("Loading configuration")
-            val loader = createConfigLoader(platform.getPluginInfo(), ReCoreConfig::class.java)
+            val loader = createConfigLoader(this, ReCoreConfig::class.java)
             val cfg = loader.getConfig(configFile)!!
             logger.info("Config $configFile loaded successfully")
 

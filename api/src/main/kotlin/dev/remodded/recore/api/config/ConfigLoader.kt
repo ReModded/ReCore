@@ -3,7 +3,7 @@ package dev.remodded.recore.api.config
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.serialize.SerializationException
 
-interface ConfigManager<T> {
+interface ConfigLoader<T> {
     /**
      * Retrieves the configuration of a given `configName`.
      *

@@ -4,11 +4,12 @@ import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.ReCorePlatform
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.command.CommandManager
-import dev.remodded.recore.api.config.ConfigManager
+import dev.remodded.recore.api.config.ConfigLoader
 import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
 import org.slf4j.Logger
 
@@ -33,9 +34,9 @@ open class ReCoreTest : ReCore {
         get() = TODO("Not yet implemented")
 
     override fun <T> createConfigLoader(
-        pluginInfo: PluginInfo,
+        plugin: ReCorePlugin,
         configClass: Class<T>
-    ): ConfigManager<T> {
+    ): ConfigLoader<T> {
         TODO("Not yet implemented")
     }
 

@@ -1,6 +1,6 @@
 package dev.remodded.recore.common.config
 
-import dev.remodded.recore.api.config.ConfigManager
+import dev.remodded.recore.api.config.ConfigLoader
 import dev.remodded.recore.common.Constants
 import io.leangen.geantyref.TypeToken
 import org.slf4j.Logger
@@ -13,7 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 /**
- * This class is responsible for managing the configurations.
+ * This class is responsible for loading and saving the configurations.
  *
  * @param T The type of the object that will be loaded from the configuration file.
  * @property configDirectory The directory path where the configuration files are located.
@@ -22,14 +22,14 @@ import java.nio.file.Path
  * The config path is resolved from the default server config location. Inside this location,
  * each plugin has its own directory, named after the plugin itself, which holds its config files.
  */
-class DefaultConfigManager<T>(
+class DefaultConfigLoader<T>(
     private val configDirectory: Path,
     configClass: Class<T>
-) : ConfigManager<T> {
+) : ConfigLoader<T> {
 
     companion object {
-        inline operator fun <reified T> invoke(configPath: Path): ConfigManager<T> {
-            return DefaultConfigManager(configPath, T::class.java)
+        inline operator fun <reified T> invoke(configPath: Path): ConfigLoader<T> {
+            return DefaultConfigLoader(configPath, T::class.java)
         }
     }
 
