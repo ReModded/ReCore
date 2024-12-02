@@ -16,8 +16,6 @@ interface ReCore : ReCorePlugin {
         lateinit var INSTANCE: ReCore
     }
 
-    val platform: ReCorePlatform
-
     val serviceProvider: ServiceProvider
 
     val commandManager: CommandManager
@@ -26,9 +24,10 @@ interface ReCore : ReCorePlugin {
 
     val pluginsManager: PluginsManager
 
-
     val cacheProvider: CacheProvider
     val databaseProvider: DatabaseProvider
+
+    val server: Server
 
     fun <T>createConfigLoader(plugin: ReCorePlugin, configClass: Class<T>): ConfigLoader<T>
 }

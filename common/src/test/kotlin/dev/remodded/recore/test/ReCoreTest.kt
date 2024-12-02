@@ -1,7 +1,7 @@
 package dev.remodded.recore.test
 
 import dev.remodded.recore.api.ReCore
-import dev.remodded.recore.api.ReCorePlatform
+import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.command.CommandManager
 import dev.remodded.recore.api.config.ConfigLoader
@@ -18,8 +18,9 @@ open class ReCoreTest : ReCore {
         ReCore.INSTANCE = this
     }
 
-    override val platform: ReCorePlatform
-        get() = ReCoreTestPlatform()
+    override val server: Server
+        get() = TestServer()
+
     override val serviceProvider: ServiceProvider
         get() = TODO("Not yet implemented")
     override val commandManager: CommandManager

@@ -1,10 +1,11 @@
 package dev.remodded.recore.sponge_api12.command
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
+import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.common.command.CommonCommandManager
+import dev.remodded.recore.sponge_api12.ReCoreSponge
 import io.leangen.geantyref.TypeToken
 import net.minecraft.commands.CommandSourceStack
 import org.spongepowered.api.Sponge
@@ -24,7 +25,7 @@ class ReCoreSpongeCommandManager : CommonCommandManager() {
 
     override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
         @Suppress("UNCHECKED_CAST")
-        registrar.register(null, command as LiteralArgumentBuilder<CommandSourceStack>, *aliases)
+        registrar.register((pluginInfo.mainInstance as ReCoreSponge).plugin, command as LiteralArgumentBuilder<CommandSourceStack>, *aliases)
     }
 
     override fun executeCommand(command: String): Int {

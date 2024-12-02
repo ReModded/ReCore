@@ -1,7 +1,7 @@
 package dev.remodded.recore.common
 
 import dev.remodded.recore.api.ReCore
-import dev.remodded.recore.api.ReCorePlatform
+import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.cache.CacheProvider
 import dev.remodded.recore.api.cache.CacheType
 import dev.remodded.recore.api.command.CommandManager
@@ -10,7 +10,6 @@ import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.database.DatabaseType
 import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
-import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
@@ -19,7 +18,7 @@ import dev.remodded.recore.api.service.registerService
 import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
 import dev.remodded.recore.common.cache.redis.RedisCacheProvider
 import dev.remodded.recore.common.command.ReCoreCommand
-import dev.remodded.recore.common.config.DefaultConfigManager
+import dev.remodded.recore.common.config.DefaultConfigLoader
 import dev.remodded.recore.common.config.ReCoreConfig
 import dev.remodded.recore.common.data.tag.CommonDataTagProvider
 import dev.remodded.recore.common.database.MariaDBProvider
@@ -32,7 +31,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class ReCoreImpl (
-    override val platform: ReCorePlatform,
+    override val server: Server,
+    val platform: ReCorePlatformCommon,
 ) : ReCore, ReCorePlugin by platform {
 
     val config: ReCoreConfig
@@ -44,7 +44,7 @@ class ReCoreImpl (
     override val databaseProvider: DatabaseProvider by serviceProvider.getLazyService()
     override val messagingManager: MessagingManager by serviceProvider.getLazyService()
 
-    override val commandManager: CommandManager get() = platform.commandManager
+    override val commandManager: CommandManager get() = server.commandManager
 
     init {
         INSTANCE = this
@@ -75,16 +75,17 @@ class ReCoreImpl (
 
         val logger: Logger = LoggerFactory.getLogger(Constants.NAME)
 
-        fun init(platform: ReCorePlatform) {
+        @JvmStatic
+        fun init(server: Server, platform: ReCorePlatformCommon) {
             logger.info("ReCore Initializing")
-            val instance = ReCoreImpl(platform)
+            val instance = ReCoreImpl(server, platform)
 
             instance.init()
         }
     }
 
     private fun printPlatformInfo() {
-        val platformInfo = platform.platformInfo
+        val platformInfo = server.platformInfo
 
         val info = listOf(
             "ReCore (${Constants.VERSION})",

@@ -7,22 +7,24 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.remodded.recore.api.lib.LibraryLoader;
+import dev.remodded.recore.api.messaging.MessagingManager;
 import dev.remodded.recore.api.plugins.PluginInfo;
-import dev.remodded.recore.api.plugins.ReCorePlugin;
 import dev.remodded.recore.common.Constants;
+import dev.remodded.recore.common.ReCoreImpl;
+import dev.remodded.recore.common.ReCorePlatformCommon;
 import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
+import dev.remodded.recore.velocity.messaging.channel.VelocityChannelMessagingManager;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 @Plugin(id = Constants.ID)
-public class ReCoreVelocity implements ReCorePlugin {
+public class ReCoreVelocity implements ReCorePlatformCommon {
     private final Logger logger = LoggerFactory.getLogger("ReCoreVelocityBootstrapper");
     private final LibraryLoader libraryLoader = new DefaultLibraryLoader(logger, getClass().getClassLoader());
 
@@ -34,7 +36,6 @@ public class ReCoreVelocity implements ReCorePlugin {
     private Path dataFolder;
 
     public static ReCoreVelocity INSTANCE;
-    public static ReCoreVelocityPlatform PLATFORM;
 
     @Subscribe
     void onProxyInit(ProxyInitializeEvent event) {
@@ -49,11 +50,18 @@ public class ReCoreVelocity implements ReCorePlugin {
             logger.error("Error while loading dependencies", e);
         }
 
-        PLATFORM = new ReCoreVelocityPlatform(proxy, libraryLoader, dataFolder.getParent());
+        var server = new VelocityServer(proxy, libraryLoader, dataFolder.getParent());
+
+        ReCoreImpl.init(server, this);
     }
 
     public ProxyServer getProxy() {
         return proxy;
+    }
+
+    @Override
+    public @NotNull MessagingManager createChannelMessagingManager() {
+        return new VelocityChannelMessagingManager();
     }
 
     @NotNull
@@ -65,11 +73,5 @@ public class ReCoreVelocity implements ReCorePlugin {
             Constants.VERSION,
             this
         );
-    }
-
-    @Nullable
-    @Override
-    public Logger getLogger() {
-        return PLATFORM.getLogger();
     }
 }
