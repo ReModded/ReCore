@@ -5,10 +5,11 @@ import dev.remodded.recore.api.PlayerManager
 import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
+import dev.remodded.recore.api.command.source.ConsoleCommandSender
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
-import dev.remodded.recore.api.plugins.PluginInfo
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.common.command.CommonCommandManager
 import kotlin.io.path.Path
 
@@ -28,7 +29,7 @@ class TestServer : Server {
         get() = TODO("Not yet implemented")
     override val commandManager = object : CommonCommandManager() {
             override fun registerCommand(
-                pluginInfo: PluginInfo,
+                plugin: ReCorePlugin,
                 command: LiteralArgumentBuilder<CommandSrcStack>,
                 vararg aliases: String
             ) {
@@ -45,5 +46,9 @@ class TestServer : Server {
             ): Int {
                 TODO("Not yet implemented")
             }
+
+        override fun consoleSender(): ConsoleCommandSender {
+            TODO("Not yet implemented")
         }
+    }
 }

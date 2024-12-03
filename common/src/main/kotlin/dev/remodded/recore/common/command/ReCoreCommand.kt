@@ -25,7 +25,7 @@ object ReCoreCommand {
             println("Received: $msg")
         }
 
-        manager.registerCommand(ReCore.INSTANCE.getPluginInfo(), command(), "rc")
+        manager.registerCommand(ReCore.INSTANCE, command(), "rc")
     }
 
     private fun command() =

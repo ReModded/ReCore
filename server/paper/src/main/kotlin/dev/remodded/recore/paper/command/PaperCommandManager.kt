@@ -11,9 +11,11 @@ import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
-import dev.remodded.recore.api.plugins.PluginInfo
+import dev.remodded.recore.api.command.source.ConsoleCommandSender
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
+import dev.remodded.recore.paper.command.source.native
 import dev.remodded.recore.paper.command.source.wrap
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
@@ -23,20 +25,25 @@ import org.bukkit.plugin.Plugin
 
 class PaperCommandManager : CommonCommandManager() {
 
-    override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
+    override fun registerCommand(plugin: ReCorePlugin, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
+        val plugin = plugin.getPluginInfo().mainInstance as Plugin
         val originalCmd = command.build()
         val cmd = wrapCommand(originalCmd) as LiteralCommandNode<CommandSourceStack>
         PaperCommands.INSTANCE.setValid()
-        PaperCommands.INSTANCE.setCurrentContext(pluginInfo.mainInstance as Plugin)
-        PaperCommands.INSTANCE.register(cmd, aliases.toList())
+        PaperCommands.INSTANCE.register(plugin.pluginMeta, cmd, null, aliases.toList())
+        PaperCommands.INSTANCE.invalidate()
     }
 
     override fun executeCommand(command: String): Int {
-        return if(Bukkit.getCommandMap().dispatch(Bukkit.getConsoleSender(), command)) 1 else 0
+        return executeCommand(command, consoleSender())
     }
 
     override fun executeCommand(command: String, sender: CommandSender): Int {
-        TODO("Not yet implemented")
+        return if(Bukkit.getCommandMap().dispatch(sender.native(), command)) 1 else 0
+    }
+
+    override fun consoleSender(): ConsoleCommandSender {
+        return Bukkit.getConsoleSender().wrap()
     }
 
     private companion object {
