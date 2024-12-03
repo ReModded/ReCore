@@ -11,11 +11,12 @@ import dev.remodded.recore.api.plugins.PluginInfo
 import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
+import dev.remodded.recore.api.utils.getFieldAccess
 import org.slf4j.Logger
 
 open class ReCoreTest : ReCore {
     init {
-        ReCore.INSTANCE = this
+        ReCore.Companion::class.java.getFieldAccess("_instance").set(null, this)
     }
 
     override val server: Server

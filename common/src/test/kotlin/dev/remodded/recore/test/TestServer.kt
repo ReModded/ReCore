@@ -1,6 +1,7 @@
 package dev.remodded.recore.test
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import dev.remodded.recore.api.PlayerManager
 import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
@@ -12,6 +13,9 @@ import dev.remodded.recore.common.command.CommonCommandManager
 import kotlin.io.path.Path
 
 class TestServer : Server {
+    override val playerManager: PlayerManager
+        get() = TODO("Not yet implemented")
+
     override val platformInfo = PlatformInfo(
         platform = Platform.None,
         platformName = "ReCoreTestPlatform",
