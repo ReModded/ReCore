@@ -4,7 +4,7 @@ import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.data.additional.AdditionalDataManager
 import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.plugins.PluginInfo
-import dev.remodded.recore.api.service.registerService
+import dev.remodded.recore.api.service.provide
 import dev.remodded.recore.common.Constants
 import dev.remodded.recore.common.ReCoreImpl
 import dev.remodded.recore.common.ReCorePlatformCommon
@@ -29,7 +29,7 @@ class ReCorePaperPlatform(
     override fun onEnable() {
         ReCoreImpl.init(PaperServer(libraryLoader), this)
 
-        ReCore.INSTANCE.serviceProvider.registerService<AdditionalDataManager, PaperAdditionalDataManager>()
+        ReCore.INSTANCE.serviceProvider.provide<AdditionalDataManager, PaperAdditionalDataManager>(ReCore.INSTANCE)
     }
 
     override fun getPluginInfo(): PluginInfo {

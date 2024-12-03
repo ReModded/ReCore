@@ -14,7 +14,7 @@ import dev.remodded.recore.api.plugins.PluginsManager
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.service.ServiceProvider
 import dev.remodded.recore.api.service.getLazyService
-import dev.remodded.recore.api.service.registerService
+import dev.remodded.recore.api.service.provide
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.cache.database.DatabaseCacheProvider
 import dev.remodded.recore.common.cache.redis.RedisCacheProvider
@@ -55,7 +55,7 @@ class ReCoreImpl (
 
         printPlatformInfo()
 
-        serviceProvider.registerService<DataTagProvider, CommonDataTagProvider>()
+        serviceProvider.provide<DataTagProvider, CommonDataTagProvider>(this)
 
         registerDatabaseProvider()
         registerCacheProvider()
@@ -129,7 +129,7 @@ class ReCoreImpl (
     }
 
     private fun registerDatabaseProvider() {
-        serviceProvider.registerService<DatabaseProvider> {
+        serviceProvider.provide<DatabaseProvider>(this) {
             val dbConfig = config.database
             when(dbConfig.databaseType) {
                 DatabaseType.POSTGRESQL -> PostgreSQLProvider(dbConfig)
@@ -140,7 +140,7 @@ class ReCoreImpl (
     }
 
     private fun registerCacheProvider() {
-        serviceProvider.registerService<CacheProvider> {
+        serviceProvider.provide<CacheProvider>(this) {
             val cache = config.cache
             when(cache.type) {
                 CacheType.REDIS -> RedisCacheProvider()
@@ -150,7 +150,7 @@ class ReCoreImpl (
     }
 
     private fun registerMessagingManager() {
-        serviceProvider.registerService<MessagingManager> {
+        serviceProvider.provide<MessagingManager>(this) {
             val messagingService = config.messagingService
             when (messagingService) {
                 MessagingChannelType.CHANNELS -> platform.createChannelMessagingManager()

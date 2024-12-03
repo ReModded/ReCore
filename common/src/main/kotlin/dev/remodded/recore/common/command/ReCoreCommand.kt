@@ -43,6 +43,9 @@ object ReCoreCommand {
             .then(literal("version")
                 .executes(::version)
             )
+            .then(literal("services")
+                .executes(::printServices)
+            )
             .executes(::version)
 
     private fun test(ctx: CommandContext<CommandSrcStack>): Int {
@@ -56,6 +59,11 @@ object ReCoreCommand {
 
     private fun reload(ctx: CommandContext<CommandSrcStack>, type: ReloadType): Int {
         ctx.source.sender.sendMessage("Test reload $type".text())
+        return 1
+    }
+
+    private fun printServices(ctx: CommandContext<CommandSrcStack>): Int {
+        ctx.source.sender.sendMessage(ReCore.INSTANCE.serviceProvider.getDebugInfo().text())
         return 1
     }
 
