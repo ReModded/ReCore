@@ -28,7 +28,7 @@ regradle {
 
     paper("server:paper")
 
-    sponge("server:sponge-api12", MCVersion.V1_21_1)
+//    sponge("server:sponge-api12", MCVersion.V1_21_1)
 
     velocity("proxy:velocity", Version(3, 3, 0, "SNAPSHOT"))
 }
