@@ -35,8 +35,7 @@ object ReCoreCommand {
             )
             .then(literal("reload")
                 .executes { ctx -> reload(ctx, ReloadType.ALL) }
-                .then(argument("type", EnumArgumentType.get())
-                    .suggests(EnumArgumentType.enum<ReloadType>())
+                .then(argument("type", EnumArgumentType.enum<ReloadType>())
                     .executes { ctx -> reload(ctx, EnumArgumentType.getEnum<ReloadType>(ctx, "type")) }
                 )
             )

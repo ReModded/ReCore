@@ -6,9 +6,12 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.context.CommandContextBuilder
 import com.mojang.brigadier.context.ParsedArgument
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.ArgumentCommandNode
 import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
+import dev.remodded.recore.api.command.arguments.CustomArgumentType
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.command.source.ConsoleCommandSender
@@ -19,8 +22,10 @@ import dev.remodded.recore.paper.command.source.native
 import dev.remodded.recore.paper.command.source.wrap
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.PaperCommands
+import net.minecraft.commands.synchronization.ArgumentTypeInfos
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import java.util.concurrent.CompletableFuture
 
 
 class PaperCommandManager : CommonCommandManager() {
@@ -48,17 +53,38 @@ class PaperCommandManager : CommonCommandManager() {
 
     private companion object {
         fun wrapCommand(cmd: CommandNode<CommandSrcStack>): CommandNode<CommandSourceStack> {
+            @Suppress("UNCHECKED_CAST")
             val node = when (cmd) {
                 is LiteralCommandNode<*> -> LiteralArgumentBuilder.literal((cmd as LiteralCommandNode<CommandSrcStack>).literal)
                 is ArgumentCommandNode<*, *> -> {
                     @Suppress("UNCHECKED_CAST")
-                    val arg = cmd as ArgumentCommandNode<CommandSrcStack, Any>
-                    val node = RequiredArgumentBuilder.argument<CommandSourceStack, Any>(arg.name, arg.type as ArgumentType<Any>)
+                    val argumentNode = cmd as ArgumentCommandNode<CommandSrcStack, Any>
+                    var argumentType = argumentNode.type
 
-                    if (arg.customSuggestions != null)
-                        node.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
+                    val arg = argumentType
+                    if (arg is CustomArgumentType<*, *>) {
+                        argumentType = object : io.papermc.paper.command.brigadier.argument.CustomArgumentType.Converted<Any, Any> {
+                            override fun getNativeType() = arg.nativeType as ArgumentType<Any>
+                            override fun convert(nativeType: Any): Any {
+                                return (arg as CustomArgumentType<Any, Any>).convert(nativeType)
+                            }
 
-                    node
+                            override fun <S : Any> listSuggestions(
+                                context: CommandContext<S>,
+                                builder: SuggestionsBuilder
+                            ): CompletableFuture<Suggestions> {
+                                return arg.suggest(mapCommandCtx(context as CommandContext<CommandSourceStack>), builder)
+                            }
+                        }
+                    }
+                    else if (!ArgumentTypeInfos.isClassRecognized(argumentType.javaClass))
+                        throw IllegalArgumentException("Unsupported custom argument type: ${argumentType::class.simpleName}")
+
+                    @Suppress("UNCHECKED_CAST")
+                    RequiredArgumentBuilder.argument<CommandSourceStack, Any>(argumentNode.name, argumentType).apply {
+                        if (argumentNode.customSuggestions != null)
+                            suggests { ctx, builder -> argumentNode.customSuggestions.getSuggestions(mapCommandCtx(ctx), builder) }
+                    }
                 }
                 else -> throw IllegalArgumentException("Unsupported command node type: ${cmd::class.java}")
             }
@@ -79,11 +105,10 @@ class PaperCommandManager : CommonCommandManager() {
             return node.build()
         }
 
+        @Suppress("UNCHECKED_CAST")
         private fun mapCommandCtx(native: CommandContext<CommandSourceStack>): CommandContext<CommandSrcStack> {
             val source = native.source.wrap()
-            @Suppress("UNCHECKED_CAST")
             val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
-            @Suppress("UNCHECKED_CAST")
             return CommandContextBuilder(null, source, native.rootNode as CommandNode<CommandSrcStack>, native.range.start)
                 .apply {
                     arguments.forEach { (name, value) -> withArgument(name, value) }
