@@ -13,7 +13,8 @@ class VelocityPlayer(
 ) : Player {
     override val gamemode: GameMode get() = GameMode.NONE
     override val id: UUID get() = native.uniqueId
-    override val name get() = native.username.text()
+    override val name: String get() = native.username
+    override val displayName get() = name.text()
 
     override val location: Location get() = throw UnsupportedOperationException("VelocityPlayer.location is not supported")
 

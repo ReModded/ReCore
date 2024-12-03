@@ -7,13 +7,15 @@ import dev.remodded.recore.api.world.Location
 import dev.remodded.recore.common.data.additional.CommonAdditionalDataHolder
 import dev.remodded.recore.paper.world.PaperLocation
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import java.util.*
 
 open class PaperEntity(
     open val native: org.bukkit.entity.Entity
 ) : Entity {
     override val id: UUID get() = native.uniqueId
-    override val name: Component get() = native.name()
+    override val name: String get() = PlainTextComponentSerializer.plainText().serialize(native.name())
+    override val displayName: Component get() = native.name()
     override val location: Location get() = PaperLocation(native.location)
 
     // Additional Data Holder delegation

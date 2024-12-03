@@ -7,7 +7,8 @@ import java.util.*
 
 interface Entity : AdditionalDataHolder {
     val id: UUID
-    val name: Component
+    val name: String
+    val displayName: Component
 
     val location: Location
 }
