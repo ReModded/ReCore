@@ -14,23 +14,34 @@ import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
-import dev.remodded.recore.api.plugins.PluginInfo
+import dev.remodded.recore.api.command.source.ConsoleCommandSender
+import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
+import dev.remodded.recore.velocity.command.source.VelocityCommandSourceStack
+import dev.remodded.recore.velocity.command.source.native
+import dev.remodded.recore.velocity.command.source.wrap
 
-class VelocityCommandManager(private val server: ProxyServer) : CommonCommandManager() {
+class VelocityCommandManager(private val proxy: ProxyServer) : CommonCommandManager() {
 
-    override fun registerCommand(pluginInfo: PluginInfo, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
+    override fun registerCommand(plugin: ReCorePlugin, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
         val cmd = BrigadierCommand(wrapCommand(command.build()) as LiteralCommandNode<CommandSource>)
-        server.commandManager.register(command.literal, cmd, *aliases)
+
+        val meta = proxy.commandManager.metaBuilder(cmd).aliases(*aliases).build()
+
+        proxy.commandManager.register(meta, cmd)
     }
 
     override fun executeCommand(command: String): Int {
-        TODO("Not yet implemented")
+        return executeCommand(command, consoleSender())
     }
 
     override fun executeCommand(command: String, sender: CommandSender): Int {
-        TODO("Not yet implemented")
+        return if (proxy.commandManager.executeImmediatelyAsync(sender.native(), command).get()) 1 else 0
+    }
+
+    override fun consoleSender(): ConsoleCommandSender {
+        return proxy.consoleCommandSource.wrap()
     }
 
     private companion object {

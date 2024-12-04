@@ -1,4 +1,4 @@
-package dev.remodded.recore.velocity.command
+package dev.remodded.recore.velocity.command.source
 
 import com.velocitypowered.api.command.CommandSource
 import dev.remodded.recore.api.command.source.CommandSender
