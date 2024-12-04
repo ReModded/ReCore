@@ -1,5 +1,6 @@
 package dev.remodded.recore.test.data.tag
 
+import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.remodded.recore.api.data.tag.NumericDataTag
 import dev.remodded.recore.api.data.tag.cast
@@ -48,17 +49,20 @@ class NumericDataTagTest : DataTagTestBase() {
 
     @Test
     fun toJson() {
-        assertEquals(JsonPrimitive(2.toByte()), provider.from(2.toByte()).toJson())
-        assertEquals(JsonPrimitive(2.toShort()), provider.from(2.toShort()).toJson())
-        assertEquals(JsonPrimitive(2), provider.from(2).toJson())
-        assertEquals(JsonPrimitive(2L), provider.from(2L).toJson())
+        assertEquals(create(2.toByte()), provider.from(2.toByte()).toJson())
+        assertEquals(create(2.toShort()), provider.from(2.toShort()).toJson())
+        assertEquals(create(2), provider.from(2).toJson())
+        assertEquals(create(2L), provider.from(2L).toJson())
 
-        assertEquals(JsonPrimitive(2.0f), provider.from(2.0f).toJson())
-        assertEquals(JsonPrimitive(2.0), provider.from(2.0).toJson())
+        assertEquals(create(2.0f), provider.from(2.0f).toJson())
+        assertEquals(create(2.0), provider.from(2.0).toJson())
     }
 
     @Test
     fun fromJson() {
+        assertEquals(2, provider.from(create(2)).cast<NumericDataTag>().getValue())
+        assertEquals(2, provider.from(JsonPrimitive(2)).cast<NumericDataTag>().getValue())
+
         assertEquals(true, provider.from(JsonPrimitive(true)).cast<NumericDataTag>().getBool())
         assertEquals(false, provider.from(JsonPrimitive(false)).cast<NumericDataTag>().getBool())
     }
@@ -72,5 +76,19 @@ class NumericDataTagTest : DataTagTestBase() {
 
         assertEquals("2.0", provider.from(2.0f).toString())
         assertEquals("2.0", provider.from(2.0).toString())
+    }
+
+
+    private fun <T: Number> create(value: T) = JsonObject().apply {
+        add("@type", JsonPrimitive(when(value.javaClass) {
+            java.lang.Byte::class.java -> 0
+            java.lang.Short::class.java -> 1
+            java.lang.Integer::class.java -> 2
+            java.lang.Long::class.java -> 3
+            java.lang.Float::class.java -> 4
+            java.lang.Double::class.java -> 5
+            else -> throw IllegalArgumentException("Invalid number!")
+        }))
+        add("value", JsonPrimitive(value))
     }
 }

@@ -2,7 +2,6 @@ package dev.remodded.recore.api.data.tag
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 
 interface DataTagProvider {
     fun from(value: String): StringDataTag
@@ -19,7 +18,6 @@ interface DataTagProvider {
     fun <T: Any> listTag(value: List<T>): ListDataTag<DataTag>
 
     fun from(value: JsonElement): DataTag
-    fun from(value: JsonObject): ObjectDataTag
     fun from(value: JsonArray): ListDataTag<DataTag>
 
     // Converters

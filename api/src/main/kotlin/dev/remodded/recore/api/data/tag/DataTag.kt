@@ -2,7 +2,6 @@ package dev.remodded.recore.api.data.tag
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.service.getLazyService
 
@@ -34,7 +33,6 @@ interface DataTag {
         @JvmStatic override fun <T: Any> listTag(value: List<T>) = tagProvider.listTag(value)
 
         @JvmStatic override fun from(value: JsonElement) = tagProvider.from(value)
-        @JvmStatic override fun from(value: JsonObject) = tagProvider.from(value)
         @JvmStatic override fun from(value: JsonArray) = tagProvider.from(value)
 
         @JvmStatic override fun <T : Any> registerConverter(type: Class<T>, converter: DataTagConverter<in T>) = tagProvider.registerConverter(type, converter)

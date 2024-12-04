@@ -8,12 +8,7 @@ import dev.remodded.recore.api.data.tag.DataTag
 import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.data.tag.registerConverter
-import dev.remodded.recore.common.data.tag.converters.BooleanDataTagConverter
-import dev.remodded.recore.common.data.tag.converters.JsonDataTagConverter
-import dev.remodded.recore.common.data.tag.converters.NumberDataTagConverter
-import dev.remodded.recore.common.data.tag.converters.StringDataTagConverter
-import dev.remodded.recore.common.data.tag.converters.UUIDDataTagConverter
-import java.lang.UnsupportedOperationException
+import dev.remodded.recore.common.data.tag.converters.*
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -47,10 +42,26 @@ class CommonDataTagProvider : DataTagProvider {
         else -> null
     } ?: throw IllegalArgumentException("Unsupported value type: ${value::class.java}")
 
-    override fun from(value: JsonObject) = ObjectDataTag(value.asMap().map { (key, value) -> key to from(value) })
+    fun from(value: JsonObject) =
+        if (value.has("@type"))
+            unwrapNumber(value)
+        else
+            ObjectDataTag(value.asMap().map { (key, value) -> key to from(value) })
 
     override fun from(value: JsonArray) = ListDataTag.from(value, this)
 
+    private fun unwrapNumber(jsonObject: JsonObject): NumberDataTag<*> {
+        val type = jsonObject.get("@type").asInt
+        return when (type) {
+            0 -> return NumberDataTag(jsonObject.get("value").asByte)
+            1 -> return NumberDataTag(jsonObject.get("value").asShort)
+            2 -> return NumberDataTag(jsonObject.get("value").asInt)
+            3 -> return NumberDataTag(jsonObject.get("value").asLong)
+            4 -> return NumberDataTag(jsonObject.get("value").asFloat)
+            5 -> return NumberDataTag(jsonObject.get("value").asDouble)
+            else -> throw IllegalArgumentException("Invalid number!")
+        }
+    }
 
     // Converters
     val converters = mutableMapOf<Class<*>, DataTagConverter<*>>()
