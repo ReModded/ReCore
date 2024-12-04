@@ -12,7 +12,7 @@ private val provider: DataTagProvider by ReCore.INSTANCE.serviceProvider.getLazy
 fun StringTag.toDataTag() = provider.from(this.asString)
 fun NumericTag.toDataTag() = provider.from(this.asNumber)
 
-fun CollectionTag<*>.toDataTag() = provider.listTag(this.map { it.toDataTag() })
+fun CollectionTag<*>.toDataTag(): ListDataTag<DataTag> = provider.listTag<DataTag>(this.size).also { tag -> forEach { tag.add(it.toDataTag()) }}
 
 fun CompoundTag.toDataTag() = provider.objectTag().apply {
     for (key in this@toDataTag.allKeys)
@@ -22,7 +22,7 @@ fun CompoundTag.toDataTag() = provider.objectTag().apply {
 fun Tag.toDataTag(): DataTag = when(this) {
     is StringTag -> this.toDataTag()
     is NumericTag -> this.toDataTag()
-    is CollectionTag<*> -> this.toDataTag()
+    is CollectionTag<*> -> this.toDataTag() as DataTag
     is CompoundTag -> this.toDataTag()
     else -> throw IllegalArgumentException("Unsupported NBT Tag type: ${this::class.simpleName}")
 }
@@ -37,7 +37,7 @@ fun NumericDataTag.toTag(): NumericTag = when(this.getValue()) {
     is Long -> LongTag.valueOf(this.getValue<Long>())
     is Float -> FloatTag.valueOf(this.getValue<Float>())
     is Double -> DoubleTag.valueOf(this.getValue<Double>())
-    else -> throw IllegalArgumentException("Unsupported DataTag type: ${this::class.simpleName}")
+    else -> throw IllegalArgumentException("Unsupported DataTag type: ${this.getValue().javaClass.simpleName}")
 }
 
 fun ListDataTag<*>.toTag(): CollectionTag<*> =

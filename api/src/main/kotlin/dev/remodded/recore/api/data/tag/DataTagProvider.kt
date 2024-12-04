@@ -14,7 +14,7 @@ interface DataTagProvider {
     fun <T: DataTag> from(value: List<T>): ListDataTag<T>
 
     fun objectTag(): ObjectDataTag
-    fun <T: DataTag> listTag(size: Int = 0): ListDataTag<T>
+    fun <T: DataTag> listTag(capacity: Int = 0): ListDataTag<T>
     fun <T: Any> listTag(value: List<T>): ListDataTag<DataTag>
 
     fun from(value: JsonElement): DataTag

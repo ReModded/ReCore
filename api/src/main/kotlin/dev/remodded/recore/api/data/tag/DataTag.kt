@@ -29,7 +29,7 @@ interface DataTag {
 
         @JvmStatic override fun objectTag() = tagProvider.objectTag()
 
-        @JvmStatic override fun <T: DataTag> listTag(size: Int) = tagProvider.listTag<T>(size)
+        @JvmStatic override fun <T: DataTag> listTag(capacity: Int) = tagProvider.listTag<T>(capacity)
         @JvmStatic override fun <T: Any> listTag(value: List<T>) = tagProvider.listTag(value)
 
         @JvmStatic override fun from(value: JsonElement) = tagProvider.from(value)

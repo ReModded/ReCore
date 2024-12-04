@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import com.google.gson.internal.LazilyParsedNumber
 import dev.remodded.recore.api.data.tag.DataTag
 import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.DataTagProvider
@@ -16,8 +17,26 @@ class CommonDataTagProvider : DataTagProvider {
 
     override fun from(value: String) = StringDataTag(value)
 
+    override fun from(value: Number) =
+        if (value is LazilyParsedNumber)
+            if (value.toByte().toString() == value.toString())
+                NumberDataTag(value.toByte())
+            else if (value.toShort().toString() == value.toString())
+                NumberDataTag(value.toShort())
+            else if (value.toInt().toString() == value.toString())
+                NumberDataTag(value.toInt())
+            else if (value.toLong().toString() == value.toString())
+                NumberDataTag(value.toLong())
+            else if (value.toFloat().toString() == value.toString())
+                NumberDataTag(value.toFloat())
+            else if (value.toDouble().toString() == value.toString())
+                NumberDataTag(value.toDouble())
+            else
+                throw IllegalArgumentException("Unsupported lazy number format: $value")
+        else
+            NumberDataTag(value)
+
     override fun from(value: Boolean) = BooleanDataTag(value)
-    override fun from(value: Number) = NumberDataTag(value)
 
     override fun <T : DataTag> from(value: Map<String, T>) = ObjectDataTag.from(value)
 
@@ -25,7 +44,7 @@ class CommonDataTagProvider : DataTagProvider {
 
     override fun objectTag() = ObjectDataTag()
 
-    override fun <T : DataTag> listTag(size: Int) = ListDataTag<T>(size)
+    override fun <T : DataTag> listTag(capacity: Int) = ListDataTag<T>(capacity)
     override fun <T: Any> listTag(value: List<T>) = ListDataTag(value.map { from(it) })
 
     override fun from(value: JsonElement): DataTag = when (value) {
@@ -52,13 +71,14 @@ class CommonDataTagProvider : DataTagProvider {
 
     private fun unwrapNumber(jsonObject: JsonObject): NumberDataTag<*> {
         val type = jsonObject.get("@type").asInt
+        val value = jsonObject.get("value")
         return when (type) {
-            0 -> return NumberDataTag(jsonObject.get("value").asByte)
-            1 -> return NumberDataTag(jsonObject.get("value").asShort)
-            2 -> return NumberDataTag(jsonObject.get("value").asInt)
-            3 -> return NumberDataTag(jsonObject.get("value").asLong)
-            4 -> return NumberDataTag(jsonObject.get("value").asFloat)
-            5 -> return NumberDataTag(jsonObject.get("value").asDouble)
+            0 -> return NumberDataTag(value.asByte)
+            1 -> return NumberDataTag(value.asShort)
+            2 -> return NumberDataTag(value.asInt)
+            3 -> return NumberDataTag(value.asLong)
+            4 -> return NumberDataTag(value.asFloat)
+            5 -> return NumberDataTag(value.asDouble)
             else -> throw IllegalArgumentException("Invalid number!")
         }
     }
@@ -104,6 +124,12 @@ class CommonDataTagProvider : DataTagProvider {
         registerConverter<Double>(NumberDataTagConverter)
         registerConverter<BigInteger>(NumberDataTagConverter)
         registerConverter<BigDecimal>(NumberDataTagConverter)
+
+        registerConverter<ObjectDataTag>(DataTagDataTagConverter())
+        registerConverter<StringDataTag>(DataTagDataTagConverter())
+        registerConverter<BooleanDataTag>(DataTagDataTagConverter())
+        registerConverter<NumberDataTag<*>>(DataTagDataTagConverter())
+        registerConverter<ListDataTag<*>>(DataTagDataTagConverter())
 
 //        registerConverter(ListDataTagConverter())
 //        registerConverter(MapDataTagConverter())
