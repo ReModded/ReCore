@@ -2,6 +2,7 @@ package dev.remodded.recore.paper.entity
 
 import dev.remodded.recore.api.entity.GameMode
 import dev.remodded.recore.api.entity.Player
+import dev.remodded.recore.api.utils.red
 import net.kyori.adventure.text.Component
 import org.bukkit.craftbukkit.entity.CraftPlayer
 
@@ -16,6 +17,10 @@ class PaperPlayer(
             org.bukkit.GameMode.ADVENTURE -> GameMode.ADVENTURE
             org.bukkit.GameMode.SPECTATOR -> GameMode.SPECTATOR
         }
+
+    override fun kick(message: Component?) {
+        native.kick(message ?: "You has been kicked".red())
+    }
 
     override fun sendMessage(message: Component) {
         native.sendMessage(message)

@@ -3,6 +3,7 @@ package dev.remodded.recore.velocity.entity
 import dev.remodded.recore.api.entity.GameMode
 import dev.remodded.recore.api.entity.Player
 import dev.remodded.recore.api.plugins.ReCorePlugin
+import dev.remodded.recore.api.utils.red
 import dev.remodded.recore.api.utils.text
 import dev.remodded.recore.api.world.Location
 import net.kyori.adventure.text.Component
@@ -12,6 +13,11 @@ class VelocityPlayer(
     val native: com.velocitypowered.api.proxy.Player
 ) : Player {
     override val gamemode: GameMode get() = GameMode.NONE
+
+    override fun kick(message: Component?) {
+        native.disconnect(message ?: "You has been kicked".red())
+    }
+
     override val id: UUID get() = native.uniqueId
     override val name: String get() = native.username
     override val displayName get() = name.text()
