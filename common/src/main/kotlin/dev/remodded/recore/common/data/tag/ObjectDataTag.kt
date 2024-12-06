@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import dev.remodded.recore.api.data.tag.DataTag
 import dev.remodded.recore.api.data.tag.ObjectDataTag
 
-class ObjectDataTag(val data: MutableMap<String, DataTag> = mutableMapOf()) : BaseDataTag(), ObjectDataTag, MutableMap<String, DataTag> by data {
+open class ObjectDataTag(val data: MutableMap<String, DataTag> = mutableMapOf()) : BaseDataTag(), ObjectDataTag, MutableMap<String, DataTag> by data {
     constructor(data: Collection<Pair<String, DataTag>>) : this(HashMap<String, DataTag>(data.size).apply { this.putAll(data) })
 
     override fun getType() = Map::class.java
