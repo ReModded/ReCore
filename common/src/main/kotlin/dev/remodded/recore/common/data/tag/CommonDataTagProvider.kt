@@ -10,8 +10,6 @@ import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.data.tag.registerConverter
 import dev.remodded.recore.common.data.tag.converters.*
-import java.math.BigDecimal
-import java.math.BigInteger
 
 class CommonDataTagProvider : DataTagProvider {
 
@@ -94,50 +92,43 @@ class CommonDataTagProvider : DataTagProvider {
     }
 
     override fun <T: Any> from(value: T): DataTag {
-        val type = value::class.java
-
-        @Suppress("UNCHECKED_CAST")
-        val converter = converters[value.javaClass] as? DataTagConverter<T> ?:
-            throw UnsupportedOperationException("Unsupported value type: $type")
+        val type: Class<T> = value::class.javaObjectType as Class<T>
+        val converter = getConverter(type) ?: throw UnsupportedOperationException("Unsupported value type: $type")
 
         return converter.to(value)
     }
 
     override fun <T: Any> value(tag: DataTag, type: Class<T>): T? {
-        @Suppress("UNCHECKED_CAST")
-        val converter = converters[type] as? DataTagConverter<T> ?:
-            throw UnsupportedOperationException("Unsupported value type: $type")
-
+        val converter = getConverter(type) ?: throw UnsupportedOperationException("Unsupported value type: $type")
         return converter.from(tag)
+    }
+
+    private fun <T: Any> getConverter(type: Class<T>): DataTagConverter<T>? {
+        val converter = converters[type]
+
+        if (converter == null) {
+            for (converter in converters)
+                if (converter.key.isAssignableFrom(type)) {
+                    converters[type] = converter.value
+
+//                    println("Converter for ${converter.key} satisfies $type")
+
+                    @Suppress("UNCHECKED_CAST")
+                    return converter.value as DataTagConverter<T>
+                }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        return converter as? DataTagConverter<T>
     }
 
     init {
         registerConverter(BooleanDataTagConverter())
         registerConverter(StringDataTagConverter())
+        registerConverter(NumberDataTagConverter())
 
-        registerConverter(NumberDataTagConverter)
-        registerConverter<Byte>(NumberDataTagConverter)
-        registerConverter<Short>(NumberDataTagConverter)
-        registerConverter<Int>(NumberDataTagConverter)
-        registerConverter<Long>(NumberDataTagConverter)
-        registerConverter<Float>(NumberDataTagConverter)
-        registerConverter<Double>(NumberDataTagConverter)
-        registerConverter<BigInteger>(NumberDataTagConverter)
-        registerConverter<BigDecimal>(NumberDataTagConverter)
-
-        registerConverter<ObjectDataTag>(DataTagDataTagConverter())
-        registerConverter<StringDataTag>(DataTagDataTagConverter())
-        registerConverter<BooleanDataTag>(DataTagDataTagConverter())
-        registerConverter<NumberDataTag<*>>(DataTagDataTagConverter())
-        registerConverter<ListDataTag<*>>(DataTagDataTagConverter())
-
-//        registerConverter(ListDataTagConverter())
-//        registerConverter(MapDataTagConverter())
-
-        registerConverter(JsonDataTagConverter)
-        registerConverter<JsonArray>(JsonDataTagConverter)
-        registerConverter<JsonObject>(JsonDataTagConverter)
-        registerConverter<JsonPrimitive>(JsonDataTagConverter)
+        registerConverter(DataTagDataTagConverter())
+        registerConverter(JsonDataTagConverter())
 
         registerConverter(UUIDDataTagConverter())
     }

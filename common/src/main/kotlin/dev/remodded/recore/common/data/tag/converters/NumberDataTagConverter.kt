@@ -5,7 +5,7 @@ import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.NumericDataTag
 import dev.remodded.recore.api.data.tag.StringDataTag
 
-object NumberDataTagConverter : DataTagConverter<Number> {
+class NumberDataTagConverter : DataTagConverter<Number> {
     override fun from(tag: DataTag): Number? {
         return when (tag) {
             is NumericDataTag -> tag.getValue()
