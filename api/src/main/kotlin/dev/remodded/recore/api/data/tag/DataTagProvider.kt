@@ -28,4 +28,4 @@ interface DataTagProvider {
 }
 
 inline fun <reified T: Any> DataTagProvider.registerConverter(converter: DataTagConverter<in T>) =
-    registerConverter(T::class.java, converter)
+    registerConverter(T::class.javaObjectType, converter)

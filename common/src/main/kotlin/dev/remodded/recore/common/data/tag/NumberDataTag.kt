@@ -69,12 +69,12 @@ class NumberDataTag<N: Number>(var data: N) : BaseDataTag(), NumericDataTag {
         companion object {
             fun from(clazz: Class<out Number>): NumericType? {
                 return when (clazz) {
-                    java.lang.Byte::class.java    -> Byte
-                    java.lang.Short::class.java   -> Short
-                    java.lang.Integer::class.java -> Int
-                    java.lang.Long::class.java    -> Long
-                    java.lang.Float::class.java   -> Float
-                    java.lang.Double::class.java  -> Double
+                    kotlin.Byte::class.javaObjectType   -> Byte
+                    kotlin.Short::class.javaObjectType  -> Short
+                    kotlin.Int::class.javaObjectType    -> Int
+                    kotlin.Long::class.javaObjectType   -> Long
+                    kotlin.Float::class.javaObjectType  -> Float
+                    kotlin.Double::class.javaObjectType -> Double
                     else -> null
                 }
             }

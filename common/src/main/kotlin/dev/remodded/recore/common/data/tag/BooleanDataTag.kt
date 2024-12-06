@@ -20,7 +20,7 @@ class BooleanDataTag(var data: Boolean) : BaseDataTag(), NumericDataTag {
         return oldData
     }
 
-    override fun getType() = Boolean::class.java
+    override fun getType() = Boolean::class.javaObjectType
 
     override fun toJson() = JsonPrimitive(data)
     override fun toString() = data.toString()

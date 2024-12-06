@@ -42,5 +42,7 @@ interface DataTag {
     }
 }
 
-inline fun <reified T: DataTag> DataTag.cast() = cast(T::class.java)
-inline fun <reified T: DataTag> DataTag.tryCast() = tryCast(T::class.java)
+inline fun <reified T: DataTag> DataTag.cast() = cast(T::class.javaObjectType)
+inline fun <reified T: DataTag> DataTag.tryCast() = tryCast(T::class.javaObjectType)
+
+inline fun <reified T: Any> DataTag.Companion.value(tag: DataTag) = value(tag, T::class.javaObjectType)

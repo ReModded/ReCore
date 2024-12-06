@@ -81,12 +81,12 @@ class NumericDataTagTest : DataTagTestBase() {
 
     private fun <T: Number> create(value: T) = JsonObject().apply {
         add("@type", JsonPrimitive(when(value.javaClass) {
-            java.lang.Byte::class.java -> 0
-            java.lang.Short::class.java -> 1
-            java.lang.Integer::class.java -> 2
-            java.lang.Long::class.java -> 3
-            java.lang.Float::class.java -> 4
-            java.lang.Double::class.java -> 5
+            Byte::class.javaObjectType   -> 0
+            Short::class.javaObjectType  -> 1
+            Int::class.javaObjectType    -> 2
+            Long::class.javaObjectType   -> 3
+            Float::class.javaObjectType  -> 4
+            Double::class.javaObjectType -> 5
             else -> throw IllegalArgumentException("Invalid number!")
         }))
         add("value", JsonPrimitive(value))

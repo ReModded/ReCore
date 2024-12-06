@@ -9,4 +9,4 @@ interface NumericDataTag : DataTag {
     fun putValue(value: Boolean): Boolean
 }
 
-inline fun <reified T: Number> NumericDataTag.getValue() = getValue(T::class.java)
+inline fun <reified T: Number> NumericDataTag.getValue() = getValue(T::class.javaObjectType)
