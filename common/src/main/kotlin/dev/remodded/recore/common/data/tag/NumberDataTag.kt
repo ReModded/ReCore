@@ -28,15 +28,10 @@ class NumberDataTag<N: Number>(var data: N) : BaseDataTag(), NumericDataTag {
     }
 
     override fun getType() = data.javaClass
-    override fun toJson() = JsonObject().apply { add("@type", JsonPrimitive(when(getType()) {
-        java.lang.Byte::class.java -> 0
-        java.lang.Short::class.java -> 1
-        java.lang.Integer::class.java -> 2
-        java.lang.Long::class.java -> 3
-        java.lang.Float::class.java -> 4
-        java.lang.Double::class.java -> 5
-        else -> throw IllegalArgumentException("Invalid number!")
-    })); add("value", JsonPrimitive(data)) }
+    override fun toJson() = JsonObject().apply {
+        add("@type", JsonPrimitive((NumericType.from(getType()) ?: throw IllegalArgumentException("Invalid number!")).ordinal))
+        add("value", JsonPrimitive(data))
+    }
     override fun toString() = data.toString()
 
     companion object {
@@ -45,15 +40,44 @@ class NumberDataTag<N: Number>(var data: N) : BaseDataTag(), NumericDataTag {
             if (value == null) throw IllegalArgumentException("Value cannot be null")
             if (type.isInstance(value)) return value as T
 
-            return when (type) {
-                java.lang.Byte::class.java -> value.toByte()
-                java.lang.Short::class.java -> value.toShort()
-                java.lang.Integer::class.java -> value.toInt()
-                java.lang.Long::class.java -> value.toLong()
-                java.lang.Float::class.java -> value.toFloat()
-                java.lang.Double::class.java -> value.toDouble()
-                else -> throw UnsupportedOperationException("Unsupported number type: $type")
-            } as T
+            return (NumericType.from(type)?.cast(value) ?: throw UnsupportedOperationException("Unsupported number type: $type")) as T
+        }
+    }
+
+    enum class NumericType {
+        Byte {
+            override fun cast(value: Number): Number = value.toByte()
+        },
+        Short {
+            override fun cast(value: Number): Number = value.toShort()
+        },
+        Int {
+            override fun cast(value: Number): Number = value.toInt()
+        },
+        Long {
+            override fun cast(value: Number): Number = value.toLong()
+        },
+        Float {
+            override fun cast(value: Number): Number = value.toFloat()
+        },
+        Double {
+            override fun cast(value: Number): Number = value.toDouble()
+        };
+
+        abstract fun cast(value: Number): Number
+
+        companion object {
+            fun from(clazz: Class<out Number>): NumericType? {
+                return when (clazz) {
+                    java.lang.Byte::class.java    -> Byte
+                    java.lang.Short::class.java   -> Short
+                    java.lang.Integer::class.java -> Int
+                    java.lang.Long::class.java    -> Long
+                    java.lang.Float::class.java   -> Float
+                    java.lang.Double::class.java  -> Double
+                    else -> null
+                }
+            }
         }
     }
 }
