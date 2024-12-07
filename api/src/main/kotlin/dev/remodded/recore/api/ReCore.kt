@@ -31,5 +31,5 @@ interface ReCore : ReCorePlugin {
 
     val server: Server
 
-    fun <T>createConfigLoader(plugin: ReCorePlugin, configClass: Class<T>): ConfigLoader<T>
+    fun <T: Any> createConfigLoader(plugin: ReCorePlugin, configClass: Class<T>): ConfigLoader<T>
 }

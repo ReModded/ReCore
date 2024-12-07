@@ -1,6 +1,7 @@
 package dev.remodded.recore.common.config
 
 import dev.remodded.recore.api.config.ConfigLoader
+import dev.remodded.recore.api.config.EnvProvided
 import dev.remodded.recore.common.Constants
 import io.leangen.geantyref.TypeToken
 import org.slf4j.Logger
@@ -8,7 +9,9 @@ import org.slf4j.LoggerFactory
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.serialize.SerializationException
+import java.lang.reflect.Field
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -22,13 +25,13 @@ import java.nio.file.Path
  * The config path is resolved from the default server config location. Inside this location,
  * each plugin has its own directory, named after the plugin itself, which holds its config files.
  */
-class DefaultConfigLoader<T>(
+class DefaultConfigLoader<T : Any>(
     private val configDirectory: Path,
     configClass: Class<T>
 ) : ConfigLoader<T> {
 
     companion object {
-        inline operator fun <reified T> invoke(configPath: Path): ConfigLoader<T> {
+        inline operator fun <reified T: Any> invoke(configPath: Path): ConfigLoader<T> {
             return DefaultConfigLoader(configPath, T::class.java)
         }
     }
@@ -58,7 +61,10 @@ class DefaultConfigLoader<T>(
 
         if (loader.canLoad()) {
             logger.debug("Loading configuration file")
-            return loader.load(ConfigurationOptions.defaults()).get(configToken)
+            val config = loader.load(ConfigurationOptions.defaults()).get(configToken)
+            if (config != null)
+                loadFromEnv(config)
+            return config
         }
 
         logger.error("Can not load configuration file: $configFilePath")
@@ -115,5 +121,50 @@ class DefaultConfigLoader<T>(
         return HoconConfigurationLoader.builder()
             .path(configFilePath)
             .build()
+    }
+
+    private fun loadFromEnv(config: T) {
+        val env = System.getenv()
+
+        fun load(instance: Any, field: Field) {
+            if (field.type.isAnnotationPresent(ConfigSerializable::class.java)) {
+                field.isAccessible = true
+                val inst = field.get(instance)
+                if (inst != null) {
+                    inst::class.java.declaredFields.forEach { load(inst, it) }
+                }
+
+                return
+            }
+
+            val envName = field.getDeclaredAnnotation(EnvProvided::class.java)?.envName
+            if (envName != null) {
+                val envValue = env[envName]
+                if (envValue != null) {
+                    field.isAccessible = true
+
+                    if (field.type.isEnum) {
+                        for (enumValue in field.type.enumConstants) {
+                            if ((enumValue as Enum<*>).name.equals(envValue, true)) {
+                                field.set(config, enumValue)
+                                return
+                            }
+                        }
+                        throw IllegalArgumentException("Invalid enum value: $envValue")
+                    }
+
+                    when (field.type) {
+                        String::class.javaPrimitiveType -> field.set(config, envValue)
+                        Int::class.javaPrimitiveType -> field.set(config, envValue.toIntOrNull() ?: 0)
+                        Long::class.javaPrimitiveType -> field.set(config, envValue.toLongOrNull() ?: 0)
+                        Double::class.javaPrimitiveType -> field.set(config, envValue.toDoubleOrNull() ?: 0.0)
+                        Boolean::class.javaPrimitiveType -> field.set(config, envValue.toBoolean() == true)
+                        else -> throw IllegalArgumentException("Unsupported EnvProvided config type: ${field.type}")
+                    }
+                }
+            }
+        }
+
+        config::class.java.declaredFields.forEach { load(config, it) }
     }
 }

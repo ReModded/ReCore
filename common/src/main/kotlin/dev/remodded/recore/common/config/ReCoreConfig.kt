@@ -1,5 +1,6 @@
 package dev.remodded.recore.common.config
 
+import dev.remodded.recore.api.config.EnvProvided
 import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.common.cache.CacheConfig
 import dev.remodded.recore.common.connections.redis.RedisConfig
@@ -9,6 +10,8 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
 class ReCoreConfig {
+    @EnvProvided("RECORE_DEBUG")
+    val debug = false
 
     @Comment(
         "Specify the messaging service used for communication between plugins. Valid options are:\n" +
