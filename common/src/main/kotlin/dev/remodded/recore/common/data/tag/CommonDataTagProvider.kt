@@ -9,6 +9,7 @@ import dev.remodded.recore.api.data.tag.DataTag
 import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.data.tag.registerConverter
+import dev.remodded.recore.common.ReCoreImpl
 import dev.remodded.recore.common.data.tag.converters.*
 
 class CommonDataTagProvider : DataTagProvider {
@@ -111,7 +112,7 @@ class CommonDataTagProvider : DataTagProvider {
                 if (converter.key.isAssignableFrom(type)) {
                     converters[type] = converter.value
 
-//                    println("Converter for ${converter.key} satisfies $type")
+                    ReCoreImpl.logger.debug("Converter for {} satisfies {}", converter.key, type)
 
                     @Suppress("UNCHECKED_CAST")
                     return converter.value as DataTagConverter<T>
