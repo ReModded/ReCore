@@ -100,6 +100,7 @@ class DummyVelocityServerConnection(
                 GameProfile::class.java,
                 MinecraftConnection::class.java,
                 InetSocketAddress::class.java,
+                String::class.java,
                 Boolean::class.java,
                 IdentifiedKey::class.java,
             )
@@ -121,6 +122,7 @@ class DummyVelocityServerConnection(
                 profile,
                 dummyConnection,
                 null,
+                "",
                 false,
                 null
             )
