@@ -20,6 +20,8 @@ interface DataTagProvider {
     fun from(value: JsonElement): DataTag
     fun from(value: JsonArray): ListDataTag<DataTag>
 
+    fun <T: DataTag> fromJson(json: String): T
+
     // Converters
     fun <T: Any> registerConverter(type: Class<T>, converter: DataTagConverter<in T>)
 

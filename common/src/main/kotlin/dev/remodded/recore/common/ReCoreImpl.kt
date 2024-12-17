@@ -1,5 +1,6 @@
 package dev.remodded.recore.common
 
+import com.google.gson.Gson
 import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.Server
 import dev.remodded.recore.api.cache.CacheProvider
@@ -29,6 +30,7 @@ import dev.remodded.recore.common.database.PostgreSQLProvider
 import dev.remodded.recore.common.messaging.redis.RedisMessagingManager
 import dev.remodded.recore.common.plugins.CommonPluginsManager
 import dev.remodded.recore.common.service.CommonServiceProvider
+import dev.remodded.recore.common.utils.gson.GsonProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -57,6 +59,7 @@ class ReCoreImpl (
         if (config.debug)
             printPlatformInfo()
 
+        serviceProvider.provide<Gson>(this) { GsonProvider.GSON }
         serviceProvider.provide<DataTagProvider, CommonDataTagProvider>(this)
 
         registerDatabaseProvider()

@@ -9,7 +9,9 @@ import dev.remodded.recore.api.data.tag.DataTag
 import dev.remodded.recore.api.data.tag.DataTagConverter
 import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.data.tag.registerConverter
+import dev.remodded.recore.api.utils.JsonUtils
 import dev.remodded.recore.common.ReCoreImpl
+import dev.remodded.recore.common.data.tag.NumberDataTag.NumericType
 import dev.remodded.recore.common.data.tag.converters.*
 
 class CommonDataTagProvider : DataTagProvider {
@@ -68,18 +70,16 @@ class CommonDataTagProvider : DataTagProvider {
 
     override fun from(value: JsonArray) = ListDataTag.from(value, this)
 
+    override fun <T : DataTag> fromJson(json: String): T {
+        @Suppress("UNCHECKED_CAST")
+        return JsonUtils.fromJson<DataTag>(json) as T
+    }
+
     private fun unwrapNumber(jsonObject: JsonObject): NumberDataTag<*> {
-        val type = jsonObject.get("@type").asInt
+        val type = NumericType.entries.getOrNull(jsonObject.get("@type").asInt)
+            ?: throw IllegalArgumentException("Invalid number!")
         val value = jsonObject.get("value")
-        return when (type) {
-            0 -> return NumberDataTag(value.asByte)
-            1 -> return NumberDataTag(value.asShort)
-            2 -> return NumberDataTag(value.asInt)
-            3 -> return NumberDataTag(value.asLong)
-            4 -> return NumberDataTag(value.asFloat)
-            5 -> return NumberDataTag(value.asDouble)
-            else -> throw IllegalArgumentException("Invalid number!")
-        }
+        return NumberDataTag(type.cast(value.asNumber))
     }
 
     // Converters

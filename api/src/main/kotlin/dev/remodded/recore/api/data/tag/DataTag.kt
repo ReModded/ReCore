@@ -34,6 +34,7 @@ interface DataTag {
 
         @JvmStatic override fun from(value: JsonElement) = tagProvider.from(value)
         @JvmStatic override fun from(value: JsonArray) = tagProvider.from(value)
+        @JvmStatic override fun <T : DataTag> fromJson(json: String) = tagProvider.fromJson<T>(json)
 
         @JvmStatic override fun <T : Any> registerConverter(type: Class<T>, converter: DataTagConverter<in T>) = tagProvider.registerConverter(type, converter)
 
