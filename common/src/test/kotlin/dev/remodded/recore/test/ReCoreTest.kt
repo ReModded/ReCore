@@ -35,7 +35,7 @@ open class ReCoreTest : ReCore {
     override val databaseProvider: DatabaseProvider
         get() = TODO("Not yet implemented")
 
-    override fun <T> createConfigLoader(
+    override fun <T : Any> createConfigLoader(
         plugin: ReCorePlugin,
         configClass: Class<T>
     ): ConfigLoader<T> {

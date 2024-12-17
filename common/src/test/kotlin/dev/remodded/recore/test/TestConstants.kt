@@ -1,5 +1,5 @@
 package dev.remodded.recore.test
 
 object TestConstants {
-    const val EPSILON = 0.00001
+    const val EPSILON = 1e-6
 }

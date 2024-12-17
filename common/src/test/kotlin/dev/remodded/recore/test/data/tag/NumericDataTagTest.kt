@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive
 import dev.remodded.recore.api.data.tag.NumericDataTag
 import dev.remodded.recore.api.data.tag.cast
 import dev.remodded.recore.api.data.tag.getValue
+import dev.remodded.recore.common.data.tag.NumberDataTag
 import dev.remodded.recore.test.TestConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +21,7 @@ class NumericDataTagTest : DataTagTestBase() {
         assertEquals(2, dataTag.getValue<Byte>())
         assertEquals(2, dataTag.getValue<Short>())
         assertEquals(2, dataTag.getValue<Int>())
-        assertEquals(dataTag.getValue<Long>(), 2)
+        assertEquals(2, dataTag.getValue<Long>())
 
         assertEquals(2f, dataTag.getValue<Float>())
         assertEquals(2.0, dataTag.getValue<Double>())
@@ -80,15 +81,7 @@ class NumericDataTagTest : DataTagTestBase() {
 
 
     private fun <T: Number> create(value: T) = JsonObject().apply {
-        add("@type", JsonPrimitive(when(value.javaClass) {
-            Byte::class.javaObjectType   -> 0
-            Short::class.javaObjectType  -> 1
-            Int::class.javaObjectType    -> 2
-            Long::class.javaObjectType   -> 3
-            Float::class.javaObjectType  -> 4
-            Double::class.javaObjectType -> 5
-            else -> throw IllegalArgumentException("Invalid number!")
-        }))
+        add("@type", JsonPrimitive(NumberDataTag.NumericType.from(value.javaClass)!!.ordinal))
         add("value", JsonPrimitive(value))
     }
 }
