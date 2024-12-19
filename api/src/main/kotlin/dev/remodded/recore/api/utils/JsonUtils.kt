@@ -6,21 +6,21 @@ import dev.remodded.recore.api.ReCore
 import dev.remodded.recore.api.service.getLazyService
 
 object JsonUtils {
-    private val gson: Gson by ReCore.INSTANCE.serviceProvider.getLazyService()
+    val GSON: Gson by ReCore.INSTANCE.serviceProvider.getLazyService()
 
     inline fun <reified T> fromJson(json: String): T {
         return fromJson(json, object : TypeToken<T>() {})
     }
 
     fun <T> fromJson(json: String, clazz: Class<T>): T {
-        return gson.fromJson(json, clazz)
+        return GSON.fromJson(json, clazz)
     }
 
     fun <T> fromJson(json: String, type: TypeToken<T>): T {
-        return gson.fromJson(json, type)
+        return GSON.fromJson(json, type)
     }
 
     fun <T> toJson(obj: T): String {
-        return gson.toJson(obj)
+        return GSON.toJson(obj)
     }
 }

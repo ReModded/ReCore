@@ -3,7 +3,6 @@ package dev.remodded.recore.common.connections.redis
 import dev.remodded.recore.common.ReCoreImpl
 import org.redisson.Redisson
 import org.redisson.api.RedissonClient
-import org.redisson.codec.JsonJacksonCodec
 import org.redisson.codec.Kryo5Codec
 import org.redisson.config.Config
 
@@ -27,7 +26,7 @@ object Redis {
 
         val config = Config()
         config.codec = when (cfg.codec) {
-            RedisConfig.Codec.JSON -> JsonJacksonCodec()
+            RedisConfig.Codec.JSON -> GsonCodec()
             RedisConfig.Codec.BINARY -> Kryo5Codec()
         }
         val serverConfig = config.useSingleServer()
