@@ -25,4 +25,5 @@ class VelocityServer(
 
     override val commandManager = VelocityCommandManager(proxy)
     override val playerManager = VelocityPlayerManager(proxy)
+    override val isBehindProxy = false
 }

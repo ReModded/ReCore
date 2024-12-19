@@ -17,6 +17,8 @@ class TestServer : Server {
     override val playerManager: PlayerManager
         get() = TODO("Not yet implemented")
 
+    override val isBehindProxy = false
+
     override val platformInfo = PlatformInfo(
         platform = Platform.None,
         platformName = "ReCoreTestPlatform",

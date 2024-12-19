@@ -12,4 +12,6 @@ interface Server {
     val commandManager: CommandManager
 
     val playerManager: PlayerManager
+
+    val isBehindProxy: Boolean
 }
