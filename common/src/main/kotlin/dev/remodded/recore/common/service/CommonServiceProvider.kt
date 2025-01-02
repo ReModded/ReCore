@@ -56,9 +56,13 @@ class CommonServiceProvider : ServiceProvider {
     }
 
     override fun <T> getService(service: Class<T>): T {
-        val srv = services[service]
+        var srv = services[service]
 
-        if (srv == null) throw IllegalStateException("Service not found")
+        if (srv == null) {
+            srv = services.entries.find {
+                it.key.isAssignableFrom(service)
+            }?.value ?: throw IllegalStateException("Service not found")
+        }
 
         @Suppress("UNCHECKED_CAST")
         srv as RegisteredService<T>
