@@ -13,6 +13,7 @@ class RedisMessagingManager : CommonMessagingManager() {
     override val type = MessagingChannelType.REDIS
 
     override fun <T> createChannel(channel: String, clazz: Class<T>): MessageChannel<T> {
+        Redis.addClassLoader(clazz.classLoader)
         return RedisMessageChannel(Redis.client.getTopic(channel), clazz)
     }
 }

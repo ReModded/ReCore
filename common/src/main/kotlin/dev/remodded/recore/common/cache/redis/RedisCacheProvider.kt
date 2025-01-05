@@ -16,6 +16,8 @@ class RedisCacheProvider : CommonCacheProvider() {
     override fun <T> getCache(name: String, clazz: Class<T>): Cache<T> {
         sanitizeName(name)
 
+        Redis.addClassLoader(clazz.classLoader)
+
         return RedisCache(name, clazz)
     }
 
