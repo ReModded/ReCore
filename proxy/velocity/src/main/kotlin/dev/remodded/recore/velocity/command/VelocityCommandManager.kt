@@ -12,6 +12,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.velocitypowered.api.command.BrigadierCommand
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.ProxyServer
+import dev.remodded.recore.api.command.arguments.CustomArgumentType
 import dev.remodded.recore.api.command.source.CommandSender
 import dev.remodded.recore.api.command.source.CommandSrcStack
 import dev.remodded.recore.api.command.source.ConsoleCommandSender
@@ -25,7 +26,7 @@ import dev.remodded.recore.velocity.command.source.wrap
 class VelocityCommandManager(private val proxy: ProxyServer) : CommonCommandManager() {
 
     override fun registerCommand(plugin: ReCorePlugin, command: LiteralArgumentBuilder<CommandSrcStack>, vararg aliases: String) {
-        val cmd = BrigadierCommand(wrapCommand(command.build()) as LiteralCommandNode<CommandSource>)
+        val cmd = BrigadierCommand(wrapCommand(command.build(), mutableMapOf()) as LiteralCommandNode<CommandSource>)
 
         val meta = proxy.commandManager.metaBuilder(cmd).aliases(*aliases).build()
 
@@ -45,18 +46,35 @@ class VelocityCommandManager(private val proxy: ProxyServer) : CommonCommandMana
     }
 
     private companion object {
-        fun wrapCommand(cmd: CommandNode<CommandSrcStack>): CommandNode<CommandSource> {
+        fun wrapCommand(cmd: CommandNode<CommandSrcStack>, customArgs: MutableMap<String, CustomArgumentType<*, *>>): CommandNode<CommandSource> {
+            var cArgs = LinkedHashMap(customArgs)
             val node = when (cmd) {
                 is LiteralCommandNode<*> -> LiteralArgumentBuilder.literal((cmd as LiteralCommandNode<CommandSrcStack>).literal)
                 is ArgumentCommandNode<*, *> -> {
                     @Suppress("UNCHECKED_CAST")
-                    val arg = cmd as ArgumentCommandNode<CommandSrcStack, Any>
-                    val node = RequiredArgumentBuilder.argument<CommandSource, Any>(arg.name, arg.type as ArgumentType<Any>)
+                    val argumentNode = cmd as ArgumentCommandNode<CommandSrcStack, Any>
+                    var argumentType = argumentNode.type
 
-                    if (arg.customSuggestions != null)
-                        node.suggests { ctx, builder -> arg.listSuggestions(mapCommandCtx(ctx), builder) }
 
-                    node
+                    val arg = argumentType
+                    if (arg is CustomArgumentType<*, *>) {
+                        cArgs[cmd.name] = arg
+
+                        @Suppress("UNCHECKED_CAST")
+                        argumentType = arg.nativeType as ArgumentType<Any>
+                    } //else if (ArgumentPropertyRegistry.)
+
+                    @Suppress("UNCHECKED_CAST")
+                    RequiredArgumentBuilder.argument<CommandSource, Any>(argumentNode.name, argumentType).apply {
+                        if (arg is CustomArgumentType<*, *>) {
+                            if (argumentNode.customSuggestions != null)
+                                throw IllegalArgumentException("Custom argument type cannot have custom suggestions")
+
+                            suggests { ctx, builder -> arg.suggest(mapCommandCtx(ctx, cArgs), builder) }
+
+                        } else if (argumentNode.customSuggestions != null)
+                            suggests { ctx, builder -> argumentNode.customSuggestions.getSuggestions(mapCommandCtx(ctx, cArgs), builder) }
+                    }
                 }
                 else -> throw IllegalArgumentException("Unsupported command node type: ${cmd::class.java}")
             }
@@ -65,10 +83,10 @@ class VelocityCommandManager(private val proxy: ProxyServer) : CommonCommandMana
                 node.requires { src -> cmd.requirement.test(mapCommandSourceStack(src)) }
 
             if (cmd.command != null)
-                node.executes { ctx -> cmd.command.run(mapCommandCtx(ctx)) }
+                node.executes { ctx -> cmd.command.run(mapCommandCtx(ctx, cArgs)) }
 
             for (child in cmd.children) {
-                node.then(wrapCommand(child))
+                node.then(wrapCommand(child, cArgs))
             }
 
             if (cmd.redirect != null)
@@ -81,14 +99,20 @@ class VelocityCommandManager(private val proxy: ProxyServer) : CommonCommandMana
             return VelocityCommandSourceStack(native)
         }
 
-        private fun mapCommandCtx(native: CommandContext<CommandSource>): CommandContext<CommandSrcStack> {
+        @Suppress("UNCHECKED_CAST")
+        private fun mapCommandCtx(native: CommandContext<CommandSource>, customArgs: MutableMap<String, CustomArgumentType<*, *>>): CommandContext<CommandSrcStack> {
             val source = mapCommandSourceStack(native.source)
-            @Suppress("UNCHECKED_CAST")
-            val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, *>>
-            @Suppress("UNCHECKED_CAST")
+            val arguments = CommandContext::class.java.getFieldAccess("arguments").get(native) as Map<String, ParsedArgument<CommandSrcStack, Any>>
             return CommandContextBuilder(null, source, native.rootNode as CommandNode<CommandSrcStack>, native.range.start)
                 .apply {
-                    arguments.forEach { (name, value) -> withArgument(name, value) }
+                    for ((name, value) in arguments) {
+                        if (customArgs.containsKey(name)) {
+                            val arg = customArgs[name]!! as CustomArgumentType<Any, Any>
+                            val resultField = ParsedArgument::class.java.getFieldAccess("result")
+                            resultField.set(value, arg.convert(value.result))
+                        }
+                        withArgument(name, value)
+                    }
                 }
                 .build(native.input)
         }
