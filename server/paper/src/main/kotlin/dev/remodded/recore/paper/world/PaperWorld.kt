@@ -1,10 +1,14 @@
 package dev.remodded.recore.paper.world
 
-import org.bukkit.World
+import dev.remodded.recore.api.world.World
+
 
 class PaperWorld(
-    private val nativeWorld: World
-) : dev.remodded.recore.api.world.World {
+    val native: org.bukkit.World
+) : World {
     override val name: String
-        get() = nativeWorld.name
+        get() = native.name
 }
+
+fun World.native() = (this as PaperWorld).native
+fun org.bukkit.World.wrap() = PaperWorld(this)
