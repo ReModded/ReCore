@@ -6,6 +6,7 @@ import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.red
 import dev.remodded.recore.api.utils.text
 import dev.remodded.recore.api.world.Location
+import dev.remodded.recore.velocity.exception.UnsupportedOnProxyException
 import net.kyori.adventure.text.Component
 import java.util.*
 
@@ -22,17 +23,17 @@ class VelocityPlayer(
     override val name: String get() = native.username
     override val displayName get() = name.text()
 
-    override val location: Location get() = throw UnsupportedOperationException("VelocityPlayer.location is not supported")
+    override val location: Location get() = throw UnsupportedOnProxyException("VelocityPlayer.location")
 
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }
 
     // Additional Data Holder delegation
-    override fun getAllAdditionalData() = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
-    override fun getAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
-    override fun removeAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
-    override fun clearAdditionalData() = throw UnsupportedOperationException("VelocityPlayer does not supports AdditionalData (yet?).")
+    override fun getAllAdditionalData() = throw UnsupportedOnProxyException("VelocityPlayer.getAllAdditionalData")
+    override fun getAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOnProxyException("VelocityPlayer.getAdditionalData")
+    override fun removeAdditionalData(plugin: ReCorePlugin) = throw UnsupportedOnProxyException("VelocityPlayer.removeAdditionalData")
+    override fun clearAdditionalData() = throw UnsupportedOnProxyException("VelocityPlayer.clearAdditionalData")
 }
 
 fun Player.native(): com.velocitypowered.api.proxy.Player = (this as VelocityPlayer).native
