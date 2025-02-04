@@ -15,6 +15,13 @@ data class ResourceKey(
 
         fun of(namespace: String, path: String) =
             ResourceKey(namespace, path)
+
+        fun fromString(value: String) =
+            value.split(":").let {
+                if (it.size != 2)
+                    throw IllegalArgumentException("Invalid resource key format '$value'")
+                ResourceKey(it[0], it[1])
+            }
     }
 
     override fun toString(): String {

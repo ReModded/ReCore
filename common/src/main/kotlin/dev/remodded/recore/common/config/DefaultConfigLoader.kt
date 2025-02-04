@@ -7,7 +7,6 @@ import io.leangen.geantyref.TypeToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.spongepowered.configurate.ConfigurateException
-import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.serialize.SerializationException
@@ -61,7 +60,7 @@ class DefaultConfigLoader<T : Any>(
 
         if (loader.canLoad()) {
             logger.debug("Loading configuration file")
-            val config = loader.load(ConfigurationOptions.defaults()).get(configToken)
+            val config = loader.load().get(configToken)
             if (config != null)
                 loadFromEnv(config)
             return config
@@ -119,6 +118,9 @@ class DefaultConfigLoader<T : Any>(
      */
     private fun createConfigLoader(configFilePath: Path): HoconConfigurationLoader {
         return HoconConfigurationLoader.builder()
+            .defaultOptions {
+                it.serializers(ConfigTypeSerializers.INSTANCE)
+            }
             .path(configFilePath)
             .build()
     }
