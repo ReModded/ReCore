@@ -11,4 +11,6 @@ interface Entity : AdditionalDataHolder {
     val displayName: Component
 
     val location: Location
+
+    fun teleport(location: Location)
 }

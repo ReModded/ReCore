@@ -6,6 +6,7 @@ import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.world.Location
 import dev.remodded.recore.common.data.additional.CommonAdditionalDataHolder
 import dev.remodded.recore.paper.world.PaperLocation
+import dev.remodded.recore.paper.world.toNative
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import java.util.*
@@ -17,6 +18,10 @@ open class PaperEntity(
     override val name: String get() = PlainTextComponentSerializer.plainText().serialize(native.name())
     override val displayName: Component get() = native.name()
     override val location: Location get() = PaperLocation(native.location)
+
+    override fun teleport(location: Location) {
+        native.teleport(location.toNative())
+    }
 
     // Additional Data Holder delegation
     val additionalDataHolderDelegate: AdditionalDataHolder by lazy { CommonAdditionalDataHolder(this) }

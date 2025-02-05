@@ -17,3 +17,7 @@ data class PaperLocation(
         location.world.wrap(),
     )
 }
+
+fun Location.toNative(): org.bukkit.Location {
+    return org.bukkit.Location(world.native(), position.x, position.y, position.z, yaw.toFloat(), pitch.toFloat())
+}
