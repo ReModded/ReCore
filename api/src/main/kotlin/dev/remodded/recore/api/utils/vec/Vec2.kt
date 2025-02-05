@@ -2,7 +2,7 @@ package dev.remodded.recore.api.utils.vec
 
 import kotlin.math.sqrt
 
-abstract class Vec2<T: Number> {
+abstract class Vec2<T: Number> : Vec<T> {
     abstract var x: T
     abstract var y: T
 
@@ -28,7 +28,7 @@ abstract class Vec2<T: Number> {
         operator fun <T: Number> invoke(x: T, y: T) = from(x, y)
     }
 
-    abstract fun copy(): Vec2<T>
+    abstract override fun copy(): Vec2<T>
 
     abstract operator fun plusAssign(other: Vec2<T>)
     abstract operator fun minusAssign(other: Vec2<T>)
@@ -56,20 +56,29 @@ abstract class Vec2<T: Number> {
         return result
     }
 
-    abstract fun lengthSqr(): T
-    fun length(): Double {
+    abstract override fun lengthSqr(): T
+    override fun length(): Double {
         return sqrt(lengthSqr().toDouble())
     }
 
-    fun toInt(): Vec2i {
+    override fun toInt(): Vec2i {
         return Vec2i(x.toInt(), y.toInt())
     }
 
-    fun toFloat(): Vec2f {
+    override fun toFloat(): Vec2f {
         return Vec2f(x.toFloat(), y.toFloat())
     }
 
-    fun toDouble(): Vec2d {
+    override fun toDouble(): Vec2d {
         return Vec2d(x.toDouble(), y.toDouble())
+    }
+
+    override fun size() = 2
+    override fun get(index: Int): T {
+        return when(index) {
+            0 -> x
+            1 -> y
+            else -> throw IllegalArgumentException("Invalid index: $index")
+        }
     }
 }
