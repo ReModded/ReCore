@@ -84,4 +84,8 @@ abstract class Vec3<T: Number> : Vec<T> {
             else -> throw IllegalArgumentException("Invalid index: $index")
         }
     }
+
+    fun xy() = Vec2(x, y)
+    fun xz() = Vec2(x, z)
+    fun yz() = Vec2(y, z)
 }
