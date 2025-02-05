@@ -23,11 +23,12 @@ class VelocityPlayer(
     override val name: String get() = native.username
     override val displayName get() = name.text()
 
-    override val location: Location get() = throw UnsupportedOnProxyException("VelocityPlayer.location")
-
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }
+
+    override val location: Location get() = throw UnsupportedOnProxyException("VelocityPlayer.location")
+    override fun teleport(location: Location) = throw UnsupportedOnProxyException("VelocityPlayer.teleport")
 
     // Additional Data Holder delegation
     override fun getAllAdditionalData() = throw UnsupportedOnProxyException("VelocityPlayer.getAllAdditionalData")
