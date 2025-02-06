@@ -12,9 +12,9 @@ abstract class Vec3<T: Number> : Vec<T> {
         fun<T: Number> from(clazz: Class<T>): Vec3<T> {
             @Suppress("UNCHECKED_CAST")
             return when(clazz) {
-                Double::class.javaPrimitiveType -> Vec3d()
-                Float::class.javaPrimitiveType -> Vec3f()
-                Int::class.javaPrimitiveType -> Vec3i()
+                Double::class.javaObjectType -> Vec3d()
+                Float::class.javaObjectType -> Vec3f()
+                Int::class.javaObjectType -> Vec3i()
                 else -> throw IllegalArgumentException("Unsupported class $clazz")
             } as Vec3<T>
         }
