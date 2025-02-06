@@ -56,6 +56,24 @@ abstract class Vec2<T: Number> : Vec<T> {
         return result
     }
 
+    override operator fun times(scalar: T): Vec2<T> {
+        val result = copy()
+        result *= scalar
+        return result
+    }
+    override operator fun div(scalar: T): Vec2<T> {
+        val result = copy()
+        result /= scalar
+        return result
+    }
+
+    override operator fun timesAssign(scalar: T) {
+        this *= Vec2(scalar, scalar)
+    }
+    override operator fun divAssign(scalar: T) {
+        this /= Vec2(scalar, scalar)
+    }
+
     abstract override fun lengthSqr(): T
     override fun length(): Double {
         return sqrt(lengthSqr().toDouble())
