@@ -18,6 +18,11 @@ abstract class Vec2<T: Number> : Vec<T> {
             } as Vec2<T>
         }
 
+        fun <T: Number> from(v: T): Vec2<T> = from(v.javaClass).apply {
+            this.x = v
+            this.y = v
+        }
+
         fun <T: Number> from(x: T, y: T): Vec2<T> {
             return from(x.javaClass).apply {
                 this.x = x
@@ -25,6 +30,7 @@ abstract class Vec2<T: Number> : Vec<T> {
             }
         }
 
+        operator fun <T: Number> invoke(v: T) = from(v)
         operator fun <T: Number> invoke(x: T, y: T) = from(x, y)
     }
 

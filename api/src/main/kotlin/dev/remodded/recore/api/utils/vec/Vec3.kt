@@ -19,6 +19,13 @@ abstract class Vec3<T: Number> : Vec<T> {
             } as Vec3<T>
         }
 
+
+        fun <T: Number> from(v: T): Vec3<T> = from(v.javaClass).apply {
+            this.x = v
+            this.y = v
+            this.z = v
+        }
+
         fun <T: Number> from(x: T, y: T, z: T): Vec3<T> {
             return from(x.javaClass).apply {
                 this.x = x
@@ -27,6 +34,7 @@ abstract class Vec3<T: Number> : Vec<T> {
             }
         }
 
+        operator fun <T: Number> invoke(v: T) = from(v)
         operator fun <T: Number> invoke(x: T, y: T, z: T) = from(x, y, z)
     }
 
