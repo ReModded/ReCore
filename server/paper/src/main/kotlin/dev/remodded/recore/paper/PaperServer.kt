@@ -6,6 +6,7 @@ import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
 import dev.remodded.recore.paper.command.PaperCommandManager
 import dev.remodded.recore.paper.world.PaperWorldManager
+import dev.remodded.recore.paper.world.structure.PaperStructureManager
 import io.papermc.paper.configuration.GlobalConfiguration
 import org.bukkit.Bukkit
 import org.spigotmc.SpigotConfig
@@ -17,6 +18,7 @@ class PaperServer(
     override val commandManager = PaperCommandManager()
     override val playerManager = PaperPlayerManager()
     override val worldManager = PaperWorldManager()
+    override val structureManager = PaperStructureManager()
     override val isBehindProxy: Boolean
         get() = GlobalConfiguration.get().proxies.velocity.enabled || SpigotConfig.bungee
 

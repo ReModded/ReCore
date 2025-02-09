@@ -10,11 +10,17 @@ import dev.remodded.recore.api.lib.LibraryLoader
 import dev.remodded.recore.api.platform.Platform
 import dev.remodded.recore.api.platform.PlatformInfo
 import dev.remodded.recore.api.plugins.ReCorePlugin
+import dev.remodded.recore.api.world.WorldManager
+import dev.remodded.recore.api.world.structure.StructureManager
 import dev.remodded.recore.common.command.CommonCommandManager
 import kotlin.io.path.Path
 
 class TestServer : Server {
     override val playerManager: PlayerManager
+        get() = TODO("Not yet implemented")
+    override val worldManager: WorldManager
+        get() = TODO("Not yet implemented")
+    override val structureManager: StructureManager
         get() = TODO("Not yet implemented")
 
     override val isBehindProxy = false
