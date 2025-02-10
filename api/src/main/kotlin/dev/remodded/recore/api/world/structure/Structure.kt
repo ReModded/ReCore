@@ -14,7 +14,7 @@ interface Structure {
      *
      * @param location The location to place the structure at.
      */
-    fun place(location: Location)
+    fun place(location: Location, rotation: StructureRotation = StructureRotation.NONE)
 
     fun fill(location: Location, size: Vec3<Int>)
 }
