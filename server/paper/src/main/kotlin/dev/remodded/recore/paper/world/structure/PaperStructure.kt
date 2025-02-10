@@ -25,7 +25,7 @@ class PaperStructure(
             else -> throw IllegalArgumentException("Unknown rotation: $rotation")
         }
 
-        native.place(location.toNative(), true, rotation, Mirror.NONE, 0, 0.0f, Random.asJavaRandom())
+        native.place(location.toNative(), true, rotation, Mirror.NONE, -1, 1.0f, Random.asJavaRandom())
     }
 
     override fun fill(location: Location, size: Vec3<Int>) {
