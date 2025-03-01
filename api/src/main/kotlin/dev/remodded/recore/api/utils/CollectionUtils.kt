@@ -2,7 +2,7 @@ package dev.remodded.recore.api.utils
 
 import kotlin.random.Random
 
-fun <T> Collection<T>.weightedRandom(weightGetter: T.()->Int, random: Random): T {
+fun <T> Collection<T>.weightedRandom(random: Random = Random, weightGetter: T.()->Int): T {
     if (this.isEmpty())
         throw IllegalStateException("Collection is empty")
 
