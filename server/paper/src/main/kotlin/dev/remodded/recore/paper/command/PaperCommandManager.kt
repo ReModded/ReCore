@@ -18,6 +18,7 @@ import dev.remodded.recore.api.command.source.ConsoleCommandSender
 import dev.remodded.recore.api.plugins.ReCorePlugin
 import dev.remodded.recore.api.utils.getFieldAccess
 import dev.remodded.recore.common.command.CommonCommandManager
+import dev.remodded.recore.paper.command.arguments.PaperArgumentTypesProvider.PaperWrappedArgumentType
 import dev.remodded.recore.paper.command.source.native
 import dev.remodded.recore.paper.command.source.wrap
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -63,6 +64,7 @@ class PaperCommandManager : CommonCommandManager() {
 
                     val arg = argumentType
                     if (arg is CustomArgumentType<*, *>) {
+                        val doMap = arg !is PaperWrappedArgumentType<*, *> || arg.doMapCtx()
                         argumentType = object : io.papermc.paper.command.brigadier.argument.CustomArgumentType.Converted<Any, Any> {
                             override fun getNativeType() = arg.nativeType as ArgumentType<Any>
                             override fun convert(nativeType: Any): Any {
@@ -73,7 +75,11 @@ class PaperCommandManager : CommonCommandManager() {
                                 context: CommandContext<S>,
                                 builder: SuggestionsBuilder
                             ): CompletableFuture<Suggestions> {
-                                return arg.suggest(mapCommandCtx(context as CommandContext<CommandSourceStack>), builder)
+                                var ctx = if (doMap)
+                                    mapCommandCtx(context as CommandContext<CommandSourceStack>)
+                                else
+                                    context as CommandContext<CommandSrcStack>
+                                return arg.suggest(ctx, builder)
                             }
                         }
                     }
