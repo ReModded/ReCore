@@ -15,6 +15,7 @@ import dev.remodded.recore.common.ReCorePlatformCommon;
 import dev.remodded.recore.common.lib.DefaultDependencies;
 import dev.remodded.recore.common.lib.DefaultLibraryLoader;
 import dev.remodded.recore.velocity.messaging.channel.VelocityChannelMessagingManager;
+import kotlin.Unit;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +53,7 @@ public class ReCoreVelocity implements ReCorePlatformCommon {
 
         var server = new VelocityServer(proxy, libraryLoader, dataFolder.getParent());
 
-        ReCoreImpl.init(server, this);
+        ReCoreImpl.init(server, this, () -> Unit.INSTANCE);
     }
 
     public ProxyServer getProxy() {
