@@ -12,11 +12,11 @@ import dev.remodded.recore.api.entity.Player
 import java.util.concurrent.CompletableFuture
 
 class PlayerArgumentType(
-    val sigular: Boolean,
+    val singular: Boolean,
 ) : CustomArgumentType<Collection<Player>, String>(StringArgumentType.word()) {
 
     override fun convert(nativeType: String): Collection<Player> {
-        if (nativeType == "@a" && !sigular) {
+        if (nativeType == "@a" && !singular) {
             val players = ReCore.INSTANCE.server.playerManager.getPlayers()
 
             if (players.isEmpty())
@@ -33,7 +33,7 @@ class PlayerArgumentType(
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> = builder
         .apply {
-            if (!sigular)
+            if (!singular)
                 suggest("@a")
 
             for (player in ReCore.INSTANCE.server.playerManager.getPlayers())
