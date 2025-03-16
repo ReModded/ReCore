@@ -81,9 +81,11 @@ class ReCoreImpl (
         val logger: Logger = LoggerFactory.getLogger(Constants.NAME)
 
         @JvmStatic
-        fun init(server: Server, platform: ReCorePlatformCommon) {
+        fun init(server: Server, platform: ReCorePlatformCommon, preInit: () -> Unit = {}) {
             logger.info("ReCore Initializing")
             val instance = ReCoreImpl(server, platform)
+
+            preInit()
 
             instance.init()
         }
