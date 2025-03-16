@@ -12,6 +12,8 @@ import java.util.concurrent.CompletableFuture
 class PaperArgumentTypesProvider : PlatformArgumentTypesProvider {
     override fun player(allowMultiple: Boolean) = PaperPlayerArgumentType(allowMultiple)
 
+    override fun resourceKey() = PaperResourceKeyArgumentType()
+
     abstract class PaperWrappedArgumentType<NativeType, ParsedType>(
         nativeType: ArgumentType<NativeType>
     ) : CustomArgumentType<ParsedType, NativeType>(nativeType) {
