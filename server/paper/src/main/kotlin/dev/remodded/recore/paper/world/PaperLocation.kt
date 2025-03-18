@@ -3,6 +3,7 @@ package dev.remodded.recore.paper.world
 import dev.remodded.recore.api.utils.vec.Vec3
 import dev.remodded.recore.api.world.Location
 import dev.remodded.recore.api.world.World
+import dev.remodded.recore.common.utils.BiMapper
 
 data class PaperLocation(
     override val position: Vec3<Double>,
@@ -16,6 +17,11 @@ data class PaperLocation(
         location.yaw.toDouble(),
         location.world.wrap(),
     )
+
+    object Mapper : BiMapper<org.bukkit.Location, Location> {
+        override fun map(value: org.bukkit.Location): Location = PaperLocation(value)
+        override fun unmap(value: Location): org.bukkit.Location = value.toNative()
+    }
 }
 
 fun Location.toNative(): org.bukkit.Location {
