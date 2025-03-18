@@ -22,6 +22,16 @@ class PaperWorld(
     override fun unload(save: Boolean): Boolean {
         return Bukkit.unloadWorld(native, save)
     }
+
+    override fun hashCode() = native.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PaperWorld
+
+        return native == other.native
+    }
 }
 
 fun World.native() = (this as PaperWorld).native
