@@ -11,7 +11,9 @@ import dev.remodded.recore.common.ReCoreImpl
 import dev.remodded.recore.common.ReCorePlatformCommon
 import dev.remodded.recore.paper.command.arguments.PaperArgumentTypesProvider
 import dev.remodded.recore.paper.data.additional.PaperAdditionalDataManager
+import dev.remodded.recore.paper.extension.ExtensionEventHandler
 import dev.remodded.recore.paper.messaging.channel.PaperChannelMessagingManager
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class ReCorePaperPlatform(
@@ -34,6 +36,12 @@ class ReCorePaperPlatform(
         }
 
         ReCore.INSTANCE.serviceProvider.provide<AdditionalDataManager, PaperAdditionalDataManager>(ReCore.INSTANCE)
+
+        registerHandlers()
+    }
+
+    private fun registerHandlers() {
+        Bukkit.getPluginManager().registerEvents(ExtensionEventHandler(), this)
     }
 
     override fun getPluginInfo(): PluginInfo {

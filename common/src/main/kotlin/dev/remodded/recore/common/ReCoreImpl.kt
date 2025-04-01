@@ -10,6 +10,7 @@ import dev.remodded.recore.api.config.ConfigLoader
 import dev.remodded.recore.api.data.tag.DataTagProvider
 import dev.remodded.recore.api.database.DatabaseProvider
 import dev.remodded.recore.api.database.DatabaseType
+import dev.remodded.recore.api.extention.ExtensionProvider
 import dev.remodded.recore.api.messaging.MessagingChannelType
 import dev.remodded.recore.api.messaging.MessagingManager
 import dev.remodded.recore.api.plugins.PluginsManager
@@ -27,6 +28,7 @@ import dev.remodded.recore.common.data.tag.CommonDataTagProvider
 import dev.remodded.recore.common.database.MariaDBProvider
 import dev.remodded.recore.common.database.MySQLProvider
 import dev.remodded.recore.common.database.PostgreSQLProvider
+import dev.remodded.recore.common.extention.CommonExtensionProvider
 import dev.remodded.recore.common.messaging.redis.RedisMessagingManager
 import dev.remodded.recore.common.plugins.CommonPluginsManager
 import dev.remodded.recore.common.service.CommonServiceProvider
@@ -61,6 +63,7 @@ class ReCoreImpl (
 
         serviceProvider.provide<Gson>(this) { GsonProvider.GSON }
         serviceProvider.provide<DataTagProvider, CommonDataTagProvider>(this)
+        serviceProvider.provide<ExtensionProvider, CommonExtensionProvider>(this)
 
         registerDatabaseProvider()
         registerCacheProvider()
