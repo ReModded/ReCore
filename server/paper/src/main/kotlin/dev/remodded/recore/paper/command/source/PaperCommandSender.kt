@@ -9,6 +9,10 @@ import net.kyori.adventure.text.Component
 open class PaperCommandSender(
     open val native: org.bukkit.command.CommandSender
 ) : CommandSender {
+    override fun hasPermission(permission: String): Boolean {
+        return native.hasPermission(permission)
+    }
+
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }

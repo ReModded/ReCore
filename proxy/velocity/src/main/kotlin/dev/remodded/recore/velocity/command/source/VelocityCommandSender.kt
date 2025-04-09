@@ -11,6 +11,10 @@ import net.kyori.adventure.text.Component
 open class VelocityCommandSender(
     open val native: CommandSource
 ) : CommandSender {
+    override fun hasPermission(permission: String): Boolean {
+        return native.hasPermission(permission)
+    }
+
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }

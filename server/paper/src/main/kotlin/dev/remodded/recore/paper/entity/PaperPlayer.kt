@@ -23,6 +23,10 @@ class PaperPlayer(
         native.kick(message ?: "You has been kicked".red())
     }
 
+    override fun hasPermission(permission: String): Boolean {
+        return native.hasPermission(permission)
+    }
+
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }

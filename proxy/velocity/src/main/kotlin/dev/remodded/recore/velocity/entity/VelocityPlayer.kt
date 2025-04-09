@@ -23,6 +23,10 @@ class VelocityPlayer(
     override val name: String get() = native.username
     override val displayName get() = name.text()
 
+    override fun hasPermission(permission: String): Boolean {
+        return native.hasPermission(permission)
+    }
+
     override fun sendMessage(message: Component) {
         native.sendMessage(message)
     }
