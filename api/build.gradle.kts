@@ -10,8 +10,9 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-to-slf4j:2.17.1")
 
     // Library used for managing configurations
-    api("org.spongepowered:configurate-hocon:4.1.2")
-    api("org.spongepowered:configurate-extra-kotlin:4.1.2")
+    api("org.spongepowered:configurate-yaml:4.2.0")
+    api("org.spongepowered:configurate-hocon:4.2.0")
+    api("org.spongepowered:configurate-extra-kotlin:4.2.0")
 
     // Database libraries
     api("com.zaxxer:HikariCP:5.1.0")

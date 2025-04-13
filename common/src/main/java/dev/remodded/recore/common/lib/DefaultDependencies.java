@@ -7,8 +7,9 @@ public class DefaultDependencies {
 
     private static final ArrayList<String> dependencies = new ArrayList<>(Arrays.asList(
             "org.jetbrains.kotlin:kotlin-stdlib:2.0.0",
-            "org.spongepowered:configurate-hocon:4.1.2",
-            "org.spongepowered:configurate-extra-kotlin:4.1.2",
+            "org.spongepowered:configurate-yaml:4.2.0",
+            "org.spongepowered:configurate-hocon:4.2.0",
+            "org.spongepowered:configurate-extra-kotlin:4.2.0",
             "com.google.code.gson:gson:2.11.0",
             "org.redisson:redisson:3.32.0",
             "com.zaxxer:HikariCP:5.1.0",
