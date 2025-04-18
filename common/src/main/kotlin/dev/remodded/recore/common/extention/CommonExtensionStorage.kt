@@ -14,8 +14,13 @@ value class CommonExtensionStorage(
     fun <T: Extendable, E : Extension<T>> getExtension(extension: Class<E>): E? =
         extensions[extension] as? E
 
-    fun <T: Extendable, E : Extension<T>> addExtension(extension: Class<E>): E {
-        val instance = extension.getConstructor().newInstance()
+    fun <T: Extendable, E : Extension<T>> addExtension(subject: T, extension: Class<E>): E {
+        @Suppress("UNCHECKED_CAST")
+        val instance: E = extension.declaredConstructors
+            .find { it.parameterTypes.size == 1 && it.parameterTypes[0].isInstance(subject) }
+            ?.newInstance(subject) as? E ?:
+            extension.getDeclaredConstructor().newInstance()
+
         extensions.put(extension, instance)
         return instance
     }

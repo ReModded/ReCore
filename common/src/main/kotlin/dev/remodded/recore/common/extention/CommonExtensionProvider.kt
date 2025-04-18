@@ -18,7 +18,7 @@ class CommonExtensionProvider : ExtensionProvider {
     }
 
     override fun <T : Extendable, E : Extension<T>> addExtension(subject: T, extension: Class<E>): E {
-        return getStorage(subject).addExtension(extension)
+        return getStorage(subject).addExtension(subject, extension)
     }
 
     override fun <T : Extendable, E : Extension<T>> removeExtension(subject: T, extension: Class<E>): Boolean {
